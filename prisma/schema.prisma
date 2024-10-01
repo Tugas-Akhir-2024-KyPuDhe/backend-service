@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  uuid      String    @unique @default(uuid())
+  username  String    @unique
+  password  String
+  roles     Role[]
+  staff     Staff[]
+  students  Student[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  uuid        String       @unique @default(uuid())
+  name        String
+  user        User         @relation(fields: [id], references: [id])
+  permissions Permission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  name        String
+  description String?
+  role        Role?    @relation(fields: [roleId], references: [id])
+  roleId      Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Staff {
+  id         Int       @id @default(autoincrement())
+  uuid       String    @default(uuid())
+  user       User      @relation(fields: [id], references: [id])
+  name       String
+  birthPlace String?
+  address    String?
+  phone      String?
+  email      String?
+  nip        String?   @unique
+  type       String
+  photo      Media?     @relation(fields: [mediaId], references: [id])
+  startDate  DateTime
+  endDate    DateTime?
+  mediaId    Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Student {
+  id         Int       @id @default(autoincrement())
+  uuid       String    @default(uuid())
+  user       User      @relation(fields: [id], references: [id])
+  name       String
+  birthPlace String?
+  address    String?
+  nis        String    @unique
+  nisn       String    @unique
+  photo      Media?     @relation(fields: [mediaId], references: [id])
+  phone      String?
+  email      String?
+  startYear  DateTime
+  endYear    DateTime?
+  mediaId    Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Media {
+  id        Int       @id @default(autoincrement())
+  uuid      String    @default(uuid())
+  url       String
+  type      String
+  staff     Staff[]
+  students  Student[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
