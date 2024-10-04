@@ -7,7 +7,7 @@ class ConfigSchoolRepository {
     });
   }
 
-  async updateConfigSchool(id, data) {
+  async updateConfigSchool(data) {
     return prisma.configSchool.updateMany({
       data: data,
     });

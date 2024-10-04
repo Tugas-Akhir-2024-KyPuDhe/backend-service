@@ -60,6 +60,7 @@ model Staff {
   email      String?
   nip        String?   @unique
   type       String
+  position   String?
   startDate  DateTime
   endDate    DateTime?
   mediaId    Int?
@@ -162,6 +163,7 @@ model Jurusan {
   uuid        String   @default(uuid())
   name        String
   description String?
+  prioritas   Int      @default(15)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -173,6 +175,7 @@ model Ekstrakurikuler {
   uuid        String   @default(uuid())
   name        String
   description String?
+  prioritas   Int      @default(15)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -184,6 +187,7 @@ model Fasilitas {
   uuid        String   @default(uuid())
   name        String
   description String?
+  prioritas   Int      @default(15)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

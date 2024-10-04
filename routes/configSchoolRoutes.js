@@ -1,5 +1,5 @@
 const express = require("express");
-const configSchoolController = require("../controllers/ConfigSchoolController");
+const configSchoolController = require("../controllers/configSchoolController");
 const router = express.Router();
 
 router.get("/get", configSchoolController.getConfigSchool);
