@@ -107,6 +107,8 @@ model Media {
   staff           Staff[] //one to one
   students        Student[]
   ConfigSchool    ConfigSchool[]
+
+  ArtikelBanner Artikel[]
 }
 
 model ConfigSchool {
@@ -132,6 +134,7 @@ model ConfigSchool {
 model Artikel {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
+  bannerId    Int?
   title       String
   description String
   date        String
@@ -141,7 +144,8 @@ model Artikel {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  media Media[] @relation("ArtikelMedia")
+  banner Media?  @relation(fields: [bannerId], references: [id])
+  media  Media[] @relation("ArtikelMedia")
 }
 
 model Kelas {
