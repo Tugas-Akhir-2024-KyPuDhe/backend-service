@@ -4,6 +4,7 @@ const authRoutes = require("./routes/authRoutes");
 const configSchoolRoutes = require("./routes/configSchoolRoutes");
 const jurusanRoutes = require("./routes/jurusanRoutes");
 const artikelRoutes = require("./routes/artikelRoutes");
+const fasilitasRoutes = require("./routes/fasilitasRoutes");
 const cors = require("cors");
 
 const app = express();
@@ -14,6 +15,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/config-school", configSchoolRoutes);
 app.use("/api/jurusan", jurusanRoutes);
 app.use("/api/artikel", artikelRoutes);
+app.use("/api/fasilitas", fasilitasRoutes);
 
 //error handler
 app.use((err, req, res, next) => {
