@@ -12,7 +12,6 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 
-app.use(express.static('public'))
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -24,13 +23,13 @@ app.use("/api/fasilitas", fasilitasRoutes);
 app.use("/api/ekstrakurikuler", ekstrakurikulerRoutes);
 
 //error handler
-// app.use((err, req, res, next) => {
-//   res.status(err.status || 400);
-//   res.json({
-//     message: err.message || "An unknown error occurred",
-//     error: err,
-//   });
-// });
+app.use((err, req, res, next) => {
+  res.status(err.status || 400);
+  res.json({
+    message: err.message || "An unknown error occurred",
+    error: err,
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
