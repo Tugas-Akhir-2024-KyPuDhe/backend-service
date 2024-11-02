@@ -12,6 +12,7 @@ const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
 
+app.use(express.static('public'))
 app.use(cors());
 app.use(bodyParser.json());
 
