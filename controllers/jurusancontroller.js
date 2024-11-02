@@ -79,7 +79,7 @@ class JurusanController {
     try {
       const { name, description, prioritas } = req.body;
       const files = req.files ? req.files["media"] : [];
-
+      
       const mediaUrls = files.map((file, index) => ({
         url: `https://dummyurl.com/media/jurusan/${myfunc.fileName(
           name
