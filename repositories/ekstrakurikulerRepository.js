@@ -2,7 +2,7 @@ const prisma = require("../config/database");
 
 class EkstrakurikulerRepository {
   async createEkstrakurikuler(data) {
-    return prisma.ekstrakurikuler.create({
+    return prisma.extracurricular.create({
       data: data,
     });
   }
@@ -11,7 +11,7 @@ class EkstrakurikulerRepository {
     const { name, description, prioritas, mediaIdsToDelete, newMediaData } =
       data;
 
-    const ekstrakurikuler = await prisma.ekstrakurikuler.findUnique({
+    const ekstrakurikuler = await prisma.extracurricular.findUnique({
       where: { id: parseInt(id) },
       include: { media: true },
     });
@@ -39,7 +39,7 @@ class EkstrakurikulerRepository {
       });
     }
 
-    return await prisma.ekstrakurikuler.update({
+    return await prisma.extracurricular.update({
       where: { id: parseInt(id) },
       data: {
         name,
@@ -54,7 +54,7 @@ class EkstrakurikulerRepository {
   }
 
   async deleteEkstrakurikuler(id) {
-    const ekstrakurikuler = await prisma.ekstrakurikuler.findUnique({
+    const ekstrakurikuler = await prisma.extracurricular.findUnique({
       where: { id },
       include: { media: true },
     });
@@ -71,13 +71,13 @@ class EkstrakurikulerRepository {
     //delete media in cloud also here
     //...
 
-    return prisma.ekstrakurikuler.delete({
+    return prisma.extracurricular.delete({
       where: { id },
     });
   }
 
   async getAllEkstrakurikuler() {
-    return prisma.ekstrakurikuler.findMany({
+    return prisma.extracurricular.findMany({
       orderBy: {
         prioritas: "asc",
       },
@@ -88,7 +88,7 @@ class EkstrakurikulerRepository {
   }
 
   async findEkstrakurikulerById(id) {
-    return prisma.ekstrakurikuler.findFirst({
+    return prisma.extracurricular.findFirst({
       where: { id: id },
       include: {
         media: true,

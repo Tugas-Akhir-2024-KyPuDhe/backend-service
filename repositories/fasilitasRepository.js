@@ -2,7 +2,7 @@ const prisma = require("../config/database");
 
 class FasilitasRepository {
   async createFasilitas(data) {
-    return prisma.fasilitas.create({
+    return prisma.facility.create({
       data: data,
     });
   }
@@ -11,7 +11,7 @@ class FasilitasRepository {
     const { name, description, prioritas, mediaIdsToDelete, newMediaData } =
       data;
 
-    const fasilitas = await prisma.fasilitas.findUnique({
+    const fasilitas = await prisma.facility.findUnique({
       where: { id: parseInt(id) },
       include: { media: true },
     });
@@ -39,7 +39,7 @@ class FasilitasRepository {
       });
     }
 
-    return await prisma.fasilitas.update({
+    return await prisma.facility.update({
       where: { id: parseInt(id) },
       data: {
         name,
@@ -54,7 +54,7 @@ class FasilitasRepository {
   }
 
   async deleteFasilitas(id) {
-    const fasilitas = await prisma.fasilitas.findUnique({
+    const fasilitas = await prisma.facility.findUnique({
       where: { id },
       include: { media: true },
     });
@@ -71,13 +71,13 @@ class FasilitasRepository {
     //delete media in cloud also here
     //...
 
-    return prisma.fasilitas.delete({
+    return prisma.facility.delete({
       where: { id },
     });
   }
 
   async getAllFasilitas() {
-    return prisma.fasilitas.findMany({
+    return prisma.facility.findMany({
       orderBy: {
         prioritas: "asc",
       },
@@ -88,7 +88,7 @@ class FasilitasRepository {
   }
 
   async findFasilitasById(id) {
-    return prisma.fasilitas.findFirst({
+    return prisma.facility.findFirst({
       where: { id: id },
       include: {
         media: true,

@@ -69,7 +69,7 @@ model Staff {
 
   user  User    @relation(fields: [id], references: [id])
   photo Media?  @relation(fields: [mediaId], references: [id])
-  Kelas Kelas[]
+  Class Class[]
 }
 
 model Student {
@@ -100,38 +100,38 @@ model Media {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  Artikel         Artikel[]         @relation("ArtikelMedia") //one to many from artikel
-  Jurusan         Jurusan[]         @relation("JurusanMedia")
-  Ekstrakurikuler Ekstrakurikuler[] @relation("EkstrakurikulerMedia")
-  Fasilitas       Fasilitas[]       @relation("FasilitasMedia")
+  Article         Article[]         @relation("ArticleMedia") //one to many from artikel
+  Major           Major[]           @relation("MajorMedia")
+  Extracurricular Extracurricular[] @relation("ExtracurricularMedia")
+  Facility        Facility[]        @relation("FacilityMedia")
   staff           Staff[] //one to one
   students        Student[]
   ConfigSchool    ConfigSchool[]
 
-  ArtikelBanner Artikel[]
+  ArticleBanner Article[]
 }
 
 model ConfigSchool {
-  id        Int      @id @default(autoincrement())
-  uuid      String   @default(uuid())
-  name      String
-  about     String
-  visiMisi  String
-  address   String?
-  mediaId   Int?
-  telp      String?
-  email     String
-  npsn      String
-  fb        String?
-  ig        String?
-  tiktok    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  name         String
+  about        String
+  visionMision String?
+  address      String?
+  mediaId      Int?
+  telp         String?
+  email        String
+  npsn         String
+  fb           String?
+  ig           String?
+  tiktok       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   logo Media? @relation(fields: [mediaId], references: [id]) // Relasi one-to-one untuk logo
 }
 
-model Artikel {
+model Article {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
   bannerId    Int?
@@ -145,36 +145,24 @@ model Artikel {
   updatedAt   DateTime @updatedAt
 
   banner Media?  @relation(fields: [bannerId], references: [id])
-  media  Media[] @relation("ArtikelMedia")
+  media  Media[] @relation("ArticleMedia")
 }
 
-model Kelas {
+model Class {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
   name        String
-  jurusan     String
-  tahunAjaran String
+  major       String
+  schoolYear  String
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  waliKelas Staff? @relation(fields: [staffId], references: [id])
-  staffId   Int?
+  homeRoomTeacher Staff? @relation(fields: [staffId], references: [id])
+  staffId         Int?
 }
 
-model Jurusan {
-  id          Int      @id @default(autoincrement())
-  uuid        String   @default(uuid())
-  name        String
-  description String?
-  prioritas   Int      @default(15)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  media Media[] @relation("JurusanMedia")
-}
-
-model Ekstrakurikuler {
+model Major {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
   name        String
@@ -183,10 +171,10 @@ model Ekstrakurikuler {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  media Media[] @relation("EkstrakurikulerMedia")
+  media Media[] @relation("MajorMedia")
 }
 
-model Fasilitas {
+model Extracurricular {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
   name        String
@@ -195,5 +183,17 @@ model Fasilitas {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  media Media[] @relation("FasilitasMedia")
+  media Media[] @relation("ExtracurricularMedia")
+}
+
+model Facility {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  description String?
+  prioritas   Int      @default(15)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  media Media[] @relation("FacilityMedia")
 }

@@ -2,7 +2,7 @@ const prisma = require("../config/database");
 
 class ArtikelRepository {
   async createArtikel(data) {
-    return prisma.artikel.create({
+    return prisma.article.create({
       data: data,
     });
   }
@@ -20,7 +20,7 @@ class ArtikelRepository {
       newMediaData,
     } = data;
 
-    const artikel = await prisma.artikel.findUnique({
+    const artikel = await prisma.article.findUnique({
       where: { id: parseInt(id) },
       include: { media: true },
     });
@@ -48,7 +48,7 @@ class ArtikelRepository {
       });
     }
 
-    return await prisma.artikel.update({
+    return await prisma.article.update({
       where: { id: parseInt(id) },
       data: {
         title,
@@ -67,7 +67,7 @@ class ArtikelRepository {
   }
 
   async deleteArtikel(id) {
-    const artikel = await prisma.artikel.findUnique({
+    const artikel = await prisma.article.findUnique({
       where: { id },
       include: { media: true, banner: true },
     });
@@ -84,13 +84,13 @@ class ArtikelRepository {
     //delete media in cloud also here
     //...
 
-    return prisma.artikel.delete({
+    return prisma.article.delete({
       where: { id },
     });
   }
 
   async getAllArtikel() {
-    return prisma.artikel.findMany({
+    return prisma.article.findMany({
       orderBy: {
         createdAt: "asc",
       },
@@ -102,7 +102,7 @@ class ArtikelRepository {
   }
 
   async findArtikelById(id) {
-    return prisma.artikel.findFirst({
+    return prisma.article.findFirst({
       where: { id: id },
       include: {
         media: true,

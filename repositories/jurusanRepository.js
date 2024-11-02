@@ -2,7 +2,7 @@ const prisma = require("../config/database");
 
 class JurusanRepository {
   async createJurusan(data) {
-    return prisma.jurusan.create({
+    return prisma.major.create({
       data: data,
     });
   }
@@ -11,7 +11,7 @@ class JurusanRepository {
     const { name, description, prioritas, mediaIdsToDelete, newMediaData } =
       data;
 
-    const jurusan = await prisma.jurusan.findUnique({
+    const jurusan = await prisma.major.findUnique({
       where: { id: parseInt(id) },
       include: { media: true },
     });
@@ -39,7 +39,7 @@ class JurusanRepository {
       });
     }
 
-    return await prisma.jurusan.update({
+    return await prisma.major.update({
       where: { id: parseInt(id) },
       data: {
         name,
@@ -54,7 +54,7 @@ class JurusanRepository {
   }
 
   async deleteJurusan(id) {
-    const jurusan = await prisma.jurusan.findUnique({
+    const jurusan = await prisma.major.findUnique({
       where: { id },
       include: { media: true },
     });
@@ -71,13 +71,13 @@ class JurusanRepository {
     //delete media in cloud also here
     //...
 
-    return prisma.jurusan.delete({
+    return prisma.major.delete({
       where: { id },
     });
   }
 
   async getAllJurusan() {
-    return prisma.jurusan.findMany({
+    return prisma.major.findMany({
       orderBy: {
         prioritas: "asc",
       },
@@ -88,7 +88,7 @@ class JurusanRepository {
   }
 
   async findJurusanById(id) {
-    return prisma.jurusan.findFirst({
+    return prisma.major.findFirst({
       where: { id: id },
       include: {
         media: true,
