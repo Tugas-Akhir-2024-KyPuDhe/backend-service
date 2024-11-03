@@ -89,17 +89,20 @@ class ArtikelRepository {
     });
   }
 
-  async getAllArtikel() {
-    return prisma.article.findMany({
+  async getAllArtikel(limit, offset) {
+    return await prisma.article.findMany({
+      take: limit, 
+      skip: offset, 
       orderBy: {
-        createdAt: "asc",
+          createdAt: "asc",
       },
       include: {
-        media: true,
-        banner: true,
+          media: true,
+          banner: true,
       },
     });
   }
+
 
   async findArtikelById(id) {
     return prisma.article.findFirst({

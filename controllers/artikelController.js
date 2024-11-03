@@ -41,13 +41,30 @@ class ArtikelController {
   }
 
   async getAllArtikel(req, res) {
+    const { page = 1, limit = 10 } = req.query; 
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
+        return res.status(400).json({ message: "Invalid page or limit" });
+    }
+
     try {
-      const response = await artikelRepository.getAllArtikel();
-      res.status(200).json({ message: "success", data: response });
+        const offset = (pageNumber - 1) * limitNumber; 
+        const response = await artikelRepository.getAllArtikel(limitNumber, offset);
+        const totalArticles = await prisma.article.count();
+        res.status(200).json({ 
+            message: "success", 
+            total: totalArticles,
+            page: pageNumber,
+            limit: limitNumber,
+            data: response,
+        });
     } catch (error) {
-      res.status(500).json({ message: "Internal server error", error });
+        res.status(500).json({ message: "Internal server error", error });
     }
   }
+
 
   async getArtikelById(req, res) {
     try {
