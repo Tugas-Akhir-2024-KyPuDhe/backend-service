@@ -76,22 +76,37 @@ class AuthController {
 
     async login(req, res) {
         const { username, password } = req.body;
-
+    
         try {
             const user = await authRepository.findUserByUsername(username);
             if (!user) {
                 return res.status(400).json({ message: "Invalid username or password" });
             }
-
+    
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (!isPasswordValid) {
                 return res.status(400).json({ message: "Invalid username or password" });
             }
+            
             const token = jwt.sign({ id: user.id, username: user.username, roles: user.roles[0].name }, process.env.JWT_SECRET, {
                 expiresIn: "1h",
             });
-
-            res.json({ message: "Login successful", token });
+    
+            let name;
+            if (user.staff && user.staff.length > 0) {
+                name = user.staff[0].name; 
+            } else if (user.students && user.students.length > 0) {
+                name = user.students[0].name; 
+            } else {
+                name = null; 
+            }
+    
+            const userToSend = {
+                name: name,
+                role: user.roles[0].name
+            };
+    
+            res.json({ message: "Login successful", token, user: userToSend });
         } catch (error) {
             res.status(500).json({ message: "Internal server error", error });
         }
