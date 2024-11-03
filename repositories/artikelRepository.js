@@ -15,7 +15,6 @@ class ArtikelRepository {
       date,
       status,
       type,
-      link,
       mediaIdsToDelete,
       newMediaData,
     } = data;
@@ -57,7 +56,6 @@ class ArtikelRepository {
         date,
         status,
         type,
-        link,
         media: { create: newMediaData },
       },
       include: {
