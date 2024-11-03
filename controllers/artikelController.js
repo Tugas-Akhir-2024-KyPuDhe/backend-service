@@ -41,23 +41,26 @@ class ArtikelController {
   }
 
   async getAllArtikel(req, res) {
-    const { page = 1, limit = 10 } = req.query; 
-    const pageNumber = parseInt(page, 10);
-    const limitNumber = parseInt(limit, 10);
-
-    if (isNaN(pageNumber) || isNaN(limitNumber) || pageNumber < 1 || limitNumber < 1) {
-        return res.status(400).json({ message: "Invalid page or limit" });
-    }
-
+    const { page = 1, perPage = 15 } = req.query;
+    const currentPage = Number(page);
+    const itemsPerPage = Number(perPage);
+    
     try {
-        const offset = (pageNumber - 1) * limitNumber; 
-        const response = await artikelRepository.getAllArtikel(limitNumber, offset);
-        const totalArticles = await prisma.article.count();
-        res.status(200).json({ 
-            message: "success", 
+        const response = await artikelRepository.getAllArtikel(currentPage, itemsPerPage);
+        const totalArticles = await artikelRepository.getTotalArtikel(); // Fetch total count of articles
+
+        const lastPage = Math.ceil(totalArticles / itemsPerPage);
+        const from = (currentPage - 1) * itemsPerPage + 1;
+        const to = Math.min(from + itemsPerPage - 1, totalArticles);
+
+        res.status(200).json({
+            message: "success",
             total: totalArticles,
-            page: pageNumber,
-            limit: limitNumber,
+            per_page: itemsPerPage,
+            current_page: currentPage,
+            last_page: lastPage,
+            from: from,
+            to: to,
             data: response,
         });
     } catch (error) {
@@ -98,7 +101,7 @@ class ArtikelController {
 
   async createArtikel(req, res) {
     try {
-      const { title, description, status, type, link, createdBy } = req.body;
+      const { title, description, status, type, createdBy } = req.body;
       const files = req.files["media"];
       let bannerId = null;
 
@@ -132,7 +135,6 @@ class ArtikelController {
         description,
         status,
         type,
-        link,
         createdBy,
         media: {
           create: mediaUrls,
@@ -148,7 +150,7 @@ class ArtikelController {
   async updateArtikel(req, res) {
     try {
       const { id } = req.params;
-      const { title, description, date, status, type, link, mediaIdsToDelete, updatedBy } =
+      const { title, description, date, status, type, mediaIdsToDelete, updatedBy } =
         req.body;
       const files = req.files["media"];
 
@@ -201,7 +203,6 @@ class ArtikelController {
         date,
         status,
         type,
-        link,
         updatedBy,
         mediaIdsToDelete,
         newMediaData,

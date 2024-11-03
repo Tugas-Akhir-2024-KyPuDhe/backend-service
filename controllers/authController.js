@@ -88,10 +88,7 @@ class AuthController {
                 return res.status(400).json({ message: "Invalid username or password" });
             }
             
-            const token = jwt.sign({ id: user.id, username: user.username, roles: user.roles[0].name }, process.env.JWT_SECRET, {
-                expiresIn: "1h",
-            });
-    
+            
             let name;
             if (user.staff && user.staff.length > 0) {
                 name = user.staff[0].name; 
@@ -100,17 +97,37 @@ class AuthController {
             } else {
                 name = null; 
             }
+
+            const token = jwt.sign({ username: user.username, name: name, roles: user.roles[0].name }, process.env.JWT_SECRET, {
+                expiresIn: "1h",
+            });
     
             const userToSend = {
                 name: name,
                 role: user.roles[0].name
             };
     
-            res.json({ message: "Login successful", token, user: userToSend });
+            res.status(200).json({ status: 200, message: "Login successful", token, user: userToSend });
         } catch (error) {
-            res.status(500).json({ message: "Internal server error", error });
+            res.status(500).json({ status: 500, message: "Internal server error", error });
         }
     }
+    async verifyToken (req, res) {
+        try {
+          const token = req.headers["authorization"]?.split(" ")[1];
+          if (!token) {
+            return res.status(400).json({ message: 'No token provided' });
+          }
+          jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+            if (err) {
+              return res.status(401).json({ message: 'Invalid token' });
+            }
+            res.status(200).json({ status: 200, valid: true, user: decoded });
+          });
+        } catch (error) {
+          res.status(400).json({ message: error.message });
+        }
+      };
 }
 
 module.exports = new AuthController();

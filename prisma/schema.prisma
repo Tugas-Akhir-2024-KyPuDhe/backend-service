@@ -140,7 +140,6 @@ model Article {
   date        DateTime @default(now())
   status      String
   type        String
-  link        String?
   createdBy   String?
   updateBy    String?
   createdAt   DateTime @default(now())
