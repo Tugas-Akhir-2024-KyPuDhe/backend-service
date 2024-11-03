@@ -17,4 +17,14 @@ const authMiddleware = (req, res, next) => {
     });
 };
 
-module.exports = authMiddleware;
+const authorizeRoles = (allowedRoles) => {
+    return (req, res, next) => {
+        // Pastikan authMiddleware sudah berjalan untuk mendapatkan req.user
+        if (!req.user || !allowedRoles.includes(req.user.roles)) {
+            return res.status(403).json({ message: "Access denied" });
+        }
+        next();
+    };
+};
+
+module.exports = { authMiddleware, authorizeRoles };

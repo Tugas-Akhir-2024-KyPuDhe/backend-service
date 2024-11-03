@@ -81,7 +81,7 @@ class ArtikelController {
 
   async createArtikel(req, res) {
     try {
-      const { title, description, date, status, type, link } = req.body;
+      const { title, description, status, type, link, createdBy } = req.body;
       const files = req.files["media"];
       let bannerId = null;
 
@@ -113,10 +113,10 @@ class ArtikelController {
         title,
         bannerId,
         description,
-        date,
         status,
         type,
         link,
+        createdBy,
         media: {
           create: mediaUrls,
         },
@@ -131,7 +131,7 @@ class ArtikelController {
   async updateArtikel(req, res) {
     try {
       const { id } = req.params;
-      const { title, description, date, status, type, link, mediaIdsToDelete } =
+      const { title, description, date, status, type, link, mediaIdsToDelete, updatedBy } =
         req.body;
       const files = req.files["media"];
 
@@ -185,6 +185,7 @@ class ArtikelController {
         status,
         type,
         link,
+        updatedBy,
         mediaIdsToDelete,
         newMediaData,
       });
