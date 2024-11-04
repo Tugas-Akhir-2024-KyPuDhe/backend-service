@@ -7,6 +7,6 @@ router.post("/register/student", authController.registerStudent);
 router.post("/register/staff", authController.registerStaff);
 router.post("/login", authController.login);
 router.post("/test", authMiddleware, authController.login);
-router.post("/verify-token", authController.verifyToken);
+router.get("/verify-token", authController.verifyToken);
 
 module.exports = router;
