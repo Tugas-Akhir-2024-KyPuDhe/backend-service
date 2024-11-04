@@ -40,9 +40,9 @@ class ArtikelController {
   }
 
   async getAllArtikel(req, res) {
-    const { page = 1, perPage = 15 } = req.query;
+    const { page = 1, per_page = 15 } = req.query;
     const currentPage = Number(page);
-    const itemsPerPage = Number(perPage);
+    const itemsPerPage = Number(per_page);
 
     try {
       const response = await artikelRepository.getAllArtikel(
