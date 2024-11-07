@@ -10,6 +10,7 @@ class BannerRepository {
         title_link: data.title_link,
         link: data.link,
         prioritas: data.prioritas,
+        status: data.status,
         createdBy: data.createdBy,
       },
     });
@@ -22,6 +23,7 @@ class BannerRepository {
       title_link,
       link,
       prioritas,
+      status,
       mediaIdsToDelete,
       newMediaData,
     } = data;
@@ -65,6 +67,7 @@ class BannerRepository {
         title_link,
         link,
         prioritas,
+        status,
         banner: {
           create: newMediaData, // Creating new media associated with the banner
         },

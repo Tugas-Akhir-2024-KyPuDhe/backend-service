@@ -208,7 +208,7 @@ model BannerPage {
   description String?
   title_link  String?
   link        String?
-  status      String
+  status      String?
   prioritas   Int      @default(15)
   bannerId    Int?
   createdBy   String?
