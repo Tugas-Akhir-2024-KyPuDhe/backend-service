@@ -6,6 +6,7 @@ const jurusanRoutes = require("./routes/jurusanRoutes");
 const artikelRoutes = require("./routes/artikelRoutes");
 const fasilitasRoutes = require("./routes/fasilitasRoutes");
 const ekstrakurikulerRoutes = require("./routes/ekstrakurikulerRoutes");
+const bannerRoutes = require("./routes/bannerRoutes");
 const cors = require("cors");
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/jurusan", jurusanRoutes);
 app.use("/api/artikel", artikelRoutes);
 app.use("/api/fasilitas", fasilitasRoutes);
 app.use("/api/ekstrakurikuler", ekstrakurikulerRoutes);
+app.use("/api/banner", bannerRoutes);
 
 //error handler
 app.use((err, req, res, next) => {

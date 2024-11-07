@@ -109,24 +109,26 @@ model Media {
   ConfigSchool    ConfigSchool[]
 
   ArticleBanner Article[]
+  BannerPage    BannerPage[]
 }
 
 model ConfigSchool {
-  id           Int      @id @default(autoincrement())
-  uuid         String   @default(uuid())
-  name         String
-  about        String
-  visionMision String?
-  address      String?
-  mediaId      Int?
-  telp         String?
-  email        String
-  npsn         String
-  fb           String?
-  ig           String?
-  tiktok       String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  uuid      String   @default(uuid())
+  name      String
+  about     String
+  vision    String?
+  mision    String?
+  address   String?
+  mediaId   Int?
+  telp      String?
+  email     String
+  npsn      String
+  fb        String?
+  ig        String?
+  tiktok    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   logo Media? @relation(fields: [mediaId], references: [id]) // Relasi one-to-one untuk logo
 }
@@ -197,4 +199,21 @@ model Facility {
   updatedAt   DateTime @updatedAt
 
   media Media[] @relation("FacilityMedia")
+}
+
+model BannerPage {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  title       String
+  description String?
+  title_link  String?
+  link        String?
+  status      String
+  prioritas   Int      @default(15)
+  bannerId    Int?
+  createdBy   String?
+  updateBy    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  banner      Media?   @relation(fields: [bannerId], references: [id])
 }

@@ -6,7 +6,9 @@ async function main() {
     name: "SMK NEGERI 1 LUMBAN JULU",
     about:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam provident odio quod, expedita nisi ea dolore ducimus consequatur velit vel deleniti, perferendis, iste corporis. Enim vero molestiae id obcaecati blanditiis?",
-    visionMision:
+    vision:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos consequatur vitae perferendis maiores saepe reprehenderit nihil pariatur quae necessitatibus culpa.",
+    mision:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos consequatur vitae perferendis maiores saepe reprehenderit nihil pariatur quae necessitatibus culpa.",
     address: "Jalan Lintas Sumatera, Aeknatolu Jaya, Kecamatan Lumban Julu",
     telp: "082283020850",

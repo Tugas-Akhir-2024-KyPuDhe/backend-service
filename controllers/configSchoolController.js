@@ -15,7 +15,8 @@ class ConfigShoolController {
       const {
         name,
         about,
-        visionMision,
+        vision,
+        mision,
         address,
         mediaId,
         telp,
@@ -29,7 +30,8 @@ class ConfigShoolController {
       await configSchoolRepository.updateConfigSchool({
         name,
         about,
-        visionMision,
+        vision,
+        mision,
         address,
         mediaId,
         telp,
