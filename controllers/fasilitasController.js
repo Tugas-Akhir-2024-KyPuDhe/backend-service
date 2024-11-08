@@ -39,9 +39,9 @@ class FasilitasController {
   async getAllFasilitas(req, res) {
     try {
       const response = await fasilitasRepository.getAllFasilitas();
-      res.status(200).json({ message: "success", data: response });
+      res.status(200).json({ status: 200, message: "Successfully retrieved all Facility.", data: response });
     } catch (error) {
-      res.status(500).json({ message: "Internal server error", error });
+      res.status(500).json({ status: 500, message: "Failed to retrieve facility due to internal server error.", error });
     }
   }
 
@@ -52,11 +52,14 @@ class FasilitasController {
         parseInt(id)
       );
       if (!response)
-        return res.status(404).json({ message: "Fasilitas Not Found" });
+        return res.status(404).json({ status: 404, message: "Facility not found. The provided ID does not match any records." });
 
-      res.status(200).json({ message: "success", response });
+      res.status(200).json({ status: 200, message: "Successfully retrieved the facility.", data: response });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to retrieve facility due to error: ${error.message}`,
+      });
     }
   }
 
@@ -67,13 +70,16 @@ class FasilitasController {
         parseInt(id)
       );
       if (!existFasilitas)
-        return res.status(404).json({ message: "Fasilitas Not Found" });
+        return res.status(404).json({ status: 400, message: "Facility not found. Cannot delete a non-existing facility." });
 
       await fasilitasRepository.deleteFasilitas(parseInt(id));
 
-      return res.status(200).json({ message: "delete successfuly" });
+      return res.status(200).json({ status: 200, message: "Facility deleted successfully." });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to delete facility due to error: ${error.message}`,
+      });
     }
   }
 
@@ -98,9 +104,12 @@ class FasilitasController {
         },
       });
 
-      return res.status(201).json({ message: "Fasilitas successfully added" });
+      return res.status(201).json({ status: 201, message: "Facility successfully added" });
     } catch (error) {
-      next(error);
+      res.status(400).json({
+        status: 400,
+        message: `Failed to create facility due to error: ${error.message}`,
+      });
     }
   }
 
@@ -127,10 +136,14 @@ class FasilitasController {
       });
 
       return res.status(200).json({
-        message: "Fasilitas successfully updated",
+        status: 201,
+        message: "Facility successfully updated",
       });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to update facility due to error: ${error.message}`,
+      });
     }
   }
 }
