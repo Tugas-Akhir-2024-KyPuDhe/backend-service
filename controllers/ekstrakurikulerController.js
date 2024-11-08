@@ -39,37 +39,66 @@ class EkstrakurikulerController {
   async getAllEkstrakurikuler(req, res) {
     try {
       const response = await ekstrakurikuler.getAllEkstrakurikuler();
-      res.status(200).json({ message: "success", data: response });
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved all ekstrakurikuler.",
+        data: response,
+      });
     } catch (error) {
-      res.status(500).json({ message: "Internal server error", error });
+      res.status(500).json({
+        message:
+          "Failed to retrieve ekstrakurikuler due to internal server error.",
+        error,
+      });
     }
   }
 
   async getEkstrakurikulerById(req, res) {
     try {
       const { id } = req.params;
-      const response = await ekstrakurikuler.findEkstrakurikulerById(parseInt(id));
+      const response = await ekstrakurikuler.findEkstrakurikulerById(
+        parseInt(id)
+      );
       if (!response)
-        return res.status(404).json({ message: "Ekstrakurikuler Not Found" });
+        return res.status(404).json({
+          status: 404,
+          message:
+            "ekstrakurikuler not found. The provided ID does not match any records.",
+        });
 
-      res.status(200).json({ message: "success", response });
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved the ekstrakurikuler.",
+        data: response,
+      });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to retrieve ekstrakurikuler due to error: ${error.message}`,
+      });
     }
   }
 
   async deleteEkstrakurikulerById(req, res) {
     try {
       const { id } = req.params;
-      const existEkstrakurikuler = await ekstrakurikuler.findEkstrakurikulerById(
-        parseInt(id)
-      );
+      const existEkstrakurikuler =
+        await ekstrakurikuler.findEkstrakurikulerById(parseInt(id));
       if (!existEkstrakurikuler)
-        return res.status(404).json({ message: "Ekstrakurikuler Not Found" });
+        return res.status(404).json({
+          status: 404,
+          message:
+            "Ekstrakurikuler not found. Cannot delete a non-existing ekstrakurikuler.",
+        });
 
       await ekstrakurikuler.deleteEkstrakurikuler(parseInt(id));
 
-      return res.status(200).json({ message: "delete successfuly" });
+      return res
+        .status(200)
+        .json({
+          status: 200,
+          message: "Ekstrakurikuler deleted successfully.",
+        });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -96,9 +125,17 @@ class EkstrakurikulerController {
         },
       });
 
-      return res.status(201).json({ message: "Ekstrakurikuler successfully added" });
+      return res
+        .status(201)
+        .json({
+          status: 201,
+          message: "Ekstrakurikuler successfully created.",
+        });
     } catch (error) {
-      next(error);
+      res.status(400).json({
+        status: 400,
+        message: `Failed to create ekstrakurikuler due to error: ${error.message}`,
+      });
     }
   }
 
@@ -125,10 +162,14 @@ class EkstrakurikulerController {
       });
 
       return res.status(200).json({
-        message: "Ekstrakurikuler successfully updated",
+        status: 200,
+        message: "Ekstrakurikuler successfully updated.",
       });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to update ekstrakurikuler due to error: ${error.message}`,
+      })
     }
   }
 }

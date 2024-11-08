@@ -39,9 +39,16 @@ class JurusanController {
   async getAllJurusan(req, res) {
     try {
       const response = await jurusanRepository.getAllJurusan();
-      res.status(200).json({ message: "success", data: response });
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved all Major.",
+        data: response,
+      });
     } catch (error) {
-      res.status(500).json({ message: "Internal server error", error });
+      res.status(500).json({
+        message: "Failed to retrieve major due to internal server error.",
+        error,
+      });
     }
   }
 
@@ -50,11 +57,22 @@ class JurusanController {
       const { id } = req.params;
       const response = await jurusanRepository.findJurusanById(parseInt(id));
       if (!response)
-        return res.status(404).json({ message: "Jurusan Not Found" });
+        return res.status(404).json({
+          status: 404,
+          message:
+            "Major not found. The provided ID does not match any records.",
+        });
 
-      res.status(200).json({ message: "success", response });
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved the major.",
+        data: response,
+      });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to retrieve major due to error: ${error.message}`,
+      });
     }
   }
 
@@ -65,13 +83,21 @@ class JurusanController {
         parseInt(id)
       );
       if (!existJurusan)
-        return res.status(404).json({ message: "Jurusan Not Found" });
+        return res.status(404).json({
+          status: 404,
+          message: "Major not found. Cannot delete a non-existing major.",
+        });
 
       await jurusanRepository.deleteJurusan(parseInt(id));
 
-      return res.status(200).json({ message: "delete successfuly" });
+      return res
+        .status(200)
+        .json({ status: 200, message: "Major deleted successfully." });
     } catch (error) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        status: 400,
+        message: `Failed to delete major due to error: ${error.message}`,
+      });
     }
   }
 
@@ -79,7 +105,7 @@ class JurusanController {
     try {
       const { name, description, prioritas } = req.body;
       const files = req.files ? req.files["media"] : [];
-      
+
       const mediaUrls = files.map((file, index) => ({
         url: `https://dummyurl.com/media/jurusan/${myfunc.fileName(
           name
@@ -96,7 +122,9 @@ class JurusanController {
         },
       });
 
-      return res.status(201).json({ message: "Jurusan successfully added" });
+      return res
+        .status(201)
+        .json({ status: 201, message: "Major successfully created." });
     } catch (error) {
       next(error);
     }
