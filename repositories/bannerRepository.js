@@ -3,16 +3,7 @@ const prisma = require("../config/database");
 class BannerRepository {
   async createBanner(data) {
     return prisma.bannerPage.create({
-      data: {
-        title: data.title,
-        description: data.description,
-        bannerId: data.bannerId,
-        title_link: data.title_link,
-        link: data.link,
-        prioritas: data.prioritas,
-        status: data.status,
-        createdBy: data.createdBy,
-      },
+      data: data,
     });
   }
 
@@ -66,7 +57,7 @@ class BannerRepository {
         description,
         title_link,
         link,
-        prioritas,
+        prioritas: parseInt(prioritas),
         status,
         banner: {
           create: newMediaData, // Creating new media associated with the banner

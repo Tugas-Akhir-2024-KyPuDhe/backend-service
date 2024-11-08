@@ -179,7 +179,7 @@ class JurusanController {
       await jurusanRepository.updateJurusan(id, {
         name,
         description,
-        prioritas,
+        prioritas: parseInt(prioritas),
         mediaIdsToDelete,
         newMediaData: newMediaData || undefined,
       });

@@ -44,7 +44,7 @@ class JurusanRepository {
       data: {
         name,
         description,
-        prioritas,
+        prioritas: parseInt(prioritas),
         media: { create: newMediaData },
       },
       include: {
