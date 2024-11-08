@@ -1,15 +1,32 @@
-const ekstrakurikuler = require("../repositories/ekstrakurikulerRepository");
+const ekstrakurikulerRepository = require("../repositories/ekstrakurikulerRepository");
 const myfunc = require("../utils/functions");
+const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
 
-// Set up multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.S3_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_KEY,
   },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+});
+
+const storage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_BUCKET_NAME,
+  acl: "public-read",
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    const title = req.body.title || "default-title";
+    const fileExtension = path.extname(file.originalname);
+    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "-");
+    const filename = `ekstrakurikuler/${sanitizedTitle}-${Date.now()}${fileExtension}`;
+    cb(null, filename);
   },
 });
 
@@ -38,7 +55,7 @@ class EkstrakurikulerController {
 
   async getAllEkstrakurikuler(req, res) {
     try {
-      const response = await ekstrakurikuler.getAllEkstrakurikuler();
+      const response = await ekstrakurikulerRepository.getAllEkstrakurikuler();
       res.status(200).json({
         status: 200,
         message: "Successfully retrieved all ekstrakurikuler.",
@@ -56,7 +73,7 @@ class EkstrakurikulerController {
   async getEkstrakurikulerById(req, res) {
     try {
       const { id } = req.params;
-      const response = await ekstrakurikuler.findEkstrakurikulerById(
+      const response = await ekstrakurikulerRepository.findEkstrakurikulerById(
         parseInt(id)
       );
       if (!response)
@@ -83,7 +100,7 @@ class EkstrakurikulerController {
     try {
       const { id } = req.params;
       const existEkstrakurikuler =
-        await ekstrakurikuler.findEkstrakurikulerById(parseInt(id));
+        await ekstrakurikulerRepository.findEkstrakurikulerById(parseInt(id));
       if (!existEkstrakurikuler)
         return res.status(404).json({
           status: 404,
@@ -91,14 +108,12 @@ class EkstrakurikulerController {
             "Ekstrakurikuler not found. Cannot delete a non-existing ekstrakurikuler.",
         });
 
-      await ekstrakurikuler.deleteEkstrakurikuler(parseInt(id));
+      await ekstrakurikulerRepository.deleteEkstrakurikuler(parseInt(id));
 
-      return res
-        .status(200)
-        .json({
-          status: 200,
-          message: "Ekstrakurikuler deleted successfully.",
-        });
+      return res.status(200).json({
+        status: 200,
+        message: "Ekstrakurikuler deleted successfully.",
+      });
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
@@ -107,30 +122,25 @@ class EkstrakurikulerController {
   async createEkstrakurikuler(req, res, next) {
     try {
       const { name, description, prioritas } = req.body;
-      const files = req.files ? req.files["media"] : [];
-
-      const mediaUrls = files.map((file, index) => ({
-        url: `https://dummyurl.com/media/ekstrakurikuler/${myfunc.fileName(
-          name
-        )}-${myfunc.getRandomDigit(4)}.jpg`,
+      const mediaFiles = req.files?.["media"] || [];
+      const mediaUrls = mediaFiles.map((file) => ({
+        url: file.location, // Lokasi file yang disimpan di S3
         type: file.mimetype.startsWith("image") ? "image" : "video",
       }));
 
-      ekstrakurikuler.createEkstrakurikuler({
+      await ekstrakurikulerRepository.createEkstrakurikuler({
         name,
         description,
-        prioritas,
+        prioritas: parseInt(prioritas),
         media: {
           create: mediaUrls,
         },
       });
 
-      return res
-        .status(201)
-        .json({
-          status: 201,
-          message: "Ekstrakurikuler successfully created.",
-        });
+      return res.status(201).json({
+        status: 201,
+        message: "Ekstrakurikuler successfully created.",
+      });
     } catch (error) {
       res.status(400).json({
         status: 400,
@@ -145,18 +155,25 @@ class EkstrakurikulerController {
       const { name, description, prioritas, mediaIdsToDelete } = req.body;
       const files = req.files["media"];
 
+      const existEkstrakurikuler = await ekstrakurikulerRepository.findArtikelById(parseInt(id));
+      if (!existEkstrakurikuler) {
+        return res.status(404).json({
+          status: 400,
+          message:
+            "Ekstrakurikuler not found. Unable to update non-existing ekstrakurikuler.",
+        });
+      }
+
       const newMediaData = files
         ? files.map((file) => ({
-            url: `https://dummyurl.com/media/ekstrakurikuler/${myfunc.fileName(
-              name
-            )}-${myfunc.getRandomDigit(4)}`,
+            url: file.location,
             type: file.mimetype.startsWith("image") ? "image" : "video",
           }))
         : [];
-      await ekstrakurikuler.updateEkstrakurikuler(id, {
+      await ekstrakurikulerRepository.updateEkstrakurikuler(id, {
         name,
         description,
-        prioritas,
+        prioritas: parseInt(prioritas),
         mediaIdsToDelete,
         newMediaData,
       });
@@ -169,7 +186,7 @@ class EkstrakurikulerController {
       res.status(400).json({
         status: 400,
         message: `Failed to update ekstrakurikuler due to error: ${error.message}`,
-      })
+      });
     }
   }
 }

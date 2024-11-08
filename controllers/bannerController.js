@@ -1,18 +1,36 @@
 const bannerRepository = require("../repositories/bannerRepository");
+const prisma = require("../config/database");
 const myfunc = require("../utils/functions");
+const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
-const prisma = require('../config/database');
 
-// Set up multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.S3_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_KEY,
   },
 });
+
+const storage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_BUCKET_NAME,
+  acl: "public-read",
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    const title = req.body.title || "default-title";
+    const fileExtension = path.extname(file.originalname);
+    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '-');
+    const filename = `banner/${sanitizedTitle}-${Date.now()}${fileExtension}`;
+    cb(null, filename);
+  },
+});
+
 
 class BannerController {
   uploadFiles() {
@@ -107,7 +125,6 @@ class BannerController {
     try {
       const { title, description, prioritas, title_link, link, status, createdBy } =
         req.body;
-      const files = req.files ? req.files["media"] : [];
       let bannerId = null;
 
       if (!title || !description) {
@@ -119,11 +136,7 @@ class BannerController {
 
       if (req.files["media"]) {
         const banner = req.files["media"][0];
-        // const bannerUrl = `https://dummyurl.com/media/banner/banner-${myfunc.fileName(
-        //   title
-        // )}-${myfunc.getRandomDigit(4)}`;
-        const bannerUrl = `https://cdn.digitaldesa.com/uploads/landing/artikel/3aa66f51e6330230ba261fd5f454c4b7.jpg`;
-
+        const bannerUrl = banner.location;
         const bannerResponse = await prisma.media.create({
           data: {
             url: bannerUrl,
@@ -132,14 +145,6 @@ class BannerController {
         });
         bannerId = bannerResponse.id;
       }
-
-      const mediaUrls = files.map((file) => ({
-        // url: `https://dummyurl.com/media/banner/${myfunc.fileName(
-        //   title
-        // )}-${myfunc.getRandomDigit(4)}.jpg`,
-        url: `https://cdn.digitaldesa.com/uploads/landing/artikel/3aa66f51e6330230ba261fd5f454c4b7.jpg`,
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      }));
 
       await bannerRepository.createBanner({
         title,
@@ -150,9 +155,6 @@ class BannerController {
         link,
         status,
         createdBy,
-        banner: {
-          create: mediaUrls,
-        },
       });
 
       return res.status(201).json({

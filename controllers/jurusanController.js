@@ -1,15 +1,32 @@
 const jurusanRepository = require("../repositories/jurusanRepository");
 const myfunc = require("../utils/functions");
+const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
 
-// Set up multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.S3_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_KEY,
   },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+});
+
+const storage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_BUCKET_NAME,
+  acl: "public-read",
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    const title = req.body.name || "default-title";
+    const fileExtension = path.extname(file.originalname);
+    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '-');
+    const filename = `jurusan/${sanitizedTitle}-${Date.now()}${fileExtension}`;
+    cb(null, filename);
   },
 });
 
@@ -106,21 +123,25 @@ class JurusanController {
       const { name, description, prioritas } = req.body;
       const files = req.files ? req.files["media"] : [];
 
-      const mediaUrls = files.map((file, index) => ({
-        url: `https://dummyurl.com/media/jurusan/${myfunc.fileName(
-          name
-        )}-${myfunc.getRandomDigit(4)}.jpg`,
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      }));
+      const mediaUrls =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : [];
 
-      jurusanRepository.createJurusan({
+      const jurusanData = {
         name,
         description,
-        prioritas,
-        media: {
-          create: mediaUrls,
-        },
-      });
+        prioritas: parseInt(prioritas),
+      };
+
+      if (mediaUrls.length > 0) {
+        jurusanData.media = { create: mediaUrls };
+      }
+
+      await jurusanRepository.createJurusan(jurusanData);
 
       return res
         .status(201)

@@ -1,15 +1,40 @@
 const prisma = require("../config/database");
 const artikelRepository = require("../repositories/artikelRepository");
 const myfunc = require("../utils/functions");
+const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.S3_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_KEY,
   },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+});
+
+const storage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_BUCKET_NAME,
+  acl: "public-read",
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    const title = req.body.title || "default-title";
+    const fileExtension = path.extname(file.originalname);
+    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "-");
+    let filename = "";
+
+    if (file.fieldname === "banner") {
+      filename = `artikel-berita/banner_${sanitizedTitle}-${Date.now()}${fileExtension}`;
+    } else if (file.fieldname === "media") {
+      filename = `artikel-berita/media_${sanitizedTitle}-${Date.now()}${fileExtension}`;
+    }
+
+    cb(null, filename);
   },
 });
 
@@ -130,15 +155,16 @@ class ArtikelController {
   async createArtikel(req, res) {
     try {
       const { title, description, status, type, createdBy } = req.body;
-      const files = req.files["media"];
       let bannerId = null;
+      const mediaFiles = req.files?.["media"] || [];
+      const mediaUrls = mediaFiles.map((file) => ({
+        url: file.location, // Lokasi file yang disimpan di S3
+        type: file.mimetype.startsWith("image") ? "image" : "video",
+      }));
 
       if (req.files["banner"]) {
         const banner = req.files["banner"][0];
-        const bannerUrl = `https://dummyurl.com/media/artikel/banner-${myfunc.fileName(
-          title
-        )}-${myfunc.getRandomDigit(4)}`;
-
+        const bannerUrl = banner.location;
         const bannerResponse = await prisma.media.create({
           data: {
             url: bannerUrl,
@@ -147,16 +173,6 @@ class ArtikelController {
         });
         bannerId = bannerResponse.id;
       }
-
-      const mediaUrls = files
-        ? files.map((file, index) => ({
-            url: `https://dummyurl.com/media/artikel/${myfunc.fileName(
-              title
-            )}-${myfunc.getRandomDigit(4)}`,
-            type: file.mimetype.startsWith("image") ? "image" : "video",
-          }))
-        : [];
-
       await artikelRepository.createArtikel({
         title,
         bannerId,
@@ -173,7 +189,7 @@ class ArtikelController {
         .status(201)
         .json({ status: 201, message: "Article successfully created." });
     } catch (error) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         message: `Failed to create article due to error: ${error.message}`,
       });
@@ -186,7 +202,6 @@ class ArtikelController {
       const {
         title,
         description,
-        date,
         status,
         type,
         mediaIdsToDelete,
@@ -197,19 +212,17 @@ class ArtikelController {
       const existArtikel = await artikelRepository.findArtikelById(
         parseInt(id)
       );
-      if (!existArtikel)
+      if (!existArtikel) {
         return res.status(404).json({
           status: 400,
           message: "Article not found. Unable to update non-existing article.",
         });
+      }
 
       let bannerId = existArtikel.bannerId;
-
       if (req.files["banner"]) {
         const banner = req.files["banner"][0];
-        const bannerUrl = `https://dummyurl.com/media/artikel/banner-${myfunc.fileName(
-          title
-        )}-${myfunc.getRandomDigit(4)}`;
+        const bannerUrl = banner.location; 
 
         if (bannerId == null) {
           const bannerResponse = await prisma.media.create({
@@ -231,19 +244,18 @@ class ArtikelController {
         }
       }
 
+      // Menyimpan data media baru
       const newMediaData = files
         ? files.map((file) => ({
-            url: `https://dummyurl.com/media/artikel/${myfunc.fileName(
-              title
-            )}-${myfunc.getRandomDigit(4)}`,
+            url: file.location, 
             type: file.mimetype.startsWith("image") ? "image" : "video",
           }))
         : [];
+
       await artikelRepository.updateArtikel(id, {
         title,
         bannerId,
         description,
-        date,
         status,
         type,
         updatedBy,

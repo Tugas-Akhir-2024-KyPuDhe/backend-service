@@ -1,5 +1,5 @@
 const fasilitasRepository = require("../repositories/fasilitasRepository");
-const { S3, S3Client } = require("@aws-sdk/client-s3");
+const { S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const multerS3 = require("multer-s3");
 const path = require("path");
@@ -21,7 +21,11 @@ const storage = multerS3({
     cb(null, { fieldName: file.fieldname });
   },
   key: function (req, file, cb) {
-    cb(null, `fasilitas/${Date.now()}-${file.originalname}`);
+    const title = req.body.name || "default-title";
+    const fileExtension = path.extname(file.originalname);
+    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '-');
+    const filename = `fasilitas/${sanitizedTitle}-${Date.now()}${fileExtension}`;
+    cb(null, filename);
   },
 });
 
@@ -133,7 +137,7 @@ class FasilitasController {
       const fasilitasData = {
         name,
         description,
-        prioritas,
+        prioritas: parseInt(prioritas),
       };
 
       if (mediaUrls.length > 0) {

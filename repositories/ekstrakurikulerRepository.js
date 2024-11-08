@@ -44,7 +44,7 @@ class EkstrakurikulerRepository {
       data: {
         name,
         description,
-        prioritas,
+        prioritas: parseInt(prioritas),
         media: { create: newMediaData },
       },
       include: {

@@ -94,7 +94,7 @@ class ArtikelRepository {
       skip: skip,
       take: perPage,
       orderBy: {
-        createdAt: "asc",
+        createdAt: "desc",
       },
       where: {
         OR: [
