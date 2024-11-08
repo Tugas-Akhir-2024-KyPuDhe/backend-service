@@ -40,7 +40,7 @@ class AuthController {
     }
 
     async registerStaff(req, res) {
-        const { password, name, birthPlace, address, phone, email, nip, type, startDate } = req.body;
+        const { password, name, birthPlace, address, phone, email, nip, type, startDate, role } = req.body;
 
         try {
             const existingUser = await authRepository.findUserByUsername(nip);
@@ -53,7 +53,7 @@ class AuthController {
             const user = await authRepository.createUser({
                 username: nip,
                 password: hashedPassword,
-                roles: { create: { name: "STAFF" } },
+                roles: { create: { name: role } },
                 staff: {
                     create: {
                         name,

@@ -176,6 +176,7 @@ class BannerController {
         title_link,
         link,
         prioritas,
+        status,
         mediaIdsToDelete,
       } = req.body;
       const files = req.files["media"];
@@ -201,7 +202,8 @@ class BannerController {
         description,
         title_link,
         link,
-        prioritas,
+        prioritas: parseInt(prioritas),
+        status,
         mediaIdsToDelete,
         newMediaData,
       });
