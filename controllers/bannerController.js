@@ -181,7 +181,18 @@ class BannerController {
         status,
         mediaIdsToDelete,
       } = req.body;
-      const files = req.files["media"];
+      const files = req.files?.["media"] || [];
+
+      const existBanner = await bannerRepository.findBannerById(
+        parseInt(id)
+      );
+      if (!existBanner) {
+        return res.status(404).json({
+          status: 400,
+          message:
+            "Banner not found. Unable to update non-existing banner.",
+        });
+      }
 
       if (!title || !description) {
         return res.status(400).json({
@@ -190,14 +201,13 @@ class BannerController {
         });
       }
 
-      const newMediaData = files
-        ? files.map((file) => ({
-            url: `https://dummyurl.com/media/banner/${myfunc.fileName(
-              title
-            )}-${myfunc.getRandomDigit(4)}`,
-            type: file.mimetype.startsWith("image") ? "image" : "video",
-          }))
-        : [];
+      const newMediaData =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : null;
 
       const updatedBanner = await bannerRepository.updateBanner(id, {
         title,
@@ -207,7 +217,7 @@ class BannerController {
         prioritas: parseInt(prioritas),
         status,
         mediaIdsToDelete,
-        newMediaData,
+        newMediaData: newMediaData || undefined,
       });
 
       if (!updatedBanner) {

@@ -199,15 +199,9 @@ class ArtikelController {
   async updateArtikel(req, res) {
     try {
       const { id } = req.params;
-      const {
-        title,
-        description,
-        status,
-        type,
-        mediaIdsToDelete,
-        updatedBy,
-      } = req.body;
-      const files = req.files["media"];
+      const { title, description, status, type, mediaIdsToDelete, updatedBy } =
+        req.body;
+      const files = req.files?.["media"] || [];
 
       const existArtikel = await artikelRepository.findArtikelById(
         parseInt(id)
@@ -222,7 +216,7 @@ class ArtikelController {
       let bannerId = existArtikel.bannerId;
       if (req.files["banner"]) {
         const banner = req.files["banner"][0];
-        const bannerUrl = banner.location; 
+        const bannerUrl = banner.location;
 
         if (bannerId == null) {
           const bannerResponse = await prisma.media.create({
@@ -245,12 +239,13 @@ class ArtikelController {
       }
 
       // Menyimpan data media baru
-      const newMediaData = files
-        ? files.map((file) => ({
-            url: file.location, 
-            type: file.mimetype.startsWith("image") ? "image" : "video",
-          }))
-        : [];
+      const newMediaData =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : null;
 
       await artikelRepository.updateArtikel(id, {
         title,
@@ -260,7 +255,7 @@ class ArtikelController {
         type,
         updatedBy,
         mediaIdsToDelete,
-        newMediaData,
+        newMediaData: newMediaData || undefined,
       });
 
       return res.status(200).json({

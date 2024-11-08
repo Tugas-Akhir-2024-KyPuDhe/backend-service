@@ -23,7 +23,7 @@ const storage = multerS3({
   key: function (req, file, cb) {
     const title = req.body.name || "default-title";
     const fileExtension = path.extname(file.originalname);
-    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '-');
+    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "-");
     const filename = `fasilitas/${sanitizedTitle}-${Date.now()}${fileExtension}`;
     cb(null, filename);
   },
@@ -161,19 +161,33 @@ class FasilitasController {
     try {
       const { id } = req.params;
       const { name, description, prioritas, mediaIdsToDelete } = req.body;
-      const files = req.files ? req.files["media"] : [];
+      const files = req.files?.["media"] || [];
 
-      const newMediaData = files.map((file) => ({
-        url: file.location,
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      }));
+      const existFasilitas = await fasilitasRepository.findFasilitasById(
+        parseInt(id)
+      );
+      if (!existFasilitas) {
+        return res.status(404).json({
+          status: 400,
+          message:
+            "Fasilitas not found. Unable to update non-existing fasilitas.",
+        });
+      }
+
+      const newMediaData =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : null;
 
       await fasilitasRepository.updateFasilitas(id, {
         name,
         description,
         prioritas,
         mediaIdsToDelete,
-        newMediaData,
+        newMediaData: newMediaData || undefined,
       });
 
       return res.status(200).json({

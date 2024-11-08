@@ -153,9 +153,10 @@ class EkstrakurikulerController {
     try {
       const { id } = req.params;
       const { name, description, prioritas, mediaIdsToDelete } = req.body;
-      const files = req.files["media"];
+      const files = req.files?.["media"] || [];
 
-      const existEkstrakurikuler = await ekstrakurikulerRepository.findEkstrakurikulerById(parseInt(id));
+      const existEkstrakurikuler =
+        await ekstrakurikulerRepository.findEkstrakurikulerById(parseInt(id));
       if (!existEkstrakurikuler) {
         return res.status(404).json({
           status: 400,
@@ -164,18 +165,20 @@ class EkstrakurikulerController {
         });
       }
 
-      const newMediaData = files
-        ? files.map((file) => ({
-            url: file.location,
-            type: file.mimetype.startsWith("image") ? "image" : "video",
-          }))
-        : [];
+      const newMediaData =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : null;
+
       await ekstrakurikulerRepository.updateEkstrakurikuler(id, {
         name,
         description,
         prioritas: parseInt(prioritas),
         mediaIdsToDelete,
-        newMediaData,
+        newMediaData: newMediaData || undefined,
       });
 
       return res.status(200).json({

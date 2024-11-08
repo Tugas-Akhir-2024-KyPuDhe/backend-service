@@ -155,22 +155,33 @@ class JurusanController {
     try {
       const { id } = req.params;
       const { name, description, prioritas, mediaIdsToDelete } = req.body;
-      const files = req.files["media"];
+      const files = req.files?.["media"] || [];
 
-      const newMediaData = files
-        ? files.map((file) => ({
-            url: `https://dummyurl.com/media/jurusan/${myfunc.fileName(
-              name
-            )}-${myfunc.getRandomDigit(4)}`,
-            type: file.mimetype.startsWith("image") ? "image" : "video",
-          }))
-        : [];
+      const existJurusan = await jurusanRepository.findJurusanById(
+        parseInt(id)
+      );
+      if (!existJurusan) {
+        return res.status(404).json({
+          status: 400,
+          message:
+            "Jurusan not found. Unable to update non-existing jurusan.",
+        });
+      }
+
+      const newMediaData =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : null;
+
       await jurusanRepository.updateJurusan(id, {
         name,
         description,
         prioritas,
         mediaIdsToDelete,
-        newMediaData,
+        newMediaData: newMediaData || undefined,
       });
 
       return res.status(200).json({
