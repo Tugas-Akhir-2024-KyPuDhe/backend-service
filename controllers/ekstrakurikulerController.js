@@ -155,7 +155,7 @@ class EkstrakurikulerController {
       const { name, description, prioritas, mediaIdsToDelete } = req.body;
       const files = req.files["media"];
 
-      const existEkstrakurikuler = await ekstrakurikulerRepository.findArtikelById(parseInt(id));
+      const existEkstrakurikuler = await ekstrakurikulerRepository.findEkstrakurikulerById(parseInt(id));
       if (!existEkstrakurikuler) {
         return res.status(404).json({
           status: 400,
