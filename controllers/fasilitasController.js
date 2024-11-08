@@ -1,15 +1,27 @@
 const fasilitasRepository = require("../repositories/fasilitasRepository");
-const myfunc = require("../utils/functions");
+const { S3, S3Client } = require("@aws-sdk/client-s3");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
 const path = require("path");
 
-// Set up multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+  endpoint: process.env.S3_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_KEY,
   },
-  filename: function (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname}`);
+});
+
+const storage = multerS3({
+  s3: s3Client,
+  bucket: process.env.AWS_BUCKET_NAME,
+  acl: "public-read",
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: file.fieldname });
+  },
+  key: function (req, file, cb) {
+    cb(null, `fasilitas/${Date.now()}-${file.originalname}`);
   },
 });
 
@@ -39,9 +51,17 @@ class FasilitasController {
   async getAllFasilitas(req, res) {
     try {
       const response = await fasilitasRepository.getAllFasilitas();
-      res.status(200).json({ status: 200, message: "Successfully retrieved all Facility.", data: response });
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved all facilities.",
+        data: response,
+      });
     } catch (error) {
-      res.status(500).json({ status: 500, message: "Failed to retrieve facility due to internal server error.", error });
+      res.status(500).json({
+        status: 500,
+        message: "Failed to retrieve facilities due to internal server error.",
+        error,
+      });
     }
   }
 
@@ -51,10 +71,19 @@ class FasilitasController {
       const response = await fasilitasRepository.findFasilitasById(
         parseInt(id)
       );
-      if (!response)
-        return res.status(404).json({ status: 404, message: "Facility not found. The provided ID does not match any records." });
+      if (!response) {
+        return res.status(404).json({
+          status: 404,
+          message:
+            "Facility not found. The provided ID does not match any records.",
+        });
+      }
 
-      res.status(200).json({ status: 200, message: "Successfully retrieved the facility.", data: response });
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved the facility.",
+        data: response,
+      });
     } catch (error) {
       res.status(400).json({
         status: 400,
@@ -69,12 +98,17 @@ class FasilitasController {
       const existFasilitas = await fasilitasRepository.findFasilitasById(
         parseInt(id)
       );
-      if (!existFasilitas)
-        return res.status(404).json({ status: 400, message: "Facility not found. Cannot delete a non-existing facility." });
+      if (!existFasilitas) {
+        return res.status(404).json({
+          status: 404,
+          message: "Facility not found. Cannot delete a non-existing facility.",
+        });
+      }
 
       await fasilitasRepository.deleteFasilitas(parseInt(id));
-
-      return res.status(200).json({ status: 200, message: "Facility deleted successfully." });
+      res
+        .status(200)
+        .json({ status: 200, message: "Facility deleted successfully." });
     } catch (error) {
       res.status(400).json({
         status: 400,
@@ -83,30 +117,36 @@ class FasilitasController {
     }
   }
 
-  async createFasilitas(req, res, next) {
+  async createFasilitas(req, res) {
     try {
       const { name, description, prioritas } = req.body;
-      const files = req.files ? req.files["media"] : [];
+      const files = req.files?.["media"] || [];
 
-      const mediaUrls = files.map((file, index) => ({
-        url: `https://dummyurl.com/media/fasilitas/${myfunc.fileName(
-          name
-        )}-${myfunc.getRandomDigit(4)}.jpg`,
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      }));
+      const mediaUrls =
+        files.length > 0
+          ? files.map((file) => ({
+              url: file.location,
+              type: file.mimetype.startsWith("image") ? "image" : "video",
+            }))
+          : [];
 
-      fasilitasRepository.createFasilitas({
+      const fasilitasData = {
         name,
         description,
         prioritas,
-        media: {
-          create: mediaUrls,
-        },
-      });
+      };
 
-      return res.status(201).json({ status: 201, message: "Facility successfully added" });
+      if (mediaUrls.length > 0) {
+        fasilitasData.media = { create: mediaUrls };
+      }
+
+      await fasilitasRepository.createFasilitas(fasilitasData);
+
+      return res
+        .status(201)
+        .json({ status: 201, message: "Facility successfully added" });
     } catch (error) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 400,
         message: `Failed to create facility due to error: ${error.message}`,
       });
@@ -117,16 +157,13 @@ class FasilitasController {
     try {
       const { id } = req.params;
       const { name, description, prioritas, mediaIdsToDelete } = req.body;
-      const files = req.files["media"];
+      const files = req.files ? req.files["media"] : [];
 
-      const newMediaData = files
-        ? files.map((file) => ({
-            url: `https://dummyurl.com/media/fasilitas/${myfunc.fileName(
-              name
-            )}-${myfunc.getRandomDigit(4)}`,
-            type: file.mimetype.startsWith("image") ? "image" : "video",
-          }))
-        : [];
+      const newMediaData = files.map((file) => ({
+        url: file.location,
+        type: file.mimetype.startsWith("image") ? "image" : "video",
+      }));
+
       await fasilitasRepository.updateFasilitas(id, {
         name,
         description,
@@ -136,7 +173,7 @@ class FasilitasController {
       });
 
       return res.status(200).json({
-        status: 201,
+        status: 200,
         message: "Facility successfully updated",
       });
     } catch (error) {
