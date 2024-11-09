@@ -1,20 +1,9 @@
 const fasilitasRepository = require("../repositories/fasilitasRepository");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
-
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.S3_ENDPOINT_URL,
-  credentials: {
-    accessKeyId: process.env.S3_ACCESS_KEY,
-    secretAccessKey: process.env.S3_SECRET_KEY,
-  },
-});
-
-const storage = multer.memoryStorage();
-
+const { storage, s3Client } = require("../config/awsClound");
 class FasilitasController {
   uploadFiles() {
     return multer({

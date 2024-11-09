@@ -1,3 +1,4 @@
+const { deleteMediaFromCloud } = require("../config/awsClound");
 const prisma = require("../config/database");
 
 class BannerRepository {
@@ -55,11 +56,14 @@ class BannerRepository {
       throw new Error("Banner not found");
     }
 
-    await prisma.media.delete({
-      where: { id: banner.bannerId  },
-    });
-
-    // Optional: handle media deletion in cloud here
+    if (banner.banner) {
+      await deleteMediaFromCloud(
+        banner.banner.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+      await prisma.media.delete({
+        where: { id: banner.bannerId },
+      });
+    }
 
     // Delete the banner
     return prisma.bannerPage.delete({

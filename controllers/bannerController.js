@@ -1,21 +1,10 @@
 const bannerRepository = require("../repositories/bannerRepository");
 const prisma = require("../config/database");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
-
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.S3_ENDPOINT_URL,
-  credentials: {
-    accessKeyId: process.env.S3_ACCESS_KEY,
-    secretAccessKey: process.env.S3_SECRET_KEY,
-  },
-});
-
-const storage = multer.memoryStorage(); 
-
+const { storage, s3Client, deleteMediaFromCloud } = require("../config/awsClound");
 
 class BannerController {
   uploadFiles() {
@@ -211,6 +200,7 @@ class BannerController {
         prioritas,
         status,
       } = req.body;
+      let bannerId = null;
 
       const existBanner = await bannerRepository.findBannerById(
         parseInt(id)
@@ -223,10 +213,10 @@ class BannerController {
         });
       }
 
-      let bannerId = existBanner.bannerId || null;
+      bannerId = existBanner.bannerId;
       if (req.bannerLocation) {
         const banner = req.files["media"][0];
-        if (bannerId == null) {
+        if (bannerId === null) {
           const bannerResponse = await prisma.media.create({
             data: {
               url: req.bannerLocation,
@@ -235,6 +225,9 @@ class BannerController {
           });
           bannerId = bannerResponse.id;
         } else {
+          await deleteMediaFromCloud(
+            existBanner.banner.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+          );
           const bannerResponse = await prisma.media.update({
             where: { id: parseInt(bannerId) },
             data: {

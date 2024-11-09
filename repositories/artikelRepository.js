@@ -1,3 +1,4 @@
+const { deleteMediaFromCloud } = require("../config/awsClound");
 const prisma = require("../config/database");
 
 class ArtikelRepository {
@@ -12,9 +13,9 @@ class ArtikelRepository {
       title,
       bannerId,
       description,
-      date,
       status,
       type,
+      category,
       mediaIdsToDelete,
       newMediaData,
     } = data;
@@ -31,7 +32,7 @@ class ArtikelRepository {
     const NewMediaIdsToDelete = mediaIdsToDelete
       ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
       : [];
-    // Delete the specified media if any
+
     if (NewMediaIdsToDelete.length > 0) {
       await prisma.media.deleteMany({
         where: {
@@ -53,9 +54,9 @@ class ArtikelRepository {
         title,
         bannerId,
         description,
-        date,
         status,
         type,
+        category,
         media: { create: newMediaData },
       },
       include: {
@@ -74,13 +75,24 @@ class ArtikelRepository {
       throw new Error("Artikel not found");
     }
 
-    // Delete the media
+    for (const media of artikel.media) {
+      await deleteMediaFromCloud(
+        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+    }
+
     await prisma.media.deleteMany({
       where: { id: { in: artikel.media.map((media) => media.id) } },
     });
 
-    //delete media in cloud also here
-    //...
+    if (artikel.banner) {
+      await deleteMediaFromCloud(
+        artikel.banner.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+      await prisma.media.delete({
+        where: { id: artikel.banner.id },
+      });
+    }
 
     return prisma.article.delete({
       where: { id },
@@ -121,13 +133,28 @@ class ArtikelRepository {
   }
 
   async findArtikelById(id) {
-    return prisma.article.findFirst({
-      where: { id: id },
-      include: {
-        media: true,
-        banner: true,
-      },
-    });
+    const isUuid = (val) =>
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
+        val
+      );
+
+    if (isUuid(id)) {
+      return prisma.article.findFirst({
+        where: { uuid: id },
+        include: {
+          media: true,
+          banner: true,
+        },
+      });
+    } else {
+      return prisma.article.findFirst({
+        where: { id: id },
+        include: {
+          media: true,
+          banner: true,
+        },
+      });
+    }
   }
 }
 

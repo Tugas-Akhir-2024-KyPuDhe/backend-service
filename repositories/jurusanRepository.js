@@ -1,3 +1,4 @@
+const { deleteMediaFromCloud } = require("../config/awsClound");
 const prisma = require("../config/database");
 
 class JurusanRepository {
@@ -23,7 +24,6 @@ class JurusanRepository {
     const NewMediaIdsToDelete = mediaIdsToDelete
       ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
       : [];
-    // Delete the specified media if any
     if (NewMediaIdsToDelete.length > 0) {
       await prisma.media.deleteMany({
         where: {
@@ -63,13 +63,15 @@ class JurusanRepository {
       throw new Error("Jurusan not found");
     }
 
-    // Delete the media
+    for (const media of jurusan.media) {
+      await deleteMediaFromCloud(
+        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+    }
+
     await prisma.media.deleteMany({
       where: { id: { in: jurusan.media.map((media) => media.id) } },
     });
-
-    //delete media in cloud also here
-    //...
 
     return prisma.major.delete({
       where: { id },

@@ -1,3 +1,4 @@
+const { deleteMediaFromCloud } = require("../config/awsClound");
 const prisma = require("../config/database");
 
 class EkstrakurikulerRepository {
@@ -63,13 +64,15 @@ class EkstrakurikulerRepository {
       throw new Error("Ekstrakurikuler not found");
     }
 
-    // Delete the media
+    for (const media of ekstrakurikuler.media) {
+      await deleteMediaFromCloud(
+        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+    }
+
     await prisma.media.deleteMany({
       where: { id: { in: ekstrakurikuler.media.map((media) => media.id) } },
     });
-
-    //delete media in cloud also here
-    //...
 
     return prisma.extracurricular.delete({
       where: { id },

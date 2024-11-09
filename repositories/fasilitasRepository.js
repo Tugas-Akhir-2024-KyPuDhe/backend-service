@@ -1,3 +1,4 @@
+const { deleteMediaFromCloud } = require("../config/awsClound");
 const prisma = require("../config/database");
 
 class FasilitasRepository {
@@ -63,13 +64,15 @@ class FasilitasRepository {
       throw new Error("Fasilitas not found");
     }
 
-    // Delete the media
+    for (const media of fasilitas.media) {
+      await deleteMediaFromCloud(
+        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+    }
+
     await prisma.media.deleteMany({
       where: { id: { in: fasilitas.media.map((media) => media.id) } },
     });
-
-    //delete media in cloud also here
-    //...
 
     return prisma.facility.delete({
       where: { id },

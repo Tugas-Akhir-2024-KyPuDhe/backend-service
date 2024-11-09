@@ -1,43 +1,41 @@
 const prisma = require("../config/database");
 const artikelRepository = require("../repositories/artikelRepository");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
-
-const s3Client = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.S3_ENDPOINT_URL,
-  credentials: {
-    accessKeyId: process.env.S3_ACCESS_KEY,
-    secretAccessKey: process.env.S3_SECRET_KEY,
-  },
-});
-
-const storage = multer.memoryStorage(); 
+const {
+  storage,
+  s3Client,
+  deleteMediaFromCloud,
+} = require("../config/awsClound");
+const e = require("express");
 
 class ArtikelController {
   uploadFiles() {
     return multer({
       storage: storage,
       fileFilter: (req, file, cb) => {
-        const fileTypes = /jpeg|jpg|png|gif|mp4|avi|mov|webm/; 
+        const fileTypes = /jpeg|jpg|png|gif|mp4|avi|mov|webm/;
         const extname = fileTypes.test(
           path.extname(file.originalname).toLowerCase()
         );
         const mimetype =
-          fileTypes.test(file.mimetype) || file.mimetype.startsWith("video/"); 
+          fileTypes.test(file.mimetype) || file.mimetype.startsWith("video/");
 
         if (extname && mimetype) {
-          return cb(null, true); 
+          return cb(null, true);
         } else {
           return cb(
             new Error("Invalid file type. Only images and videos are allowed."),
-            false 
+            false
           );
         }
       },
-    }).fields([{ name: "media", maxCount: 10 },{ name: "banner", maxCount: 1 }]); 
+    }).fields([
+      { name: "media", maxCount: 10 },
+      { name: "banner", maxCount: 1 },
+    ]);
   }
 
   async compressAndUpload(req, res, next) {
@@ -46,13 +44,13 @@ class ArtikelController {
       const sanitizedTitle = title
         ? title.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")
         : "default";
-  
+
       if (req.files) {
         if (req.files["banner"]) {
           const banner = req.files["banner"][0];
           let bannerBuffer = banner.buffer;
           let bannerKey = `artikel-berita/banner_${sanitizedTitle}_${Date.now()}`;
-  
+
           if (
             banner.mimetype.startsWith("image") &&
             !banner.mimetype.includes("gif")
@@ -63,9 +61,9 @@ class ArtikelController {
               .toBuffer();
             bannerKey += ".jpg";
           } else {
-            bannerKey += path.extname(banner.originalname); 
+            bannerKey += path.extname(banner.originalname);
           }
-  
+
           // Upload to S3
           await s3Client.send(
             new PutObjectCommand({
@@ -76,17 +74,17 @@ class ArtikelController {
               ContentType: banner.mimetype,
             })
           );
-  
+
           // Set the banner URL after uploading to S3
           req.bannerLocation = `${process.env.AWS_URL_IMG}/${bannerKey}`;
         }
-  
+
         if (req.files["media"]) {
           req.mediaLocations = await Promise.all(
             req.files["media"].map(async (file) => {
               let fileBuffer = file.buffer;
               let mediaKey = `artikel-berita/media_${sanitizedTitle}_${Date.now()}`;
-  
+
               if (
                 file.mimetype.startsWith("image") &&
                 !file.mimetype.includes("gif")
@@ -99,7 +97,7 @@ class ArtikelController {
               } else {
                 mediaKey += path.extname(file.originalname);
               }
-  
+
               // Upload to S3
               await s3Client.send(
                 new PutObjectCommand({
@@ -110,7 +108,7 @@ class ArtikelController {
                   ContentType: file.mimetype,
                 })
               );
-  
+
               // Return the URL after uploading
               return {
                 url: `${process.env.AWS_URL_IMG}/${mediaKey}`, // Manually construct the URL
@@ -122,10 +120,11 @@ class ArtikelController {
       }
       next();
     } catch (error) {
-      res.status(500).json({ message: `File processing error: ${error.message}` });
+      res
+        .status(500)
+        .json({ message: `File processing error: ${error.message}` });
     }
   }
-  
 
   async getAllArtikel(req, res) {
     const { page = 1, per_page = 15, keyword = "" } = req.query;
@@ -169,7 +168,7 @@ class ArtikelController {
   async getArtikelById(req, res) {
     try {
       const { id } = req.params;
-      const response = await artikelRepository.findArtikelById(parseInt(id));
+      const response = await artikelRepository.findArtikelById(id);
       if (!response)
         return res.status(404).json({
           status: 404,
@@ -217,7 +216,8 @@ class ArtikelController {
 
   async createArtikel(req, res) {
     try {
-      const { title, description, status, type, createdBy } = req.body;
+      const { title, description, status, type, category, createdBy } =
+        req.body;
       let bannerId = null;
       const mediaFiles = req.files?.["media"] || [];
       const mediaUrls = mediaFiles.map((file, index) => ({
@@ -241,6 +241,7 @@ class ArtikelController {
         description,
         status,
         type,
+        category,
         createdBy,
         media: {
           create: mediaUrls,
@@ -261,9 +262,17 @@ class ArtikelController {
   async updateArtikel(req, res) {
     try {
       const { id } = req.params;
-      const { title, description, status, type, mediaIdsToDelete, updatedBy } =
-        req.body;
+      const {
+        title,
+        description,
+        status,
+        type,
+        category,
+        mediaIdsToDelete,
+        updatedBy,
+      } = req.body;
       const files = req.files?.["media"] || [];
+      let bannerId = null;
 
       const existArtikel = await artikelRepository.findArtikelById(
         parseInt(id)
@@ -274,25 +283,25 @@ class ArtikelController {
           message: "Article not found. Unable to update non-existing article.",
         });
       }
-
-      let bannerId = existArtikel.bannerId || null;
-      if (req.files["banner"]) {
+      bannerId = existArtikel.bannerId;
+      if (req.bannerLocation) {
         const banner = req.files["banner"][0];
-        const bannerUrl = banner.location;
-
-        if (bannerId == null) {
+        if (bannerId === null) {
           const bannerResponse = await prisma.media.create({
             data: {
-              url: bannerUrl,
+              url: req.bannerLocation,
               type: banner.mimetype.startsWith("image") ? "image" : "video",
             },
           });
           bannerId = bannerResponse.id;
         } else {
+          await deleteMediaFromCloud(
+            existArtikel.banner.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+          );
           const bannerResponse = await prisma.media.update({
             where: { id: parseInt(bannerId) },
             data: {
-              url: bannerUrl,
+              url: req.bannerLocation,
               type: banner.mimetype.startsWith("image") ? "image" : "video",
             },
           });
@@ -315,6 +324,7 @@ class ArtikelController {
         description,
         status,
         type,
+        category,
         updatedBy,
         mediaIdsToDelete,
         newMediaData: newMediaData || undefined,

@@ -139,9 +139,9 @@ model Article {
   bannerId    Int?
   title       String
   description String
-  date        DateTime @default(now())
   status      String
   type        String
+  category    String?
   createdBy   String?
   updateBy    String?
   createdAt   DateTime @default(now())
