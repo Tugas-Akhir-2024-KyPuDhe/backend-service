@@ -196,7 +196,7 @@ class EkstrakurikulerController {
 
       const newMediaData =
       files.length > 0
-        ? files.map((file) => ({
+        ? files.map((file, index) => ({
             url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
             type: file.mimetype.startsWith("image") ? "image" : "video",
           }))

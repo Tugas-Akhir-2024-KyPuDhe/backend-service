@@ -193,11 +193,12 @@ class JurusanController {
 
       const newMediaData =
         files.length > 0
-          ? files.map((file) => ({
+          ? files.map((file, index) => ({
               url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
               type: file.mimetype.startsWith("image") ? "image" : "video",
             }))
           : null;
+          
 
       await jurusanRepository.updateJurusan(id, {
         name,
@@ -208,6 +209,7 @@ class JurusanController {
       });
 
       return res.status(200).json({
+        status: 200,
         message: "Jurusan successfully updated",
       });
     } catch (error) {

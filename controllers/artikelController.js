@@ -283,6 +283,7 @@ class ArtikelController {
           message: "Article not found. Unable to update non-existing article.",
         });
       }
+
       bannerId = existArtikel.bannerId;
       if (req.bannerLocation) {
         const banner = req.files["banner"][0];
@@ -312,7 +313,7 @@ class ArtikelController {
       // Menyimpan data media baru
       const newMediaData =
         files.length > 0
-          ? files.map((file) => ({
+          ? files.map((file, index) => ({
               url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
               type: file.mimetype.startsWith("image") ? "image" : "video",
             }))
