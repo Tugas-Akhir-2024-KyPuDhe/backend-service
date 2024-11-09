@@ -1,9 +1,8 @@
 const ekstrakurikulerRepository = require("../repositories/ekstrakurikulerRepository");
-const myfunc = require("../utils/functions");
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
-const multerS3 = require("multer-s3");
 const path = require("path");
+const sharp = require("sharp");
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -14,43 +13,83 @@ const s3Client = new S3Client({
   },
 });
 
-const storage = multerS3({
-  s3: s3Client,
-  bucket: process.env.AWS_BUCKET_NAME,
-  acl: "public-read",
-  metadata: function (req, file, cb) {
-    cb(null, { fieldName: file.fieldname });
-  },
-  key: function (req, file, cb) {
-    const title = req.body.title || "default-title";
-    const fileExtension = path.extname(file.originalname);
-    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "-");
-    const filename = `ekstrakurikuler/${sanitizedTitle}-${Date.now()}${fileExtension}`;
-    cb(null, filename);
-  },
-});
+const storage = multer.memoryStorage();
 
 class EkstrakurikulerController {
   uploadFiles() {
     return multer({
       storage: storage,
       fileFilter: (req, file, cb) => {
-        const fileTypes = /jpeg|jpg|png|gif|mp4/;
+        const fileTypes = /jpeg|jpg|png|gif|mp4|avi|mov|webm/; 
         const extname = fileTypes.test(
           path.extname(file.originalname).toLowerCase()
         );
-        const mimetype = fileTypes.test(file.mimetype);
+        const mimetype =
+          fileTypes.test(file.mimetype) || file.mimetype.startsWith("video/"); 
 
         if (extname && mimetype) {
-          return cb(null, true);
+          return cb(null, true); 
         } else {
           return cb(
             new Error("Invalid file type. Only images and videos are allowed."),
-            false
+            false 
           );
         }
       },
-    }).fields([{ name: "media", maxCount: 10 }]);
+    }).fields([{ name: "media", maxCount: 10 },{ name: "banner", maxCount: 1 }]); 
+  }
+
+  async compressAndUpload(req, res, next) {
+    try {
+      const { name } = req.body;
+      const sanitizedTitle = name
+        ? name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")
+        : "default";
+
+      if (req.files) {
+        if (req.files["media"]) {
+          req.mediaLocations = await Promise.all(
+            req.files["media"].map(async (file) => {
+              let fileBuffer = file.buffer;
+              let mediaKey = `ekstrakurikuler/media_${sanitizedTitle}_${Date.now()}`;
+
+              if (
+                file.mimetype.startsWith("image") &&
+                !file.mimetype.includes("gif")
+              ) {
+                fileBuffer = await sharp(fileBuffer)
+                  .resize({ width: 800 })
+                  .jpeg({ quality: 80 })
+                  .toBuffer();
+                mediaKey += ".jpg";
+              } else {
+                mediaKey += path.extname(file.originalname);
+              }
+
+              await s3Client.send(
+                new PutObjectCommand({
+                  Bucket: process.env.AWS_BUCKET_NAME,
+                  Key: mediaKey,
+                  Body: fileBuffer,
+                  ACL: "public-read",
+                  ContentType: file.mimetype,
+                })
+              );
+
+              return {
+                url: `${process.env.AWS_URL_IMG}/${mediaKey}`,
+                type: file.mimetype.startsWith("image") ? "image" : "video",
+              };
+            })
+          );
+        }
+      }
+      next();
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `File processing error: ${error.message}` });
+    }
   }
 
   async getAllEkstrakurikuler(req, res) {
@@ -119,12 +158,12 @@ class EkstrakurikulerController {
     }
   }
 
-  async createEkstrakurikuler(req, res, next) {
+  async createEkstrakurikuler(req, res) {
     try {
       const { name, description, prioritas } = req.body;
       const mediaFiles = req.files?.["media"] || [];
-      const mediaUrls = mediaFiles.map((file) => ({
-        url: file.location, // Lokasi file yang disimpan di S3
+      const mediaUrls = mediaFiles.map((file, index) => ({
+        url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
         type: file.mimetype.startsWith("image") ? "image" : "video",
       }));
 
@@ -166,12 +205,12 @@ class EkstrakurikulerController {
       }
 
       const newMediaData =
-        files.length > 0
-          ? files.map((file) => ({
-              url: file.location,
-              type: file.mimetype.startsWith("image") ? "image" : "video",
-            }))
-          : null;
+      files.length > 0
+        ? files.map((file) => ({
+            url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
+            type: file.mimetype.startsWith("image") ? "image" : "video",
+          }))
+        : null;
 
       await ekstrakurikulerRepository.updateEkstrakurikuler(id, {
         name,

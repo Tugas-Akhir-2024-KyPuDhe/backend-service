@@ -15,8 +15,7 @@ class BannerRepository {
       link,
       prioritas,
       status,
-      mediaIdsToDelete,
-      newMediaData,
+      bannerId,
     } = data;
 
     const banner = await prisma.bannerPage.findUnique({
@@ -26,27 +25,6 @@ class BannerRepository {
 
     if (!banner) {
       throw new Error("Banner not found");
-    }
-
-    // Parse and handle media deletions
-    const NewMediaIdsToDelete = mediaIdsToDelete
-      ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
-      : [];
-
-    // Delete the specified media if any
-    if (NewMediaIdsToDelete.length > 0) {
-      await prisma.media.deleteMany({
-        where: {
-          id: {
-            in: NewMediaIdsToDelete,
-          },
-          banner: {
-            some: {
-              id: parseInt(id),
-            },
-          },
-        },
-      });
     }
 
     // Update the banner
@@ -59,10 +37,7 @@ class BannerRepository {
         link,
         prioritas: parseInt(prioritas),
         status,
-        banner: {
-          create: newMediaData, // Creating new media associated with the banner
-        },
-        updatedAt: new Date(), // Update the timestamp
+        bannerId,
       },
       include: {
         banner: true,

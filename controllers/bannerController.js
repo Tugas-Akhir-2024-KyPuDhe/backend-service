@@ -1,10 +1,9 @@
 const bannerRepository = require("../repositories/bannerRepository");
 const prisma = require("../config/database");
-const myfunc = require("../utils/functions");
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
-const multerS3 = require("multer-s3");
 const path = require("path");
+const sharp = require("sharp");
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -15,21 +14,7 @@ const s3Client = new S3Client({
   },
 });
 
-const storage = multerS3({
-  s3: s3Client,
-  bucket: process.env.AWS_BUCKET_NAME,
-  acl: "public-read",
-  metadata: function (req, file, cb) {
-    cb(null, { fieldName: file.fieldname });
-  },
-  key: function (req, file, cb) {
-    const title = req.body.title || "default-title";
-    const fileExtension = path.extname(file.originalname);
-    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, '-');
-    const filename = `banner/${sanitizedTitle}-${Date.now()}${fileExtension}`;
-    cb(null, filename);
-  },
-});
+const storage = multer.memoryStorage(); 
 
 
 class BannerController {
@@ -37,22 +22,70 @@ class BannerController {
     return multer({
       storage: storage,
       fileFilter: (req, file, cb) => {
-        const fileTypes = /jpeg|jpg|png|gif|mp4/;
+        const fileTypes = /jpeg|jpg|png|gif|mp4|avi|mov|webm/; 
         const extname = fileTypes.test(
           path.extname(file.originalname).toLowerCase()
         );
-        const mimetype = fileTypes.test(file.mimetype);
+        const mimetype =
+          fileTypes.test(file.mimetype) || file.mimetype.startsWith("video/"); 
 
         if (extname && mimetype) {
-          return cb(null, true);
+          return cb(null, true); 
         } else {
           return cb(
             new Error("Invalid file type. Only images and videos are allowed."),
-            false
+            false 
           );
         }
       },
-    }).fields([{ name: "media", maxCount: 1 }]);
+    }).fields([{ name: "media", maxCount: 1 }]); 
+  }
+
+  async compressAndUpload(req, res, next) {
+    try {
+      const { title } = req.body;
+      const sanitizedTitle = title
+        ? title.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")
+        : "default";
+
+      if (req.files) {
+        if (req.files["media"]) {
+          const banner = req.files["media"][0];
+          let bannerBuffer = banner.buffer;
+          let bannerKey = `banner/banner_${sanitizedTitle}_${Date.now()}`;
+
+          if (
+            banner.mimetype.startsWith("image") &&
+            !banner.mimetype.includes("gif")
+          ) {
+            bannerBuffer = await sharp(bannerBuffer)
+              .resize({ width: 800 })
+              .jpeg({ quality: 80 })
+              .toBuffer();
+            bannerKey += ".jpg";
+          } else {
+            bannerKey += path.extname(banner.originalname); 
+          }
+
+          await s3Client.send(
+            new PutObjectCommand({
+              Bucket: process.env.AWS_BUCKET_NAME,
+              Key: bannerKey,
+              Body: bannerBuffer,
+              ACL: "public-read",
+              ContentType: banner.mimetype,
+            })
+          );
+
+          req.bannerLocation = `${process.env.AWS_URL_IMG}/${bannerKey}`;
+        }
+      }
+      next();
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `File processing error: ${error.message}` });
+    }
   }
 
   async getAllBanner(req, res) {
@@ -134,13 +167,11 @@ class BannerController {
         });
       }
 
-      if (req.files["media"]) {
-        const banner = req.files["media"][0];
-        const bannerUrl = banner.location;
+      if (req.bannerLocation) {
         const bannerResponse = await prisma.media.create({
           data: {
-            url: bannerUrl,
-            type: banner.mimetype.startsWith("image") ? "image" : "video",
+            url: req.bannerLocation,
+            type: "image",
           },
         });
         bannerId = bannerResponse.id;
@@ -179,9 +210,7 @@ class BannerController {
         link,
         prioritas,
         status,
-        mediaIdsToDelete,
       } = req.body;
-      const files = req.files?.["media"] || [];
 
       const existBanner = await bannerRepository.findBannerById(
         parseInt(id)
@@ -194,30 +223,37 @@ class BannerController {
         });
       }
 
-      if (!title || !description) {
-        return res.status(400).json({
-          status: 400,
-          message: "Title and description are required",
-        });
+      let bannerId = existBanner.bannerId || null;
+      if (req.bannerLocation) {
+        const banner = req.files["media"][0];
+        if (bannerId == null) {
+          const bannerResponse = await prisma.media.create({
+            data: {
+              url: req.bannerLocation,
+              type: banner.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          bannerId = bannerResponse.id;
+        } else {
+          const bannerResponse = await prisma.media.update({
+            where: { id: parseInt(bannerId) },
+            data: {
+              url: req.bannerLocation,
+              type: banner.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          bannerId = bannerResponse.id;
+        }
       }
-
-      const newMediaData =
-        files.length > 0
-          ? files.map((file) => ({
-              url: file.location,
-              type: file.mimetype.startsWith("image") ? "image" : "video",
-            }))
-          : null;
 
       const updatedBanner = await bannerRepository.updateBanner(id, {
         title,
         description,
+        bannerId,
         title_link,
         link,
         prioritas: parseInt(prioritas),
         status,
-        mediaIdsToDelete,
-        newMediaData: newMediaData || undefined,
       });
 
       if (!updatedBanner) {

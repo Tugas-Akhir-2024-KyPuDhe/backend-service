@@ -1,10 +1,9 @@
 const prisma = require("../config/database");
 const artikelRepository = require("../repositories/artikelRepository");
-const myfunc = require("../utils/functions");
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
-const multerS3 = require("multer-s3");
 const path = require("path");
+const sharp = require("sharp");
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -15,54 +14,118 @@ const s3Client = new S3Client({
   },
 });
 
-const storage = multerS3({
-  s3: s3Client,
-  bucket: process.env.AWS_BUCKET_NAME,
-  acl: "public-read",
-  metadata: function (req, file, cb) {
-    cb(null, { fieldName: file.fieldname });
-  },
-  key: function (req, file, cb) {
-    const title = req.body.title || "default-title";
-    const fileExtension = path.extname(file.originalname);
-    const sanitizedTitle = title.replace(/[^a-zA-Z0-9]/g, "-");
-    let filename = "";
-
-    if (file.fieldname === "banner") {
-      filename = `artikel-berita/banner_${sanitizedTitle}-${Date.now()}${fileExtension}`;
-    } else if (file.fieldname === "media") {
-      filename = `artikel-berita/media_${sanitizedTitle}-${Date.now()}${fileExtension}`;
-    }
-
-    cb(null, filename);
-  },
-});
+const storage = multer.memoryStorage(); 
 
 class ArtikelController {
   uploadFiles() {
     return multer({
       storage: storage,
       fileFilter: (req, file, cb) => {
-        const fileTypes = /jpeg|jpg|png|gif|mp4/;
+        const fileTypes = /jpeg|jpg|png|gif|mp4|avi|mov|webm/; 
         const extname = fileTypes.test(
           path.extname(file.originalname).toLowerCase()
         );
-        const mimetype = fileTypes.test(file.mimetype);
+        const mimetype =
+          fileTypes.test(file.mimetype) || file.mimetype.startsWith("video/"); 
 
         if (extname && mimetype) {
-          return cb(null, true);
+          return cb(null, true); 
         } else {
           return cb(
             new Error("Invalid file type. Only images and videos are allowed."),
-            false
+            false 
           );
         }
       },
-    }).fields([
-      { name: "banner", maxCount: 1 },
-      { name: "media", maxCount: 10 },
-    ]);
+    }).fields([{ name: "media", maxCount: 10 },{ name: "banner", maxCount: 1 }]); 
   }
+
+  async compressAndUpload(req, res, next) {
+    try {
+      const { title } = req.body;
+      const sanitizedTitle = title
+        ? title.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")
+        : "default";
+  
+      if (req.files) {
+        if (req.files["banner"]) {
+          const banner = req.files["banner"][0];
+          let bannerBuffer = banner.buffer;
+          let bannerKey = `artikel-berita/banner_${sanitizedTitle}_${Date.now()}`;
+  
+          if (
+            banner.mimetype.startsWith("image") &&
+            !banner.mimetype.includes("gif")
+          ) {
+            bannerBuffer = await sharp(bannerBuffer)
+              .resize({ width: 800 })
+              .jpeg({ quality: 80 })
+              .toBuffer();
+            bannerKey += ".jpg";
+          } else {
+            bannerKey += path.extname(banner.originalname); 
+          }
+  
+          // Upload to S3
+          await s3Client.send(
+            new PutObjectCommand({
+              Bucket: process.env.AWS_BUCKET_NAME,
+              Key: bannerKey,
+              Body: bannerBuffer,
+              ACL: "public-read",
+              ContentType: banner.mimetype,
+            })
+          );
+  
+          // Set the banner URL after uploading to S3
+          req.bannerLocation = `${process.env.AWS_URL_IMG}/${bannerKey}`;
+        }
+  
+        if (req.files["media"]) {
+          req.mediaLocations = await Promise.all(
+            req.files["media"].map(async (file) => {
+              let fileBuffer = file.buffer;
+              let mediaKey = `artikel-berita/media_${sanitizedTitle}_${Date.now()}`;
+  
+              if (
+                file.mimetype.startsWith("image") &&
+                !file.mimetype.includes("gif")
+              ) {
+                fileBuffer = await sharp(fileBuffer)
+                  .resize({ width: 800 })
+                  .jpeg({ quality: 80 })
+                  .toBuffer();
+                mediaKey += ".jpg";
+              } else {
+                mediaKey += path.extname(file.originalname);
+              }
+  
+              // Upload to S3
+              await s3Client.send(
+                new PutObjectCommand({
+                  Bucket: process.env.AWS_BUCKET_NAME,
+                  Key: mediaKey,
+                  Body: fileBuffer,
+                  ACL: "public-read",
+                  ContentType: file.mimetype,
+                })
+              );
+  
+              // Return the URL after uploading
+              return {
+                url: `${process.env.AWS_URL_IMG}/${mediaKey}`, // Manually construct the URL
+                type: file.mimetype.startsWith("image") ? "image" : "video",
+              };
+            })
+          );
+        }
+      }
+      next();
+    } catch (error) {
+      res.status(500).json({ message: `File processing error: ${error.message}` });
+    }
+  }
+  
 
   async getAllArtikel(req, res) {
     const { page = 1, per_page = 15, keyword = "" } = req.query;
@@ -157,22 +220,21 @@ class ArtikelController {
       const { title, description, status, type, createdBy } = req.body;
       let bannerId = null;
       const mediaFiles = req.files?.["media"] || [];
-      const mediaUrls = mediaFiles.map((file) => ({
-        url: file.location, // Lokasi file yang disimpan di S3
+      const mediaUrls = mediaFiles.map((file, index) => ({
+        url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
         type: file.mimetype.startsWith("image") ? "image" : "video",
       }));
 
-      if (req.files["banner"]) {
-        const banner = req.files["banner"][0];
-        const bannerUrl = banner.location;
+      if (req.bannerLocation) {
         const bannerResponse = await prisma.media.create({
           data: {
-            url: bannerUrl,
-            type: banner.mimetype.startsWith("image") ? "image" : "video",
+            url: req.bannerLocation,
+            type: "image",
           },
         });
         bannerId = bannerResponse.id;
       }
+
       await artikelRepository.createArtikel({
         title,
         bannerId,
@@ -213,7 +275,7 @@ class ArtikelController {
         });
       }
 
-      let bannerId = existArtikel.bannerId;
+      let bannerId = existArtikel.bannerId || null;
       if (req.files["banner"]) {
         const banner = req.files["banner"][0];
         const bannerUrl = banner.location;
@@ -242,7 +304,7 @@ class ArtikelController {
       const newMediaData =
         files.length > 0
           ? files.map((file) => ({
-              url: file.location,
+              url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
               type: file.mimetype.startsWith("image") ? "image" : "video",
             }))
           : null;
