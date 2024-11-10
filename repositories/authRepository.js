@@ -6,11 +6,20 @@ class AuthRepository {
             where: { username },
             include: {
                 roles: true,
-                staff: true,
-                students: true,
+                staff: {
+                    include: {
+                        photo: true,
+                    },
+                },
+                students: {
+                    include: {
+                        photo: true,
+                    },
+                },
             },
         });
     }
+    
 
     async createUser(data) {
         return await prisma.user.create({
