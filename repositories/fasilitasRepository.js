@@ -9,8 +9,7 @@ class FasilitasRepository {
   }
 
   async updateFasilitas(id, data) {
-    const { name, description, prioritas, mediaIdsToDelete, newMediaData } =
-      data;
+    const { name, description, prioritas, mediaIdsToDelete, newMediaData } = data;
 
     const fasilitas = await prisma.facility.findUnique({
       where: { id: parseInt(id) },
@@ -21,17 +20,15 @@ class FasilitasRepository {
       throw new Error("Fasilitas not found");
     }
 
-    const NewMediaIdsToDelete = mediaIdsToDelete
-      ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
-      : [];
-    // Delete the specified media if any
+    const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
+
     if (NewMediaIdsToDelete.length > 0) {
       await prisma.media.deleteMany({
         where: {
           id: {
             in: NewMediaIdsToDelete,
           },
-          Fasilitas: {
+          Facility: {
             some: {
               id: parseInt(id),
             },
@@ -53,6 +50,7 @@ class FasilitasRepository {
       },
     });
   }
+
 
   async deleteFasilitas(id) {
     const fasilitas = await prisma.facility.findUnique({

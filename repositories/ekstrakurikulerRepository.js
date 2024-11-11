@@ -21,17 +21,15 @@ class EkstrakurikulerRepository {
       throw new Error("Ekstrakurikuler not found");
     }
 
-    const NewMediaIdsToDelete = mediaIdsToDelete
-      ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
-      : [];
-    // Delete the specified media if any
+    const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
+
     if (NewMediaIdsToDelete.length > 0) {
       await prisma.media.deleteMany({
         where: {
           id: {
             in: NewMediaIdsToDelete,
           },
-          Ekstrakurikuler: {
+          Extracurricular: {
             some: {
               id: parseInt(id),
             },

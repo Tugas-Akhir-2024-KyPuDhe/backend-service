@@ -29,9 +29,7 @@ class ArtikelRepository {
       throw new Error("Artikel not found");
     }
 
-    const NewMediaIdsToDelete = mediaIdsToDelete
-      ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
-      : [];
+    const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
 
     if (NewMediaIdsToDelete.length > 0) {
       await prisma.media.deleteMany({
@@ -39,7 +37,7 @@ class ArtikelRepository {
           id: {
             in: NewMediaIdsToDelete,
           },
-          Artikel: {
+          Article: {
             some: {
               id: parseInt(id),
             },

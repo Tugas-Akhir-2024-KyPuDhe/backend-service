@@ -21,16 +21,15 @@ class JurusanRepository {
       throw new Error("Jurusan not found");
     }
 
-    const NewMediaIdsToDelete = mediaIdsToDelete
-      ? JSON.parse(mediaIdsToDelete).map((id) => parseInt(id))
-      : [];
+    const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
+
     if (NewMediaIdsToDelete.length > 0) {
       await prisma.media.deleteMany({
         where: {
           id: {
             in: NewMediaIdsToDelete,
           },
-          Jurusan: {
+          Major: {
             some: {
               id: parseInt(id),
             },
