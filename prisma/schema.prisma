@@ -58,6 +58,7 @@ model Staff {
   address    String?
   phone      String?
   email      String?
+  gender     String?
   nip        String?   @unique
   type       String
   position   String?
@@ -78,10 +79,11 @@ model Student {
   name       String
   birthPlace String?
   address    String?
-  nis        String    @unique
-  nisn       String    @unique
   phone      String?
   email      String?
+  gender     String?
+  nis        String    @unique
+  nisn       String    @unique
   startYear  DateTime
   endYear    DateTime?
   mediaId    Int?
