@@ -20,6 +20,38 @@ class AuthRepository {
     });
   }
 
+  async getAllUser(tipeUser) {
+    if (tipeUser === "staff") {
+      return prisma.staff.findMany({
+        orderBy: {
+          name: "asc",
+        },
+        include: {
+          user: {  // Menyertakan data dari tabel User yang berelasi
+              select: {
+                  username: true,
+                  password: true,
+              },
+          },
+      },
+      });
+    } else if (tipeUser === "student") {
+      return prisma.student.findMany({
+        orderBy: {
+          name: "asc",
+        },
+        include: {
+          user: {  // Menyertakan data dari tabel User yang berelasi
+              select: {
+                  username: true,
+                  password: true,
+              },
+          },
+      },
+      });
+    }
+  }
+
   async findUserById(id) {
     return await prisma.user.findUnique({
       where: { id: parseInt(id) },
@@ -43,7 +75,6 @@ class AuthRepository {
       data,
     });
   }
-
 }
 
 module.exports = new AuthRepository();

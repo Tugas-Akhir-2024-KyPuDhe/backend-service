@@ -205,41 +205,61 @@ class AuthController {
     }
   }
 
+  async getUsers(req, res) {
+    try {
+      let tipeUser = req.query.tipe || "staff"; 
+      tipeUser = tipeUser.toLowerCase()
+
+      if (tipeUser !== "staff" && tipeUser !== "student") {
+       return res.status(404).json({
+          status: 404,
+          message: "User type not found",
+        });
+      }
+
+      const users = await authRepository.getAllUser(tipeUser);
+
+      res.status(200).json({
+        status: 200,
+        message: "User retrieved successfully",
+        data: users,
+      });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
   async updateUser(req, res) {
-    const {
-      password,
-      birthPlace,
-      address,
-      phone,
-      email,
-    } = req.body;
+    const { password, birthPlace, address, phone, email } = req.body;
     let id = null;
 
     try {
       const token = req.headers["authorization"]?.split(" ")[1];
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-          return res.status(401).json({ status: 401, message: "Invalid token" });
+          return res
+            .status(401)
+            .json({ status: 401, message: "Invalid token" });
         }
         id = decoded.id;
       });
-  
+
       const existingUser = await authRepository.findUserById(id);
       if (!existingUser) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       let updateData = {};
-  
+
       if (password) {
         const hashedPassword = await bcrypt.hash(password, 10);
         updateData.password = hashedPassword;
       }
-  
+
       if (existingUser.staff) {
         updateData.staff = {
           update: {
-            where: { id: existingUser.staff[0].id },  // pastikan ID atau NIP tersedia
+            where: { id: existingUser.staff[0].id }, // pastikan ID atau NIP tersedia
             data: {
               birthPlace,
               address,
@@ -251,7 +271,7 @@ class AuthController {
       } else if (existingUser.students) {
         updateData.students = {
           update: {
-            where: { id: existingUser.students[0].id },  // pastikan ID ini valid
+            where: { id: existingUser.students[0].id }, // pastikan ID ini valid
             data: {
               birthPlace,
               address,
@@ -262,14 +282,17 @@ class AuthController {
         };
       }
       await authRepository.updateUser(id, updateData);
-  
-      res.status(200).json({ status: 200, message: "User updated successfully" });
+
+      res
+        .status(200)
+        .json({ status: 200, message: "User updated successfully" });
     } catch (error) {
       console.log(error);
-      res.status(500).json({ status: 500, message: "Internal server error", error });
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
     }
   }
-  
 
   async verifyToken(req, res) {
     try {
