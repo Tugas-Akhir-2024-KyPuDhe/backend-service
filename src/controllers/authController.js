@@ -232,7 +232,7 @@ class AuthController {
   async updateUser(req, res) {
     const { password, birthPlace, address, phone, email } = req.body;
     let id = null;
-
+console.log("asd");
     try {
       const token = req.headers["authorization"]?.split(" ")[1];
       jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
@@ -255,8 +255,7 @@ class AuthController {
         const hashedPassword = await bcrypt.hash(password, 10);
         updateData.password = hashedPassword;
       }
-
-      if (existingUser.staff) {
+      if (existingUser.staff.length > 0) {
         updateData.staff = {
           update: {
             where: { id: existingUser.staff[0].id }, // pastikan ID atau NIP tersedia
@@ -268,7 +267,7 @@ class AuthController {
             },
           },
         };
-      } else if (existingUser.students) {
+      } else if (existingUser.students.length > 0) {
         updateData.students = {
           update: {
             where: { id: existingUser.students[0].id }, // pastikan ID ini valid
