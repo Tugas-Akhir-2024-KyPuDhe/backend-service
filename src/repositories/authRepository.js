@@ -57,8 +57,16 @@ class AuthRepository {
       where: { id: parseInt(id) },
       include: {
         roles: true,
-        staff: true,
-        students: true,
+        staff: {
+          include: {
+            photo: true,
+          },
+        },
+        students: {
+          include: {
+            photo: true,
+          },
+        },
       },
     });
   }
@@ -75,6 +83,30 @@ class AuthRepository {
       data,
     });
   }
+
+  async findStudentByNis(nis) {
+    return await prisma.student.findUnique({
+      where: { nis },
+      include: {
+        user: {
+          select: {
+            password: true,
+            username: true,
+            roles: true,
+          },
+        },
+        photo: true,
+      },
+    });
+  }
+
+  async updateUser(id, data) {
+    return await prisma.user.update({
+      where: { id: parseInt(id) },
+      data,
+    });
+  }
+  
 }
 
 module.exports = new AuthRepository();
