@@ -124,11 +124,12 @@ model ConfigSchool {
   name      String
   about     String
   vision    String?
-  mision    String?
+  mission    String?
   address   String?
   mediaId   Int?
   telp      String?
   email     String
+  maps      String?
   npsn      String
   fb        String?
   ig        String?
