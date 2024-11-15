@@ -1,6 +1,6 @@
 const prisma = require("../config/database");
 
-class AuthRepository {
+class UserRepository {
   async findUserByUsername(username) {
     return await prisma.user.findUnique({
       where: { username },
@@ -72,42 +72,12 @@ class AuthRepository {
     });
   }
 
-  async createUser(data) {
-    return await prisma.user.create({
-      data,
-    });
-  }
-
   async updateUser(id, data) {
     return await prisma.user.update({
       where: { id: parseInt(id) },
       data,
     });
   }
-
-  async findStudentByNis(nis) {
-    return await prisma.student.findUnique({
-      where: { nis },
-      include: {
-        user: {
-          select: {
-            password: true,
-            username: true,
-            roles: true,
-          },
-        },
-        photo: true,
-      },
-    });
-  }
-
-  async updateUser(id, data) {
-    return await prisma.user.update({
-      where: { id: parseInt(id) },
-      data,
-    });
-  }
-  
 }
 
-module.exports = new AuthRepository();
+module.exports = new UserRepository();
