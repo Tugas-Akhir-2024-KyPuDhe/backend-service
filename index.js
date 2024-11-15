@@ -9,6 +9,7 @@ const ekstrakurikulerRoutes = require("./src/routes/ekstrakurikulerRoutes");
 const bannerRoutes = require("./src/routes/bannerRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const studentRoutes = require("./src/routes/studentRoutes");
+const galeriRoutes = require("./src/routes/galeriRoutes");
 
 const cors = require("cors");
 
@@ -28,6 +29,7 @@ app.use("/api/ekstrakurikuler", ekstrakurikulerRoutes);
 app.use("/api/banner", bannerRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/student", studentRoutes);
+app.use("/api/galeri", galeriRoutes);
 
 //error handler
 app.use((err, req, res, next) => {

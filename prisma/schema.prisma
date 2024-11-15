@@ -108,14 +108,13 @@ model Media {
   Major           Major[]           @relation("MajorMedia")
   Extracurricular Extracurricular[] @relation("ExtracurricularMedia")
   Facility        Facility[]        @relation("FacilityMedia")
+  Galeri          Galeri[]          @relation("GaleriMedia")
   staff           Staff[] //one to one
   students        Student[]
   ConfigSchool    ConfigSchool[]
 
   ArticleBanner     Article[]
   BannerPage        BannerPage[]
-  ParentOfStudent   ParentOfStudent? @relation(fields: [parentOfStudentId], references: [id])
-  parentOfStudentId Int?
 }
 
 model ConfigSchool {
@@ -124,7 +123,7 @@ model ConfigSchool {
   name      String
   about     String
   vision    String?
-  mission    String?
+  mission   String?
   address   String?
   mediaId   Int?
   telp      String?
@@ -236,6 +235,18 @@ model ParentOfStudent {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  media Student[] @relation("ParentsOfStudent")
-  Media Media[]
+  student Student[] @relation("ParentsOfStudent")
+}
+
+model Galeri {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  description String?
+  prioritas   Int      @default(15)
+  status      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  media Media[] @relation("GaleriMedia")
 }
