@@ -42,16 +42,22 @@ class StudentController {
       const existingUser = await studentRepository.findUserById(parseInt(id));
       if (existingUser.staff.length > 0) {
         const staffMember = existingUser.staff[0];
-        sanitizedTitle = staffMember.nip && staffMember.name
-          ? `staff_${staffMember.nip}_${staffMember.name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")}`
-          : "default";
+        sanitizedTitle =
+          staffMember.nip && staffMember.name
+            ? `staff_${staffMember.nip}_${staffMember.name
+                .replace(/\s+/g, "_")
+                .replace(/[^a-zA-Z0-9_]/g, "")}`
+            : "default";
       } else if (existingUser.students.length > 0) {
         const student = existingUser.students[0];
-        sanitizedTitle = student.nis && student.name
-          ? `siswa_${student.nis}_${student.name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")}`
-          : "default";
+        sanitizedTitle =
+          student.nis && student.name
+            ? `siswa_${student.nis}_${student.name
+                .replace(/\s+/g, "_")
+                .replace(/[^a-zA-Z0-9_]/g, "")}`
+            : "default";
       }
-      
+
       if (req.files) {
         if (req.files["photo"]) {
           const photo = req.files["photo"][0];
@@ -113,6 +119,38 @@ class StudentController {
       res
         .status(500)
         .json({ status: 500, message: "Internal server error", error });
+    }
+  }
+
+  async updateParentStudent(req, res) {
+    const { nis } = req.params;
+    const parentData = req.body;
+
+    try {
+      const student = await studentRepository.findStudentByNis(nis);
+
+      if (!student) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "Student not found" });
+      }
+
+      const updatedParent = await studentRepository.updateParentOfStudent(
+        parseInt(student.id),
+        parentData,
+      );
+
+      res.status(200).json({
+        status: 200,
+        message: "Parent data updated successfully",
+        data: updatedParent,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
+      });
     }
   }
 }

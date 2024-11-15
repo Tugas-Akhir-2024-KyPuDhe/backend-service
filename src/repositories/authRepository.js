@@ -97,6 +97,7 @@ class AuthRepository {
           },
         },
         photo: true,
+        ParentOfStudent: true,
       },
     });
   }
