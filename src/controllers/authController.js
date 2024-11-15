@@ -94,7 +94,7 @@ class AuthController {
 
   async registerStudent(req, res) {
     const {
-      password,
+      password = "12345678",
       name,
       birthPlace,
       address,
@@ -139,6 +139,7 @@ class AuthController {
         .status(201)
         .json({ status: 201, message: "Student registered successfully" });
     } catch (error) {
+      console.log(error);
       res
         .status(500)
         .json({ status: 500, message: "Internal server error", error });
@@ -233,6 +234,7 @@ class AuthController {
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log(isPasswordValid);
       if (!isPasswordValid) {
         return res
           .status(400)
