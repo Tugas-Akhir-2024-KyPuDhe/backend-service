@@ -47,7 +47,6 @@ class GaleriController {
                 !file.mimetype.includes("gif")
               ) {
                 fileBuffer = await sharp(fileBuffer)
-                  .resize({ width: 1200 })
                   .jpeg({ quality: 80 })
                   .toBuffer();
                 mediaKey += ".jpg";
@@ -148,27 +147,18 @@ class GaleriController {
 
   async createGaleri(req, res) {
     try {
-      const { name, description, prioritas, status } = req.body;
-      const mediaFiles = req.files?.["media"] || [];
-      const mediaUrls = mediaFiles.map((file, index) => ({
-        url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
-        type: file.mimetype.startsWith("image") ? "image" : "video",
-      }));
-
+      const { name, description, prioritas } = req.body;
       await galeriRepository.createGaleri({
         name,
         description,
         prioritas: parseInt(prioritas),
-        status,
-        media: {
-          create: mediaUrls,
-        },
       });
 
       return res
         .status(201)
         .json({ status: 201, message: "Galeri successfully added" });
     } catch (error) {
+      console.log(error);
       return res.status(400).json({
         status: 400,
         message: `Failed to create galeri due to error: ${error.message}`,
@@ -179,7 +169,7 @@ class GaleriController {
   async updateGaleri(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, prioritas, mediaIdsToDelete } = req.body;
+      const { name, description, prioritas, status, mediaIdsToDelete } = req.body;
       const files = req.files?.["media"] || [];
 
       const existGaleri = await galeriRepository.findGaleriById(parseInt(id));
@@ -189,7 +179,7 @@ class GaleriController {
           message: "Galeri not found. Unable to update non-existing galeri.",
         });
       }
-
+      
       const newMediaData =
         files.length > 0
           ? files.map((file, index) => ({
@@ -202,6 +192,7 @@ class GaleriController {
         name,
         description,
         prioritas,
+        status,
         mediaIdsToDelete,
         newMediaData: newMediaData || undefined,
       });

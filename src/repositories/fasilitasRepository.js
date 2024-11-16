@@ -37,6 +37,12 @@ class FasilitasRepository {
       });
     }
 
+    for (const media of fasilitas.media) {
+      await deleteMediaFromCloud(
+        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+    }
+
     return await prisma.facility.update({
       where: { id: parseInt(id) },
       data: {

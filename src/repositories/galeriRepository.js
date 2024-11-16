@@ -9,7 +9,7 @@ class GaleriRepository {
   }
 
   async updateGaleri(id, data) {
-    const { name, description, prioritas, mediaIdsToDelete, newMediaData } = data;
+    const { name, description, prioritas, status, mediaIdsToDelete, newMediaData } = data;
 
     const galeri = await prisma.galeri.findUnique({
       where: { id: parseInt(id) },
@@ -28,7 +28,7 @@ class GaleriRepository {
           id: {
             in: NewMediaIdsToDelete,
           },
-          Facility: {
+          Galeri: {
             some: {
               id: parseInt(id),
             },
@@ -37,12 +37,19 @@ class GaleriRepository {
       });
     }
 
+    for (const media of galeri.media) {
+      await deleteMediaFromCloud(
+        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+      );
+    }
+
     return await prisma.galeri.update({
       where: { id: parseInt(id) },
       data: {
         name,
         description,
         prioritas: parseInt(prioritas),
+        status,
         media: { create: newMediaData },
       },
       include: {

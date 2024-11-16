@@ -113,8 +113,8 @@ model Media {
   students        Student[]
   ConfigSchool    ConfigSchool[]
 
-  ArticleBanner     Article[]
-  BannerPage        BannerPage[]
+  ArticleBanner Article[]
+  BannerPage    BannerPage[]
 }
 
 model ConfigSchool {
@@ -244,7 +244,7 @@ model Galeri {
   name        String
   description String?
   prioritas   Int      @default(15)
-  status      String
+  status      String   @default("Active")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
