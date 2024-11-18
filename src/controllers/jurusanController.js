@@ -179,7 +179,7 @@ class JurusanController {
   async updateJurusan(req, res) {
     try {
       const { id } = req.params;
-      const { name, description, prioritas, mediaIdsToDelete } = req.body;
+      const { name, majorCode, description, prioritas, mediaIdsToDelete } = req.body;
       const files = req.files?.["media"] || [];
 
       const existJurusan = await jurusanRepository.findJurusanById(
@@ -203,6 +203,7 @@ class JurusanController {
 
       await jurusanRepository.updateJurusan(id, {
         name,
+        majorCode,
         description,
         prioritas: parseInt(prioritas),
         mediaIdsToDelete,
