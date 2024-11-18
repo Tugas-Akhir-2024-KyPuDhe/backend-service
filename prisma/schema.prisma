@@ -81,12 +81,12 @@ model Student {
   classId     Int?
   waliKelasId Int?
   status      String?   @default("Active") // Active | Alumni | Stay\
-  major       String?
   birthPlace  String?
   address     String?
   phone       String?
   email       String?
   gender      String?
+  majorCode   String?
   nis         String    @unique
   nisn        String    @unique
   startYear   DateTime
@@ -102,8 +102,7 @@ model Student {
 
   ParentOfStudent ParentOfStudent[] @relation("ParentsOfStudent")
   HistoryClass    HistoryClass[]
-  Major           Major?            @relation(fields: [majorId], references: [id])
-  majorId         Int?
+  Major           Major?            @relation(fields: [majorCode], references: [majorCode])
 }
 
 model HistoryClass {

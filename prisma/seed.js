@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const prisma = new PrismaClient();
 
@@ -23,64 +23,148 @@ async function main() {
     tiktok: "https://tiktok.com/@smkn1lumbanjulu",
   };
 
-  await prisma.configSchool.create({
-    data: configSchool,
-  });
+  (await prisma.configSchool.count({})) < 1 &&
+    (await prisma.configSchool.create({
+      data: configSchool,
+    }));
+
   console.log("Seeding config school completed.");
 
-  // Seeder untuk data siswa
-  const majors = ["Teknik Komputer Jaringan", "Multimedia", "Rekayasa Perangkat Lunak", "Teknik Elektronika Industri"];
+  // Custom Data
+  const customStudents = [
+    {
+      name: "Dhea Romantika",
+      nis: "223344",
+      nisn: "102938",
+      majorCode: "TKJ",
+      birthPlace: "Medan, 24 Februari 2003",
+      address: "Jl. Mawar No.1",
+      phone: "081234567890",
+      email: "dhea.romantika@example.com",
+      gender: "P",
+    },
+    {
+      name: "Rizky Fadillah",
+      nis: "112233",
+      nisn: "203948",
+      majorCode: "MM",
+      birthPlace: "Jakarta, 17 Desember 2002",
+      address: "Jl. Melati No.2",
+      phone: "081234567891",
+      email: "rizky.fadillah@example.com",
+      gender: "L",
+    },
+    {
+      name: "Muhammad Syahputra",
+      nis: "334455",
+      nisn: "304958",
+      majorCode: "RPL",
+      birthPlace: "Bandung, 22 April 2003",
+      address: "Jl. Kenanga No.3",
+      phone: "081234567892",
+      email: "muhammad.syahputra@example.com",
+      gender: "L",
+    },
+  ];
+
   const defaultPassword = await bcrypt.hash("12345678", 10);
   const startYear = new Date("2024-07-01");
+  const majors = ["TKJ", "MM", "RPL", "TITL"];
 
-  const nisSet = new Set();
-  const nisnSet = new Set();
+  function formatBirthPlace(city, birthDate) {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = birthDate.toLocaleDateString("id-ID", options);
+    return `${city}, ${formattedDate}`; // Contoh: "Medan, 15 Juni 2005"
+  }
+  // Generate birth date
+  const birthDate = new Date(
+    2004 + Math.floor(Math.random() * 3), // Year: Random between 2004-2006
+    Math.floor(Math.random() * 12), // Month: Random between 0-11
+    Math.floor(Math.random() * 28) + 1 // Day: Random between 1-28
+  );
+
+  // Insert custom students
+  for (const student of customStudents) {
+    const user = await prisma.user.create({
+      data: {
+        username: `${student.nis}`,
+        password: defaultPassword,
+        roles: {
+          create: { name: "STUDENT" },
+        },
+        students: {
+          create: {
+            name: student.name,
+            nis: student.nis,
+            nisn: student.nisn,
+            majorCode: student.majorCode,
+            birthPlace: student.birthPlace,
+            address: student.address,
+            phone: student.phone,
+            email: student.email,
+            gender: student.gender,
+            startYear,
+            status: "Active",
+          }
+        }
+      },
+    });
+  }
+  console.log("Custom students seeded.");
+
+  // Insert default students for each major
+  const nisSet = new Set(customStudents.map((s) => s.nis)); // Avoid duplicate NIS
+  const nisnSet = new Set(customStudents.map((s) => s.nisn));
 
   for (const major of majors) {
-    console.log(`Creating students for major: ${major}`);
-    
+    console.log(`Creating default students for major: ${major}`);
+
     for (let i = 1; i <= 10; i++) {
       let nis, nisn;
 
-      // Generate unik 6-digit NIS
+      // Generate unique 6-digit NIS
       do {
         nis = `${Math.floor(100000 + Math.random() * 900000)}`;
       } while (nisSet.has(nis));
       nisSet.add(nis);
 
-      // Generate unik 6-digit NISN
+      // Generate unique 6-digit NISN
       do {
         nisn = `${Math.floor(100000 + Math.random() * 900000)}`;
       } while (nisnSet.has(nisn));
       nisnSet.add(nisn);
 
-      const studentName = `${major.split(" ")[0]} Siswa ${i}`;
+      const studentName = `Siswa ${i}`;
 
-      await prisma.student.create({
+      // Create user first, then associate student
+      const user = await prisma.user.create({
         data: {
-          name: studentName,
-          major,
-          birthPlace: "Kota A",
-          address: `Alamat ${i}, ${major}`,
-          phone: `081234567${i}`,
-          email: `student${i}@example.com`,
-          gender: i % 2 === 0 ? "Male" : "Female",
-          nis,
-          nisn,
-          startYear,
-          status: "Active",
-          user: {
-            create: {
-              username: `user_${nis}`,
-              password: defaultPassword, // Hashed password
-            },
+          username: `${nis}`,
+          password: defaultPassword,
+          roles: {
+            create: { name: "STUDENT" },
           },
+          students: {
+            create: {
+              name: studentName,
+              nis,
+              nisn,
+              majorCode: major,
+              birthPlace: formatBirthPlace("Kota A", birthDate),
+              address: `Alamat ${i}, ${major}`,
+              phone: `081234567${i}`,
+              email: `student${i}@example.com`,
+              gender: i % 2 === 0 ? "P" : "L",
+              startYear,
+              status: "Active",
+            }
+          }
         },
       });
     }
   }
 
-  console.log("Seeding students completed.");
+  console.log("Default students seeded.");
 }
 
 main()

@@ -42,6 +42,7 @@ class UserRepository {
           name: "asc",
         },
         include: {
+          Major: true,
           user: {  // Menyertakan data dari tabel User yang berelasi
               select: {
                   username: true,
