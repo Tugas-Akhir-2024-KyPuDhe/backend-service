@@ -9,7 +9,7 @@ class JurusanRepository {
   }
 
   async updateJurusan(id, data) {
-    const { name, description, prioritas, mediaIdsToDelete, newMediaData } =
+    const { name, majorCode, description, prioritas, mediaIdsToDelete, newMediaData } =
       data;
 
     const jurusan = await prisma.major.findUnique({
@@ -48,6 +48,7 @@ class JurusanRepository {
       where: { id: parseInt(id) },
       data: {
         name,
+        majorCode,
         description,
         prioritas: parseInt(prioritas),
         media: { create: newMediaData },

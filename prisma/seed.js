@@ -1,7 +1,10 @@
 const { PrismaClient } = require("@prisma/client");
+const bcrypt = require("bcryptjs");
+
 const prisma = new PrismaClient();
 
 async function main() {
+  // Seeder untuk data sekolah
   const configSchool = {
     name: "SMK NEGERI 1 LUMBAN JULU",
     about:
@@ -19,12 +22,65 @@ async function main() {
     ig: "https://instagram.com/smkn1lumbanjulu",
     tiktok: "https://tiktok.com/@smkn1lumbanjulu",
   };
-  
 
   await prisma.configSchool.create({
     data: configSchool,
   });
   console.log("Seeding config school completed.");
+
+  // Seeder untuk data siswa
+  const majors = ["Teknik Komputer Jaringan", "Multimedia", "Rekayasa Perangkat Lunak", "Teknik Elektronika Industri"];
+  const defaultPassword = await bcrypt.hash("12345678", 10);
+  const startYear = new Date("2024-07-01");
+
+  const nisSet = new Set();
+  const nisnSet = new Set();
+
+  for (const major of majors) {
+    console.log(`Creating students for major: ${major}`);
+    
+    for (let i = 1; i <= 10; i++) {
+      let nis, nisn;
+
+      // Generate unik 6-digit NIS
+      do {
+        nis = `${Math.floor(100000 + Math.random() * 900000)}`;
+      } while (nisSet.has(nis));
+      nisSet.add(nis);
+
+      // Generate unik 6-digit NISN
+      do {
+        nisn = `${Math.floor(100000 + Math.random() * 900000)}`;
+      } while (nisnSet.has(nisn));
+      nisnSet.add(nisn);
+
+      const studentName = `${major.split(" ")[0]} Siswa ${i}`;
+
+      await prisma.student.create({
+        data: {
+          name: studentName,
+          major,
+          birthPlace: "Kota A",
+          address: `Alamat ${i}, ${major}`,
+          phone: `081234567${i}`,
+          email: `student${i}@example.com`,
+          gender: i % 2 === 0 ? "Male" : "Female",
+          nis,
+          nisn,
+          startYear,
+          status: "Active",
+          user: {
+            create: {
+              username: `user_${nis}`,
+              password: defaultPassword, // Hashed password
+            },
+          },
+        },
+      });
+    }
+  }
+
+  console.log("Seeding students completed.");
 }
 
 main()

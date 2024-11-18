@@ -151,7 +151,7 @@ class JurusanController {
 
   async createJurusan(req, res, next) {
     try {
-      const { name, description, prioritas } = req.body;
+      const { name, majorCode, description, prioritas } = req.body;
       const mediaFiles = req.files?.["media"] || [];
       const mediaUrls = mediaFiles.map((file, index) => ({
         url: req.mediaLocations[index].url, // Lokasi file yang disimpan di S3
@@ -160,6 +160,7 @@ class JurusanController {
 
       await jurusanRepository.createJurusan({
         name,
+        majorCode,
         description,
         prioritas: parseInt(prioritas),
         media: {
