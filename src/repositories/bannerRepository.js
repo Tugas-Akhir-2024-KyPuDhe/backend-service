@@ -28,7 +28,6 @@ class BannerRepository {
       throw new Error("Banner not found");
     }
 
-    // Update the banner
     return await prisma.bannerPage.update({
       where: { id: parseInt(id) },
       data: {
@@ -65,7 +64,6 @@ class BannerRepository {
       });
     }
 
-    // Delete the banner
     return prisma.bannerPage.delete({
       where: { id },
     });

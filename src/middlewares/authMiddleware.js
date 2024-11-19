@@ -15,7 +15,6 @@ const authMiddleware = (req, res, next) => {
 
 const authorizeRoles = (allowedRoles) => {
     return (req, res, next) => {
-        // Pastikan authMiddleware sudah berjalan untuk mendapatkan req.user
         if (!req.user || !allowedRoles.includes(req.user.roles)) {
             return res.status(403).json({ status:403, message: "Access denied" });
         }

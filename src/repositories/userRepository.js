@@ -29,7 +29,6 @@ class UserRepository {
         },
         include: {
           user: {
-            // Menyertakan data dari tabel User yang berelasi
             select: {
               username: true,
               password: true,
@@ -38,7 +37,7 @@ class UserRepository {
         },
       });
     } else if (tipeUser === "student") {
-      const whereClause = majorCode ? { Major: { majorCode: majorCode } } : {}; // Tambahkan filter jika majorCode ada
+      const whereClause = majorCode ? { Major: { majorCode: majorCode } } : {}; 
 
       return prisma.student.findMany({
         where: whereClause,

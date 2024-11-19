@@ -137,7 +137,7 @@ async function main() {
       const studentName = `Siswa ${i}`;
 
       // Create user first, then associate student
-      const user = await prisma.user.create({
+      await prisma.user.create({
         data: {
           username: `${nis}`,
           password: defaultPassword,

@@ -28,7 +28,7 @@ class AuthRepository {
           name: "asc",
         },
         include: {
-          user: {  // Menyertakan data dari tabel User yang berelasi
+          user: {
               select: {
                   username: true,
                   password: true,
@@ -42,7 +42,7 @@ class AuthRepository {
           name: "asc",
         },
         include: {
-          user: {  // Menyertakan data dari tabel User yang berelasi
+          user: {
               select: {
                   username: true,
                   password: true,

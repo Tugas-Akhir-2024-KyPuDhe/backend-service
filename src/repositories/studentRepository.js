@@ -21,13 +21,11 @@ class StudentRepository {
   async updateParentOfStudent(studentId, parentData) {
     const { fatherName, motherName, parentJob, parentAddress, phone } = parentData;
   
-    // Cek apakah ParentOfStudent sudah ada
     const existingParent = await prisma.parentOfStudent.findFirst({
       where: { student: { some: { id: studentId } } },
     });
   
     if (existingParent) {
-      // Jika ada, lakukan update
       return await prisma.parentOfStudent.update({
         where: { id: existingParent.id },
         data: {
@@ -39,7 +37,6 @@ class StudentRepository {
         },
       });
     } else {
-      // Jika tidak ada, lakukan create
       return await prisma.parentOfStudent.create({
         data: {
           fatherName,

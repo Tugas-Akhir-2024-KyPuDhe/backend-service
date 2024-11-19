@@ -158,7 +158,6 @@ class GaleriController {
         .status(201)
         .json({ status: 201, message: "Galeri successfully added" });
     } catch (error) {
-      console.log(error);
       return res.status(400).json({
         status: 400,
         message: `Failed to create galeri due to error: ${error.message}`,

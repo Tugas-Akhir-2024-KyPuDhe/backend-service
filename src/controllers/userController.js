@@ -232,7 +232,6 @@ class UserController {
   async updatePhotoUser(req, res) {
     try {
       const { id } = req.params;
-      // Find the user by ID
       const existingUser = await userRepository.findUserById(parseInt(id));
       if (!existingUser) {
         return res.status(404).json({
@@ -251,13 +250,11 @@ class UserController {
         photoId = existingUser.students[0].mediaId;
       }
 
-      // Check if a new photo was uploaded
       if (req.photoLocation && req.files && req.files["photo"]) {
         const photo = req.files["photo"][0];
         const isImage = photo.mimetype.startsWith("image");
 
         if (!photoId) {
-          // Create a new media entry if the user doesn't have an existing photo
           const photoResponse = await prisma.media.create({
             data: {
               url: req.photoLocation,
@@ -266,7 +263,6 @@ class UserController {
           });
           photoId = photoResponse.id;
         } else {
-          // Update the media record with the new photo details
           const photoResponse = await prisma.media.update({
             where: { id: parseInt(photoId) },
             data: {
@@ -278,7 +274,6 @@ class UserController {
         }
       }
 
-      // Prepare the update data based on the user type
       let updateData = {};
       if (existingUser.staff.length > 0) {
         if (existingUser.staff[0].photo) {
@@ -312,7 +307,6 @@ class UserController {
         };
       }
 
-      // Update the user record with the new photo ID
       const updatedUser = await userRepository.updateUser(id, updateData);
       if (!updatedUser) {
         return res.status(404).json({
@@ -321,7 +315,6 @@ class UserController {
         });
       }
 
-      // Success response
       return res.status(200).json({
         status: 200,
         message: `User with ID ${id} photo updated successfully`,
