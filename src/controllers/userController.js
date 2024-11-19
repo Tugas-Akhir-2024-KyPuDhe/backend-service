@@ -144,6 +144,7 @@ class UserController {
 
   async getUsers(req, res) {
     try {
+      const majorCode = req.query.majorCode;
       let tipeUser = req.query.tipe || "staff";
       tipeUser = tipeUser.toLowerCase();
 
@@ -154,7 +155,7 @@ class UserController {
         });
       }
 
-      const users = await userRepository.getAllUser(tipeUser);
+      const users = await userRepository.getAllUser(tipeUser, majorCode);
 
       res.status(200).json({
         status: 200,

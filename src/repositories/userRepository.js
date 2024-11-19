@@ -14,42 +14,46 @@ class UserRepository {
         students: {
           include: {
             photo: true,
-            ParentOfStudent: true
+            ParentOfStudent: true,
           },
         },
       },
     });
   }
 
-  async getAllUser(tipeUser) {
+  async getAllUser(tipeUser, majorCode) {
     if (tipeUser === "staff") {
       return prisma.staff.findMany({
         orderBy: {
           name: "asc",
         },
         include: {
-          user: {  // Menyertakan data dari tabel User yang berelasi
-              select: {
-                  username: true,
-                  password: true,
-              },
+          user: {
+            // Menyertakan data dari tabel User yang berelasi
+            select: {
+              username: true,
+              password: true,
+            },
           },
-      },
+        },
       });
     } else if (tipeUser === "student") {
+      const whereClause = majorCode ? { Major: { majorCode: majorCode } } : {}; // Tambahkan filter jika majorCode ada
+
       return prisma.student.findMany({
+        where: whereClause,
         orderBy: {
           name: "asc",
         },
         include: {
           Major: true,
-          user: {  // Menyertakan data dari tabel User yang berelasi
-              select: {
-                  username: true,
-                  password: true,
-              },
+          user: {
+            select: {
+              username: true,
+              password: true,
+            },
           },
-      },
+        },
       });
     }
   }
