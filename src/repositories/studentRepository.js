@@ -18,6 +18,24 @@ class StudentRepository {
     });
   }
 
+  async getAllNewStudent(majorCode) {
+    const whereClause = {
+      classId: null,
+      waliKelasId: null,
+      ...(majorCode && { Major: { majorCode } }), 
+    };
+
+    return await prisma.student.findMany({
+      where: whereClause,
+      include: {
+        Major: true,
+      },
+      orderBy: {
+        createdAt: 'asc'
+      }
+    });
+  }  
+
   async updateParentOfStudent(studentId, parentData) {
     const { fatherName, motherName, parentJob, parentAddress, phone } = parentData;
   

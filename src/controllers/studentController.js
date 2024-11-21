@@ -9,7 +9,6 @@ const sharp = require("sharp");
 const {
   storage,
   s3Client,
-  deleteMediaFromCloud,
 } = require("../config/awsClound");
 
 class StudentController {
@@ -153,6 +152,24 @@ class StudentController {
       });
     }
   }
+
+  async getNewStudent(req, res) {
+    try {
+      const majorCode = req.query.majorCode;
+      const student = await studentRepository.getAllNewStudent(majorCode);
+
+      res.status(200).json({
+        status: 200,
+        message: "Student retrieved successfully",
+        data: student,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
+    }
+  }
+
 }
 
 module.exports = new StudentController();

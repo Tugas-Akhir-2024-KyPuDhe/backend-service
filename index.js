@@ -10,6 +10,7 @@ const bannerRoutes = require("./src/routes/bannerRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const studentRoutes = require("./src/routes/studentRoutes");
 const galeriRoutes = require("./src/routes/galeriRoutes");
+const classStudentRoutes = require("./src/routes/classStudentRoutes");
 
 const cors = require("cors");
 
@@ -30,6 +31,7 @@ app.use("/api/banner", bannerRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/galeri", galeriRoutes);
+app.use("/api/class", classStudentRoutes);
 
 //error handler
 app.use((err, req, res, next) => {
