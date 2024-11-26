@@ -23,6 +23,16 @@ class GaleriRepository {
     const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
 
     if (NewMediaIdsToDelete.length > 0) {
+      for (const media of (await prisma.media.findMany({where: {
+        id: {
+          in: NewMediaIdsToDelete,
+        },
+      },}))) {
+        await deleteMediaFromCloud(
+          media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+        );
+      }
+      
       await prisma.media.deleteMany({
         where: {
           id: {
@@ -37,11 +47,7 @@ class GaleriRepository {
       });
     }
 
-    for (const media of galeri.media) {
-      await deleteMediaFromCloud(
-        media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
-      );
-    }
+   
 
     return await prisma.galeri.update({
       where: { id: parseInt(id) },
