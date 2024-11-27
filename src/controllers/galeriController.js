@@ -4,6 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
 const { storage, s3Client } = require("../config/awsClound");
+const { v4: uuidv4 } = require('uuid');
 class GaleriController {
   uploadFiles() {
     return multer({
@@ -40,7 +41,7 @@ class GaleriController {
           req.mediaLocations = await Promise.all(
             req.files["media"].map(async (file) => {
               let fileBuffer = file.buffer;
-              let mediaKey = `galeri/media_${sanitizedTitle}_${Date.now()}`;
+              let mediaKey = `galeri/media_${sanitizedTitle}_${uuidv4()}`;
 
               if (
                 file.mimetype.startsWith("image") &&
@@ -170,7 +171,7 @@ class GaleriController {
       const { id } = req.params;
       const { name, description, prioritas, status, mediaIdsToDelete } = req.body;
       const files = req.files?.["media"] || [];
-
+      
       const existGaleri = await galeriRepository.findGaleriById(parseInt(id));
       if (!existGaleri) {
         return res.status(404).json({
