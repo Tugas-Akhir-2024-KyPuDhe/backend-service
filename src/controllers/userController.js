@@ -148,7 +148,7 @@ class UserController {
       let tipeUser = req.query.tipe || "staff";
       tipeUser = tipeUser.toLowerCase();
 
-      if (tipeUser !== "staff" && tipeUser !== "student") {
+      if (tipeUser !== "staff" && tipeUser !== "student" && tipeUser !== "teacher") {
         return res.status(404).json({
           status: 404,
           message: "User type not found",

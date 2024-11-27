@@ -174,20 +174,21 @@ model Article {
 }
 
 model Class {
-  id          Int      @id @default(autoincrement())
-  uuid        String   @default(uuid())
-  name        String
-  description String?
-  majorCode   String?
-  capacity    Int?     @default(30)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  major        Major?         @relation(fields: [majorCode], references: [majorCode])
-  student      Student[]
-  Staff        Staff?         @relation(fields: [staffId], references: [id])
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  name         String
+  description  String?
+  majorCode    String?
   staffId      Int?
-  HistoryClass HistoryClass[]
+  academicYear String?
+  capacity     Int?     @default(30)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  major           Major?         @relation(fields: [majorCode], references: [majorCode])
+  student         Student[]
+  homeRoomTeacher Staff?         @relation(fields: [staffId], references: [id])
+  HistoryClass    HistoryClass[]
 }
 
 model Major {

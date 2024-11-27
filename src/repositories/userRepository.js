@@ -22,8 +22,17 @@ class UserRepository {
   }
 
   async getAllUser(tipeUser, majorCode) {
-    if (tipeUser === "staff") {
+    if (tipeUser !== "student") {
       return prisma.staff.findMany({
+        where: {
+          user: {
+            roles: {
+              some: {
+                name: tipeUser.toUpperCase(), // Filter untuk roles dengan name
+              },
+            },
+          },
+        },
         orderBy: {
           name: "asc",
         },
@@ -32,12 +41,13 @@ class UserRepository {
             select: {
               username: true,
               password: true,
+              roles: true, // Jika diperlukan
             },
           },
         },
       });
     } else if (tipeUser === "student") {
-      const whereClause = majorCode ? { Major: { majorCode: majorCode } } : {}; 
+      const whereClause = majorCode ? { Major: { majorCode: majorCode } } : {};
 
       return prisma.student.findMany({
         where: whereClause,
