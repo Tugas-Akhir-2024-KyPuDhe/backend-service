@@ -216,10 +216,13 @@ class AuthController {
       }
 
       let name;
+      let photo = "";
       if (user.staff && user.staff.length > 0) {
         name = user.staff[0].name;
+        photo = user.staff[0].photo?.url || "";
       } else if (user.students && user.students.length > 0) {
         name = user.students[0].name;
+        photo = user.students[0].photo?.url || "";
       } else {
         name = null;
       }
@@ -233,12 +236,13 @@ class AuthController {
         },
         process.env.JWT_SECRET,
         {
-          expiresIn: "1h",
+          expiresIn: "2h",
         }
       );
 
       const userToSend = {
         name: name,
+        photo: photo,
         role: user.roles[0].name,
       };
 

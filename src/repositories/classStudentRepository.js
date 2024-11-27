@@ -14,6 +14,7 @@ class ClassStudentRepository {
       },
       include: {
         homeRoomTeacher: true,
+        student: true
       },
     });
   }
@@ -23,6 +24,7 @@ class ClassStudentRepository {
       where: { id },
       include: {
         homeRoomTeacher: true,
+        student: true
       },
     });
   }
