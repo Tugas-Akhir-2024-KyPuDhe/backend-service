@@ -21,7 +21,7 @@ class ConfigSchoolRepository {
       name,
       about,
       vision,
-      mision,
+      mission,
       address,
       mediaId,
       telp,
@@ -30,7 +30,7 @@ class ConfigSchoolRepository {
       fb,
       ig,
       tiktok,
-    } = data; 
+    } = data;
 
     const config = await prisma.configSchool.findUnique({
       where: { id: parseInt(id) },
@@ -47,7 +47,7 @@ class ConfigSchoolRepository {
         name,
         about,
         vision,
-        mision,
+        mission,
         address,
         mediaId,
         telp,
@@ -56,13 +56,30 @@ class ConfigSchoolRepository {
         fb,
         ig,
         tiktok,
-      }
+      },
+    });
+  }
+  async updateLogoConfigSchool(id, mediaId) {
+    const config = await prisma.configSchool.findUnique({
+      where: { id: parseInt(id) },
+      include: { logo: true },
+    });
+
+    if (!config) {
+      throw new Error("Config not found");
+    }
+
+    return await prisma.configSchool.update({
+      where: { id: parseInt(id) },
+      data: {
+        mediaId,
+      },
     });
   }
 
   async getConfigSchool() {
     return prisma.configSchool.findFirst({
-      include: { logo: true }
+      include: { logo: true },
     });
   }
 

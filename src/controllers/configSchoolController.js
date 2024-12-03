@@ -121,7 +121,7 @@ class ConfigShoolController {
         name,
         about,
         vision,
-        mision,
+        mission,
         address,
         telp,
         email,
@@ -148,7 +148,6 @@ class ConfigShoolController {
       if (req.mediaLocation) {
         const logo = req.files["media"][0];
         if (mediaId === null) {
-          lo;
           const logoResponse = await prisma.media.create({
             data: {
               url: req.mediaLocation,
@@ -174,7 +173,7 @@ class ConfigShoolController {
         name,
         about,
         vision,
-        mision,
+        mission,
         address,
         mediaId,
         telp,
@@ -187,6 +186,64 @@ class ConfigShoolController {
       res
         .status(200)
         .json({ status: 200, message: "update config school successfuly" });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error,
+      });
+    }
+  }
+
+  async updateLogoConfigSchool(req, res) {
+    try {
+      const { id } = req.params;
+      let mediaId = null;
+
+      const existConfig = await configSchoolRepository.findConfigById(
+        parseInt(id)
+      );
+
+      if (!existConfig) {
+        return res.status(404).json({
+          status: 400,
+          message: "Config not found. Unable to update non-existing config.",
+        });
+      }
+
+      mediaId = existConfig.mediaId;
+
+      if (req.mediaLocation) {
+        const logo = req.files["media"][0];
+        if (mediaId === null) {
+          const logoResponse = await prisma.media.create({
+            data: {
+              url: req.mediaLocation,
+              type: logo.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          mediaId = logoResponse.id;
+        } else {
+          await deleteMediaFromCloud(
+            existConfig.logo.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+          );
+          const logoResponse = await prisma.media.update({
+            where: { id: parseInt(mediaId) },
+            data: {
+              url: req.mediaLocation,
+              type: logo.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          mediaId = logoResponse.id;
+        }
+      }
+      await configSchoolRepository.updateLogoConfigSchool(id, mediaId);
+      res
+        .status(200)
+        .json({
+          status: 200,
+          message: "update logo config school successfuly",
+        });
     } catch (error) {
       res.status(500).json({
         status: 500,
