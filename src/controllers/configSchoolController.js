@@ -48,9 +48,9 @@ class ConfigShoolController {
           ) {
             mediaBuffer = await sharp(mediaBuffer)
               .resize({ width: 800 })
-              .jpeg({ quality: 80 })
+              .png({ quality: 80 })
               .toBuffer();
-            logoKey += ".jpg";
+            logoKey += ".png";
           } else {
             logoKey += path.extname(media.originalname);
           }
