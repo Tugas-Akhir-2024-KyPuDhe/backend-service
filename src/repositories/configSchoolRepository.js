@@ -7,14 +7,63 @@ class ConfigSchoolRepository {
     });
   }
 
-  async updateConfigSchool(data) {
-    return prisma.configSchool.updateMany({
-      data: data,
+  async findConfigById(id) {
+    return prisma.configSchool.findFirst({
+      where: { id: id },
+      include: {
+        logo: true,
+      },
+    });
+  }
+
+  async updateConfigSchool(id, data) {
+    const {
+      name,
+      about,
+      vision,
+      mision,
+      address,
+      mediaId,
+      telp,
+      email,
+      npsn,
+      fb,
+      ig,
+      tiktok,
+    } = data; 
+
+    const config = await prisma.configSchool.findUnique({
+      where: { id: parseInt(id) },
+      include: { logo: true },
+    });
+
+    if (!config) {
+      throw new Error("Config not found");
+    }
+
+    return await prisma.configSchool.update({
+      where: { id: parseInt(id) },
+      data: {
+        name,
+        about,
+        vision,
+        mision,
+        address,
+        mediaId,
+        telp,
+        email,
+        npsn,
+        fb,
+        ig,
+        tiktok,
+      }
     });
   }
 
   async getConfigSchool() {
-    return prisma.configSchool.findFirst({});
+    return prisma.configSchool.findFirst({
+      include: { logo: true }
+    });
   }
 
   async countStudent() {
