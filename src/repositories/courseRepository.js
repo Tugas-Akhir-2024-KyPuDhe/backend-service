@@ -56,16 +56,20 @@ class CourseRepository {
     });
   }
 
-  async getAllCourse() {
+  async getAllCourse(gradeCLass = "") {
+    const whereCondition = gradeCLass ? { grade: gradeCLass } : {};
+  
     return prisma.course.findMany({
       orderBy: {
         grade: "asc",
       },
+      where: whereCondition,
       include: {
         image: true,
       },
     });
   }
+  
 
   async findCourseById(id) {
     return prisma.course.findFirst({

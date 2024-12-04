@@ -79,8 +79,9 @@ class CourseController {
   }
 
   async getAllCourse(req, res) {
+    const { grade = "" } = req.query;
     try {
-      const response = await courseRepository.getAllCourse();
+      const response = await courseRepository.getAllCourse(grade);
       res.status(200).json({
         status: 200,
         message: "Successfully retrieved all course.",
