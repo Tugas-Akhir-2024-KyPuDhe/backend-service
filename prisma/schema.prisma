@@ -131,6 +131,7 @@ model Media {
 
   ArticleBanner Article[]
   BannerPage    BannerPage[]
+  Course        Course[]
 }
 
 model ConfigSchool {
@@ -272,4 +273,19 @@ model Galeri {
   updatedAt   DateTime @updatedAt
 
   media Media[] @relation("GaleriMedia")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  code        String
+  grade       String
+  description String?
+  imageId     Int?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  image Media? @relation(fields: [imageId], references: [id])
 }
