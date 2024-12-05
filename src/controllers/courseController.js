@@ -1,4 +1,5 @@
 const courseRepository = require("../repositories/courseRepository");
+const prisma = require("../config/database");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const path = require("path");
