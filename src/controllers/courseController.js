@@ -4,7 +4,7 @@ const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
-const { storage, s3Client } = require("../config/awsClound");
+const { storage, s3Client, deleteMediaFromCloud } = require("../config/awsClound");
 class CourseController {
   uploadFiles() {
     return multer({
@@ -210,7 +210,7 @@ class CourseController {
           imageId = courseMediaResponse.id;
         } else {
           await deleteMediaFromCloud(
-            existCourse.imageCourse.url.replace(
+            existCourse.image.url.replace(
               `${process.env.AWS_URL_IMG}/`,
               ""
             )
