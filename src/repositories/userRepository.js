@@ -5,12 +5,12 @@ class UserRepository {
     return await prisma.user.findUnique({
       where: { username },
       include: {
-        roles: true,
         staff: {
           include: {
             photo: true,
           },
         },
+        roles: true,
         students: {
           include: {
             photo: true,
@@ -24,15 +24,6 @@ class UserRepository {
   async getAllUser(tipeUser, majorCode) {
     if (tipeUser !== "student") {
       return prisma.staff.findMany({
-        where: {
-          user: {
-            roles: {
-              some: {
-                name: tipeUser.toUpperCase(), // Filter untuk roles dengan name
-              },
-            },
-          },
-        },
         orderBy: {
           name: "asc",
         },

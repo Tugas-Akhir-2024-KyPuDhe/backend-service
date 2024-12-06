@@ -42,16 +42,22 @@ class AuthController {
       const existingUser = await authRepository.findUserById(parseInt(id));
       if (existingUser.staff.length > 0) {
         const staffMember = existingUser.staff[0];
-        sanitizedTitle = staffMember.nip && staffMember.name
-          ? `staff_${staffMember.nip}_${staffMember.name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")}`
-          : "default";
+        sanitizedTitle =
+          staffMember.nip && staffMember.name
+            ? `staff_${staffMember.nip}_${staffMember.name
+                .replace(/\s+/g, "_")
+                .replace(/[^a-zA-Z0-9_]/g, "")}`
+            : "default";
       } else if (existingUser.students.length > 0) {
         const student = existingUser.students[0];
-        sanitizedTitle = student.nis && student.name
-          ? `siswa_${student.nis}_${student.name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "")}`
-          : "default";
+        sanitizedTitle =
+          student.nis && student.name
+            ? `siswa_${student.nis}_${student.name
+                .replace(/\s+/g, "_")
+                .replace(/[^a-zA-Z0-9_]/g, "")}`
+            : "default";
       }
-      
+
       if (req.files) {
         if (req.files["photo"]) {
           const photo = req.files["photo"][0];
@@ -147,15 +153,17 @@ class AuthController {
 
   async registerStaff(req, res) {
     const {
-      password,
+      password = "12345678",
       name,
       birthPlace,
       address,
       phone,
       email,
       gender,
+      mapel,
       nip,
       type,
+      position,
       startDate,
       role,
     } = req.body;
@@ -182,8 +190,10 @@ class AuthController {
             phone,
             email,
             gender,
+            mapel,
             nip,
             type,
+            position,
             startDate: new Date(startDate),
           },
         },
