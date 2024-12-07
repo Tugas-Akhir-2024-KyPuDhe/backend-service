@@ -140,12 +140,6 @@ class ArtikelRepository {
   }
 
   async findArtikelById(id) {
-    const isUuid = (val) =>
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(
-        val
-      );
-
-    if (isUuid(id)) {
       return prisma.article.findFirst({
         where: { uuid: id },
         include: {
@@ -153,15 +147,6 @@ class ArtikelRepository {
           banner: true,
         },
       });
-    } else {
-      return prisma.article.findFirst({
-        where: { id: id },
-        include: {
-          media: true,
-          banner: true,
-        },
-      });
-    }
   }
 }
 

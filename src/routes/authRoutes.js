@@ -5,8 +5,8 @@ const router = express.Router();
 const uploadFiles = authController.uploadFiles();
 const compressMedia = authController.compressAndUpload;
 
-router.post("/register/student", authController.registerStudent);
-router.post("/register/staff", authController.registerStaff);
+router.post("/register/student", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, authController.registerStudent);
+router.post("/register/staff", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, authController.registerStaff);
 router.post("/login", authController.login);
 router.get("/verify-token", authController.verifyToken);
 

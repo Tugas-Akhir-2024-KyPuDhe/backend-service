@@ -1,6 +1,22 @@
 const prisma = require("../config/database");
 
 class StaffRepository {
+  async findStaffById(id) {
+    return await prisma.staff.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            password: true,
+            username: true,
+            roles: true,
+          },
+        },
+        photo: true,
+      },
+    });
+  }
+
   async findStaffByNip(nip) {
     return await prisma.staff.findUnique({
       where: { nip },
@@ -16,6 +32,7 @@ class StaffRepository {
       },
     });
   }
+
   async getAllStaff(tipe) {
     const queryOptions = {
       orderBy: {
@@ -45,6 +62,20 @@ class StaffRepository {
     }
   
     return prisma.staff.findMany(queryOptions);
+  }
+
+  async updateUserStaff(id, data) {
+    return await prisma.user.update({
+      where: { id: parseInt(id) },
+      data,
+    });
+  }
+
+  async updateStaff(id, data) {
+    return await prisma.staff.update({
+      where: { id: parseInt(id) },
+      data,
+    });
   }
 }
 

@@ -37,22 +37,19 @@ class AuthController {
 
   async compressAndUpload(req, res, next) {
     try {
-      const { id } = req.params;
+      const { nip, name } = req.body;
       let sanitizedTitle;
-      const existingUser = await authRepository.findUserById(parseInt(id));
-      if (existingUser.staff.length > 0) {
-        const staffMember = existingUser.staff[0];
+      if (nip !== null) {
         sanitizedTitle =
-          staffMember.nip && staffMember.name
-            ? `staff_${staffMember.nip}_${staffMember.name
+          nip && name
+            ? `staff_${nip}_${name
                 .replace(/\s+/g, "_")
                 .replace(/[^a-zA-Z0-9_]/g, "")}`
             : "default";
-      } else if (existingUser.students.length > 0) {
-        const student = existingUser.students[0];
+      } else {
         sanitizedTitle =
-          student.nis && student.name
-            ? `siswa_${student.nis}_${student.name
+          nis && name
+            ? `siswa_${nis}_${name
                 .replace(/\s+/g, "_")
                 .replace(/[^a-zA-Z0-9_]/g, "")}`
             : "default";
@@ -167,9 +164,13 @@ class AuthController {
       startDate,
       role,
     } = req.body;
+    const mapelArray = mapel.split(',').map((item) => item.trim());
+    let mediaId = null;
+
+    const cleanNip = nip.replace(/\s+/g, ""); //HILANGKAN SPACE
 
     try {
-      const existingUser = await authRepository.findUserByUsername(nip);
+      const existingUser = await authRepository.findUserByUsername(cleanNip);
       if (existingUser) {
         return res
           .status(400)
@@ -178,8 +179,18 @@ class AuthController {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      if (req.photoLocation) {
+        const upMediaRes = await prisma.media.create({
+          data: {
+            url: req.photoLocation,
+            type: "image",
+          },
+        });
+        mediaId = upMediaRes.id;
+      }
+
       await authRepository.createUser({
-        username: nip,
+        username: cleanNip,
         password: hashedPassword,
         roles: { create: { name: role } },
         staff: {
@@ -190,10 +201,11 @@ class AuthController {
             phone,
             email,
             gender,
-            mapel,
-            nip,
+            mapel: mapelArray,
+            nip: cleanNip,
             type,
             position,
+            mediaId,
             startDate: new Date(startDate),
           },
         },
@@ -203,6 +215,7 @@ class AuthController {
         .status(201)
         .json({ status: 201, message: "Staff registered successfully" });
     } catch (error) {
+      console.log(error);
       res.status(500).json({ status: 500, message: "Internal server error" });
     }
   }

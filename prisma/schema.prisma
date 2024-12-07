@@ -53,7 +53,7 @@ model Staff {
   phone      String?
   email      String?
   gender     String?
-  mapel      String?
+  mapel      String[]
   nip        String?   @unique
   type       String
   position   String?

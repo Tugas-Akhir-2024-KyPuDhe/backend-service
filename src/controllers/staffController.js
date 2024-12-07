@@ -1,9 +1,14 @@
 const staffRepository = require("../repositories/staffRepository");
 const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const prisma = require("../config/database");
 const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
-const { storage, s3Client } = require("../config/awsClound");
+const {
+  storage,
+  s3Client,
+  deleteMediaFromCloud,
+} = require("../config/awsClound");
 
 class StaffController {
   uploadFiles() {
@@ -30,26 +35,14 @@ class StaffController {
 
   async compressAndUpload(req, res, next) {
     try {
-      const { id } = req.params;
+      const { nip, name } = req.body;
       let sanitizedTitle;
-      const existingUser = await staffRepository.findUserById(parseInt(id));
-      if (existingUser.staff.length > 0) {
-        const staffMember = existingUser.staff[0];
-        sanitizedTitle =
-          staffMember.nip && staffMember.name
-            ? `staff_${staffMember.nip}_${staffMember.name
-                .replace(/\s+/g, "_")
-                .replace(/[^a-zA-Z0-9_]/g, "")}`
-            : "default";
-      } else if (existingUser.staffs.length > 0) {
-        const staff = existingUser.staffs[0];
-        sanitizedTitle =
-          staff.nis && staff.name
-            ? `siswa_${staff.nis}_${staff.name
-                .replace(/\s+/g, "_")
-                .replace(/[^a-zA-Z0-9_]/g, "")}`
-            : "default";
-      }
+      sanitizedTitle =
+        nip && name
+          ? `staff_${nip}_${name
+              .replace(/\s+/g, "_")
+              .replace(/[^a-zA-Z0-9_]/g, "")}`
+          : "default";
 
       if (req.files) {
         if (req.files["photo"]) {
@@ -140,7 +133,117 @@ class StaffController {
     }
   }
 
+  async updateUserStaff(req, res) {
+    const { id } = req.params;
+    const {
+      name,
+      birthPlace,
+      address,
+      phone,
+      email,
+      gender,
+      mapel,
+      nip,
+      type,
+      position,
+      startDate,
+      role,
+    } = req.body;
+    let mediaId = null;
+    const mapelArray = mapel.split(',').map((item) => item.trim());
 
+    try {
+      const existingUserStaff = await staffRepository.findStaffById(
+        parseInt(id)
+      );
+      if (!existingUserStaff) {
+        return res.status(404).json({ message: "User Staff not found" });
+      }
+
+      mediaId = existingUserStaff.mediaId;
+      if (req.photoLocation) {
+        const photo = req.files["photo"][0];
+        if (mediaId === null) {
+          const mediaResponse = await prisma.media.create({
+            data: {
+              url: req.photoLocation,
+              type: photo.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          mediaId = mediaResponse.id;
+        } else {
+          await deleteMediaFromCloud(
+            existingUserStaff.phone.url.replace(
+              `${process.env.AWS_URL_IMG}/`,
+              ""
+            )
+          );
+          const mediaResponse = await prisma.media.update({
+            where: { id: parseInt(mediaId) },
+            data: {
+              url: req.photoLocation,
+              type: photo.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          mediaId = mediaResponse.id;
+        }
+      }
+
+      // Update data user (role jika diperlukan)
+      if (role && role !== existingUserStaff.user.roles[0]?.name) {
+        await prisma.role.updateMany({
+          where: {
+            userId: existingUserStaff.user.id,
+          },
+          data: { name: role },
+        });
+      }
+
+      const userData = {
+        username: nip,
+      };
+
+      if (role && role !== existingUserStaff.user.roles[0]?.name) {
+        userData.roles = {
+          update: {
+            name: role,
+          },
+        };
+      }
+
+      const staffData = {
+        name,
+        birthPlace,
+        address,
+        phone,
+        email,
+        gender,
+        mapel: mapelArray,
+        nip,
+        type,
+        position,
+        startDate: startDate
+          ? new Date(startDate)
+          : existingUserStaff.startDate,
+        mediaId,
+      };
+
+      await staffRepository.updateStaff(id, staffData);
+
+      if (existingUserStaff.nip != nip) {
+        await staffRepository.updateUserStaff(id, { username: nip });
+      }
+
+      res
+        .status(200)
+        .json({ status: 200, message: "User Staff updated successfully" });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
+    }
+  }
 }
 
 module.exports = new StaffController();

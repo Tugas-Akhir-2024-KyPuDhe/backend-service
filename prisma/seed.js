@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const prisma = new PrismaClient();
 
 async function main() {
-  // Seeder untuk data sekolah
+  // #region | Seeder untuk data sekolah
   const configSchool = {
     name: "SMK NEGERI 1 LUMBAN JULU",
     about:
@@ -29,8 +29,9 @@ async function main() {
     }));
 
   console.log("Seeding config school completed.");
+  //#endregion
 
-  // Custom Data
+  // #region | Seeder Students
   const customStudents = [
     {
       name: "Dhea Romantika",
@@ -105,8 +106,8 @@ async function main() {
             gender: student.gender,
             startYear,
             status: "Active",
-          }
-        }
+          },
+        },
       },
     });
   }
@@ -157,14 +158,65 @@ async function main() {
               gender: i % 2 === 0 ? "P" : "L",
               startYear,
               status: "Active",
-            }
-          }
+            },
+          },
         },
       });
     }
   }
-
   console.log("Default students seeded.");
+  // #endregion
+
+  //#regon | Seeder Staff
+  const staff = {
+    name: "Joko",
+    birthPlace: "21 Juni 1961",
+    address: "Solo",
+    phone: "08536746398",
+    email: "Joko@gmail.com",
+    gender: "L",
+    mapel: "",
+    nip: "P001",
+    type: "PH",
+    position: "",
+    startDate: new Date("2024-08-07"),
+    role: "STAFF",
+  };
+
+  const staffCount = await prisma.staff.count({});
+  if (staffCount < 1) {
+    // Membuat user baru jika belum ada staff
+    const hashedPassword = await bcrypt.hash("12345678", 10); // Ganti dengan password yang sesuai
+
+    await prisma.user.create({
+      data: {
+        username: staff.nip, // Menggunakan nip sebagai username
+        password: hashedPassword, // Password yang telah di-hash
+        roles: {
+          create: {
+            name: staff.role, // Menggunakan role yang ada pada data staff
+          },
+        },
+        staff: {
+          create: {
+            name: staff.name,
+            birthPlace: staff.birthPlace,
+            address: staff.address,
+            phone: staff.phone,
+            email: staff.email,
+            gender: staff.gender,
+            mapel: staff.mapel,
+            nip: staff.nip,
+            type: staff.type,
+            position: staff.position,
+            startDate: staff.startDate,
+          },
+        },
+      },
+    });
+  }
+  console.log("Seeding Staff completed.");
+  // #endregion
 }
 
 main()
