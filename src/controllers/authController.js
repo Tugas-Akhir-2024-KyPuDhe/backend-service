@@ -215,7 +215,6 @@ class AuthController {
         .status(201)
         .json({ status: 201, message: "Staff registered successfully" });
     } catch (error) {
-      console.log(error);
       res.status(500).json({ status: 500, message: "Internal server error" });
     }
   }

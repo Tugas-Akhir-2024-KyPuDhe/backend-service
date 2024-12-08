@@ -173,7 +173,6 @@ class CourseController {
         message: "Course successfully created",
       });
     } catch (error) {
-      console.log(error);
       res.status(400).json({
         status: 400,
         message: error.message,
