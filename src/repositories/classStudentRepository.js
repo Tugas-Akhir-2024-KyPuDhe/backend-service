@@ -25,7 +25,7 @@ class ClassStudentRepository {
       where: { id },
       include: {
         homeRoomTeacher: true,
-        CourseInClass: { include: { courseDetail: true } },
+        CourseInClass: { include: { courseDetail: true, teacher: true } },
         student: true,
       },
     });
