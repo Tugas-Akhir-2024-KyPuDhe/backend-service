@@ -107,6 +107,33 @@ class StaffController {
         .json({ status: 500, message: "Internal server error", error });
     }
   }
+  
+  async getClassTeacher(req, res) {
+    const { nip } = req.params;
+
+    try {
+      const staff = await staffRepository.findStaffByNip(nip);
+
+      if (!staff) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "Staff not found" });
+      }
+
+      const classStaff = await staffRepository.findClassByNip(nip);
+
+      res.status(200).json({
+        status: 200,
+        message: "Class Staff retrieved successfully",
+        data: classStaff,
+      });
+    } catch (error) {
+      console.log(error);
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
+    }
+  }
 
   async getStaff(req, res) {
     try {

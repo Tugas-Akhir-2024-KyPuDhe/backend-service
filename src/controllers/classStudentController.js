@@ -41,31 +41,6 @@ class ClassStudentController {
     }
   }
 
-  //   async getClassById(req, res) {
-  //     try {
-  //       const { id } = req.params;
-  //       const response = await classStudentRepository.findClassById(parseInt(id));
-  //       if (!response) {
-  //         return res.status(404).json({
-  //           status: 404,
-  //           message:
-  //             "Class not found. The provided ID does not match any records.",
-  //         });
-  //       }
-
-  //       res.status(200).json({
-  //         status: 200,
-  //         message: "Successfully retrieved the class.",
-  //         data: response,
-  //       });
-  //     } catch (error) {
-  //       res.status(400).json({
-  //         status: 400,
-  //         message: `Failed to retrieve class due to error: ${error.message}`,
-  //       });
-  //     }
-  //   }
-
   async createClassInvStudent(req, res) {
     try {
       const { capacity, majorCode } = req.body;

@@ -77,6 +77,23 @@ class StaffRepository {
       data,
     });
   }
+
+  async findClassByNip(nip) {
+    return prisma.staff.findMany({
+      where: {
+        nip,
+      },
+      include: {
+        CourseInClass: {
+          include: {
+            courseDetail: true,
+          },
+        },
+        Class: true,
+      },
+    });
+  }
+  
 }
 
 module.exports = new StaffRepository();

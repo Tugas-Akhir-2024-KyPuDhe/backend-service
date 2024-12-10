@@ -64,40 +64,6 @@ class ClassStudentRepository {
     });
   }
 
-  // async createClass(capacity, majorCode) {
-  //   const majors = await prisma.major.findMany({
-  //     where: { majorCode },
-  //   });
-  //   let createdClasses = [];
-
-  //   for (const major of majors) {
-  //     const totalStudents = await prisma.student.count({
-  //       where: { majorCode: majorCode },
-  //     });
-
-  //     // Hitung total kelas yang dibutuhkan
-  //     const totalClasses = Math.floor(totalStudents / capacity);
-  //     const remainingStudents = totalStudents % capacity;
-
-  //     // Jika sisa siswa ganjil tetapi dapat masuk ke kelas terakhir, abaikan pembuatan kelas tambahan
-  //     const shouldCreateExtraClass = remainingStudents > 0 && remainingStudents > capacity / 2;
-
-  //     // Buat kelas yang dibutuhkan
-  //     for (let i = 1; i <= totalClasses + (shouldCreateExtraClass ? 1 : 0); i++) {
-  //       const newClass = await prisma.class.create({
-  //         data: {
-  //           name: `X-${major.majorCode}-${i}`,
-  //           majorCode: majorCode,
-  //           capacity: capacity,
-  //         },
-  //       });
-  //       createdClasses.push(newClass.id);
-  //     }
-  //   }
-
-  //   return createdClasses;
-  // }
-
   async insertStudentInClass(capacity, majorCode) {
     const students = await prisma.student.findMany({
       where: { classId: null, majorCode },
