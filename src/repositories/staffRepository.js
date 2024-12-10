@@ -48,7 +48,7 @@ class StaffRepository {
         },
       },
     };
-  
+
     if (tipe !== "") {
       queryOptions.where = {
         user: {
@@ -60,7 +60,7 @@ class StaffRepository {
         },
       };
     }
-  
+
     return prisma.staff.findMany(queryOptions);
   }
 
@@ -81,15 +81,20 @@ class StaffRepository {
   async findClassByNip(nip) {
     return prisma.staff.findMany({
       where: {
-        nip,
+        nip, // Mencari berdasarkan NIP
       },
-      include: {
+      select: {
+        id: true,
+        uuid: true,
+        name: true,
+        // Menyertakan relasi
         CourseInClass: {
           include: {
-            courseDetail: true,
+            courseDetail: true, // Menyertakan detail kursus
+            class: true, // Menyertakan data kelas
           },
         },
-        Class: true,
+        Class: true, // Menyertakan data kelas di mana staff adalah wali kelas
       },
     });
   }
