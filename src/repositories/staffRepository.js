@@ -79,26 +79,23 @@ class StaffRepository {
   }
 
   async findClassByNip(nip) {
-    return prisma.staff.findMany({
+    return prisma.staff.findFirst({
       where: {
-        nip, // Mencari berdasarkan NIP
+        nip,
       },
       select: {
         id: true,
         uuid: true,
         name: true,
-        // Menyertakan relasi
         CourseInClass: {
           include: {
-            courseDetail: true, // Menyertakan detail kursus
-            class: true, // Menyertakan data kelas
+            courseDetail: true,
+            class: true,
           },
         },
-        Class: true, // Menyertakan data kelas di mana staff adalah wali kelas
       },
     });
   }
-  
 }
 
 module.exports = new StaffRepository();
