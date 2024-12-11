@@ -54,10 +54,19 @@ class CourseInClassRepository {
       where: { id },
     });
   }
-  
+
   async findCourseInClassById(id) {
     return prisma.courseInClass.findFirst({
       where: { id: id },
+    });
+  }
+
+  async findCourseInClassByUuid(uuid) {
+    return prisma.courseInClass.findFirst({
+      where: { uuid },
+      include: {
+        class: { include: { student: true } },
+      },
     });
   }
 }

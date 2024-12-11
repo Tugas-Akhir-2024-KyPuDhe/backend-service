@@ -6,10 +6,7 @@ const { PutObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require("multer");
 const path = require("path");
 const sharp = require("sharp");
-const {
-  storage,
-  s3Client,
-} = require("../config/awsClound");
+const { storage, s3Client } = require("../config/awsClound");
 
 class StudentController {
   uploadFiles() {
@@ -121,6 +118,34 @@ class StudentController {
     }
   }
 
+  async getAllStudents(req, res) {
+    try {
+      const { status = "all", major_code, grade } = req.query;
+
+      const student = await studentRepository.getAllStudents(
+        status,
+        major_code,
+        grade
+      );
+
+      if (!student) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "Student not found" });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "Student retrieved successfully",
+        data: student,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
+    }
+  }
+
   async updateParentStudent(req, res) {
     const { nis } = req.params;
     const parentData = req.body;
@@ -136,7 +161,7 @@ class StudentController {
 
       const updatedParent = await studentRepository.updateParentOfStudent(
         parseInt(student.id),
-        parentData,
+        parentData
       );
 
       res.status(200).json({
@@ -169,7 +194,6 @@ class StudentController {
         .json({ status: 500, message: "Internal server error", error });
     }
   }
-
 }
 
 module.exports = new StudentController();

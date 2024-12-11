@@ -22,7 +22,7 @@ class StudentRepository {
     const whereClause = {
       classId: null,
       waliKelasId: null,
-      ...(majorCode && { Major: { majorCode } }), 
+      ...(majorCode && { Major: { majorCode } }),
     };
 
     return await prisma.student.findMany({
@@ -31,18 +31,48 @@ class StudentRepository {
         Major: true,
       },
       orderBy: {
-        createdAt: 'asc'
-      }
+        createdAt: "asc",
+      },
     });
-  }  
+  }
+
+  async getAllStudents(status, majorCode, grade) {
+    const whereClause = {};
+  
+    if (status === "registered") {
+      whereClause.classId = { not: null };
+      whereClause.waliKelasId = { not: null };
+    } else if (status === "not_registered") {
+      whereClause.classId = null;
+      whereClause.waliKelasId = null;
+    }
+  
+    if (grade) {
+      whereClause.grade = grade;
+    }
+    if (majorCode) {
+      whereClause.Major = { majorCode };
+    }
+  
+    return await prisma.student.findMany({
+      where: whereClause,
+      orderBy: {
+        class: { name: "asc" },
+      },
+      include: { Major: true },
+    });
+  }
+  
+  
 
   async updateParentOfStudent(studentId, parentData) {
-    const { fatherName, motherName, parentJob, parentAddress, phone } = parentData;
-  
+    const { fatherName, motherName, parentJob, parentAddress, phone } =
+      parentData;
+
     const existingParent = await prisma.parentOfStudent.findFirst({
       where: { student: { some: { id: studentId } } },
     });
-  
+
     if (existingParent) {
       return await prisma.parentOfStudent.update({
         where: { id: existingParent.id },
@@ -69,8 +99,6 @@ class StudentRepository {
       });
     }
   }
-  
-  
 }
 
 module.exports = new StudentRepository();

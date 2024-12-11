@@ -88,6 +88,24 @@ class CourseInClassController {
       });
     }
   }
+
+  async getCourseInClassByuuid(req, res){
+    const { uuid } = req.params;
+    try {
+      const response = await courseInClassRepository.findCourseInClassByUuid(uuid);
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved detail course.",
+        data: response,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Failed to retrieve course due to internal server error.",
+        error,
+      });
+    }
+  }
 }
 
 module.exports = new CourseInClassController();
