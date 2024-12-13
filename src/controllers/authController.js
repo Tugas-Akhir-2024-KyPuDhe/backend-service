@@ -291,7 +291,7 @@ class AuthController {
         if (err) {
           return res.status(401).json({ message: "Invalid token" });
         }
-        res.status(200).json({ status: 200, valid: true, user: decoded });
+        res.status(200).json({ status: 200, valid: true });
       });
     } catch (error) {
       res.status(400).json({ message: error.message });

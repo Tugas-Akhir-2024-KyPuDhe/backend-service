@@ -109,7 +109,7 @@ class StaffController {
   }
   
   async getClassTeacher(req, res) {
-    const { nip } = req.params;
+    const { nip, id="" } = req.query;
 
     try {
       const staff = await staffRepository.findStaffByNip(nip);
@@ -120,7 +120,7 @@ class StaffController {
           .json({ status: 404, message: "Staff not found" });
       }
 
-      const classStaff = await staffRepository.findClassByNip(nip);
+      const classStaff = await staffRepository.findClassByNip(nip, id);
 
       res.status(200).json({
         status: 200,

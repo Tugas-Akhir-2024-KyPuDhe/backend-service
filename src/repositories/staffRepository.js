@@ -78,19 +78,18 @@ class StaffRepository {
     });
   }
 
-  async findClassByNip(nip) {
+  async findClassByNip(nip, id) {
     return prisma.staff.findFirst({
-      where: {
-        nip,
-      },
+      where: { nip },
       select: {
         id: true,
         uuid: true,
         name: true,
         CourseInClass: {
+          ...(id != "" && { where: { id: parseInt(id) } }),
           include: {
             courseDetail: true,
-            class: true,
+            class: { include: { student: true } },
           },
         },
       },

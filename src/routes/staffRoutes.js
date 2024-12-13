@@ -6,7 +6,7 @@ const uploadFiles = staffController.uploadFiles();
 const compressMedia = staffController.compressAndUpload;
 
 router.get("/get/", authMiddleware, authorizeRoles(['STAFF']), staffController.getStaff);
-router.get("/get/class/:nip", authMiddleware, authorizeRoles(['TEACHER']), staffController.getClassTeacher);
+router.get("/get/class/", authMiddleware, authorizeRoles(['TEACHER']), staffController.getClassTeacher);
 router.get("/get/:nip", authMiddleware, authorizeRoles(['STAFF']), staffController.getStaffByUsername);
 router.put("/update/:id", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, staffController.updateUserStaff);
 
