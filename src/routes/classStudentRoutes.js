@@ -4,6 +4,7 @@ const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddlewar
 const router = express.Router();
 
 // router.post("/createClassInvStudent", authMiddleware, authorizeRoles(['STAFF']), classStudentController.createClassInvStudent);
+router.put("/insert-stundent-inclass", authMiddleware, authorizeRoles(['STAFF']), classStudentController.insertStudentInClass);
 router.get("/get", authMiddleware, authorizeRoles(['STAFF']), classStudentController.getAllClass);
 router.get("/get/:id", authMiddleware, authorizeRoles(['STAFF']), classStudentController.getClassById);
 router.put("/update/:id", authMiddleware, authorizeRoles(['STAFF']), classStudentController.updateClass);

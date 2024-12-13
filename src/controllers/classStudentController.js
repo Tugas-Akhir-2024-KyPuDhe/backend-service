@@ -41,25 +41,29 @@ class ClassStudentController {
     }
   }
 
-  async createClassInvStudent(req, res) {
+  async insertStudentInClass(req, res) {
     try {
-      const { capacity, majorCode } = req.body;
+      const { id, collectionNis } = req.body;
 
-      const newClassIds = await classStudentRepository.createClass(
-        parseInt(capacity),
-        majorCode
+      const existClass = await classStudentRepository.findClassById(
+        parseInt(id)
       );
-      if (newClassIds) {
-        await classStudentRepository.insertStudentInClass(
-          parseInt(capacity),
-          majorCode,
-          newClassIds
-        );
+
+      if (!existClass) {
+        return res.status(404).json({
+          status: 400,
+          message: "Class not found. Unable to update non-existing class.",
+        });
       }
+
+      await classStudentRepository.insertStudentInClass(
+        parseInt(id),
+        collectionNis
+      );
 
       return res.status(201).json({
         status: 201,
-        message: "Class successfully added and insert student in the class",
+        message: "insert student in the class successfuly",
       });
     } catch (error) {
       return res.status(400).json({
@@ -106,39 +110,41 @@ class ClassStudentController {
     }
   }
 
-    async updateClass(req, res) {
-      try {
-        const { id } = req.params;
-        const { name, description, majorCode, staffId, academicYear, capacity } =
+  async updateClass(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, description, majorCode, staffId, academicYear, capacity } =
         req.body;
 
-        const existClass = await classStudentRepository.findClassById(parseInt(id));
-        if (!existClass) {
-          return res.status(404).json({
-            status: 400,
-            message: "Class not found. Unable to update non-existing class.",
-          });
-        }
-        await classStudentRepository.updateClass(id, {
-          name,
-          description,
-          majorCode,
-          staffId: parseInt(staffId),
-          academicYear,
-          capacity: parseInt(capacity),
-        });
-
-        return res.status(200).json({
-          status: 200,
-          message: "Class successfully updated",
-        });
-      } catch (error) {
-        res.status(400).json({
+      const existClass = await classStudentRepository.findClassById(
+        parseInt(id)
+      );
+      if (!existClass) {
+        return res.status(404).json({
           status: 400,
-          message: `Failed to update class due to error: ${error.message}`,
+          message: "Class not found. Unable to update non-existing class.",
         });
       }
+      await classStudentRepository.updateClass(id, {
+        name,
+        description,
+        majorCode,
+        staffId: parseInt(staffId),
+        academicYear,
+        capacity: parseInt(capacity),
+      });
+
+      return res.status(200).json({
+        status: 200,
+        message: "Class successfully updated",
+      });
+    } catch (error) {
+      res.status(400).json({
+        status: 400,
+        message: `Failed to update class due to error: ${error.message}`,
+      });
     }
+  }
 }
 
 module.exports = new ClassStudentController();
