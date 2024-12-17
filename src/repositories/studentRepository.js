@@ -59,7 +59,7 @@ class StudentRepository {
       orderBy: {
         class: { name: "asc" },
       },
-      include: { Major: true },
+      include: { Major: true, class: true },
     });
   }
   
