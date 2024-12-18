@@ -14,6 +14,8 @@ class StudentRepository {
         },
         photo: true,
         ParentOfStudent: true,
+        class: true,
+        Major: true
       },
     });
   }
@@ -48,8 +50,13 @@ class StudentRepository {
     }
   
     if (grade) {
-      whereClause.grade = grade;
+      whereClause.class = {
+        name: {
+          startsWith: `${grade}-`, // Contoh: mencari "X" akan mencocokkan "X-RPL-1", "X-RPL-2"
+        },
+      };
     }
+
     if (majorCode) {
       whereClause.Major = { majorCode };
     }
