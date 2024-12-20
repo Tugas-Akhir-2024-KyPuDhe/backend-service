@@ -14,6 +14,7 @@ const galeriRoutes = require("./src/routes/galeriRoutes");
 const classStudentRoutes = require("./src/routes/classStudentRoutes");
 const courseRoutes = require("./src/routes/courseRoutes");
 const courseInClassRoutes = require("./src/routes/courseInClassRoutes");
+const studentGradeRoutes = require("./src/routes/studentGradeRoutes");
 
 const cors = require("cors");
 
@@ -38,6 +39,7 @@ app.use("/api/galeri", galeriRoutes);
 app.use("/api/class", classStudentRoutes);
 app.use("/api/course", courseRoutes);
 app.use("/api/course-inclass", courseInClassRoutes);
+app.use("/api/student-grade", studentGradeRoutes);
 
 //error handler
 app.use((err, req, res, next) => {
