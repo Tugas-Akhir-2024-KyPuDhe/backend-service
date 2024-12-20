@@ -79,7 +79,7 @@ class StaffRepository {
   }
 
   async findClassByNip(nip, id) {
-    return prisma.staff.findFirst({
+    const data = await prisma.staff.findFirst({
       where: { nip },
       select: {
         id: true,
@@ -89,12 +89,37 @@ class StaffRepository {
           ...(id != "" && { where: { id: parseInt(id) } }),
           include: {
             courseDetail: true,
-            class: { include: { student: { include: { studentsGrades: true } } } },
+            class: {
+              include: {
+                student: {
+                  include: {
+                    StudentsGrades: true,
+                  },
+                },
+              },
+            },
           },
         },
       },
     });
+  
+    if (data && data.CourseInClass) {
+      data.CourseInClass = data.CourseInClass.map((course) => {
+        if (course.class && course.class.student) {
+          course.class.student = course.class.student.map((student) => {
+            student.StudentsGrades = student.StudentsGrades.filter(
+              (grade) => grade.courseCode === course.courseCode
+            );
+            return student;
+          });
+        }
+        return course;
+      });
+    }
+  
+    return data;
   }
+  
 }
 
 module.exports = new StaffRepository();

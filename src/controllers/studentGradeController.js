@@ -1,3 +1,4 @@
+const e = require("express");
 const studentGradeRepository = require("../repositories/studentGradeRepository");
 class StudentGradeController {
   async insertGradeStudent(req, res) {
@@ -17,24 +18,46 @@ class StudentGradeController {
         description,
       } = req.body;
 
-      await studentGradeRepository.insertGrade({
+      const existGrade = await studentGradeRepository.findGradeByNISAndClass(
         nis,
-        teacherId: parseInt(teacherId),
-        classId: parseInt(classId),
-        courseCode,
-        task: parseInt(task),
-        UH: parseInt(UH),
-        PTS: parseInt(PTS),
-        PAS: parseInt(PAS),
-        portofolio,
-        proyek,
-        attitude,
-        description,
-      });
+        classId
+      );
+
+      if (existGrade) {
+        await studentGradeRepository.updateGrade(existGrade.id, {
+          nis,
+          teacherId: parseInt(teacherId),
+          classId: parseInt(classId),
+          courseCode,
+          task: parseInt(task),
+          UH: parseInt(UH),
+          PTS: parseInt(PTS),
+          PAS: parseInt(PAS),
+          portofolio,
+          proyek,
+          attitude,
+          description,
+        });
+      } else {
+        await studentGradeRepository.insertGrade({
+          nis,
+          teacherId: parseInt(teacherId),
+          classId: parseInt(classId),
+          courseCode,
+          task: parseInt(task),
+          UH: parseInt(UH),
+          PTS: parseInt(PTS),
+          PAS: parseInt(PAS),
+          portofolio,
+          proyek,
+          attitude,
+          description,
+        });
+      }
 
       return res.status(201).json({
         status: 201,
-        message: "Grades Student successfully created",
+        message: "Grades Student successfully updated",
       });
     } catch (error) {
       res.status(400).json({

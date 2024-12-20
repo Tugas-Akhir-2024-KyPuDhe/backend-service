@@ -107,9 +107,9 @@ class StaffController {
         .json({ status: 500, message: "Internal server error", error });
     }
   }
-  
+
   async getClassTeacher(req, res) {
-    const { nip, id="" } = req.query;
+    const { nip, id = "" } = req.query;
 
     try {
       const staff = await staffRepository.findStaffByNip(nip);
@@ -128,7 +128,6 @@ class StaffController {
         data: classStaff,
       });
     } catch (error) {
-      console.log(error);
       res
         .status(500)
         .json({ status: 500, message: "Internal server error", error });
@@ -177,7 +176,7 @@ class StaffController {
       role,
     } = req.body;
     let mediaId = null;
-    const mapelArray = mapel.split(',').map((item) => item.trim());
+    const mapelArray = mapel.split(",").map((item) => item.trim());
 
     try {
       const existingUserStaff = await staffRepository.findStaffById(

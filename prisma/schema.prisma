@@ -68,7 +68,7 @@ model Staff {
   Class          Class[]
   Student        Student[]
   CourseInClass  CourseInClass[]
-  studentsGrades studentsGrades[]
+  StudentsGrades StudentsGrades[]
 }
 
 model Student {
@@ -100,7 +100,7 @@ model Student {
   ParentOfStudent ParentOfStudent[] @relation("ParentsOfStudent")
   HistoryClass    HistoryClass[]
   Major           Major?            @relation(fields: [majorCode], references: [majorCode])
-  studentsGrades  studentsGrades[]
+  StudentsGrades  StudentsGrades[]
 }
 
 model HistoryClass {
@@ -195,7 +195,7 @@ model Class {
   homeRoomTeacher Staff?           @relation(fields: [staffId], references: [id])
   HistoryClass    HistoryClass[]
   CourseInClass   CourseInClass[]
-  studentsGrades  studentsGrades[]
+  StudentsGrades  StudentsGrades[]
 }
 
 model Major {
@@ -295,7 +295,7 @@ model Course {
 
   image          Media?           @relation(fields: [imageId], references: [id])
   CourseInClass  CourseInClass[]
-  studentsGrades studentsGrades[]
+  StudentsGrades StudentsGrades[]
 }
 
 model CourseInClass {
@@ -315,7 +315,7 @@ model CourseInClass {
   class        Class?  @relation(fields: [classId], references: [id])
 }
 
-model studentsGrades {
+model StudentsGrades {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
   nis         String
