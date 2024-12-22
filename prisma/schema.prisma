@@ -316,22 +316,23 @@ model CourseInClass {
 }
 
 model StudentsGrades {
-  id          Int      @id @default(autoincrement())
-  uuid        String   @default(uuid())
-  nis         String
-  teacherId   Int
-  classId     Int
-  courseCode  String
-  task        Int
-  UH          Int
-  PTS         Int
-  PAS         Int
-  portofolio  Int?
-  proyek      Int?
-  attitude    Int?
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  academicYear String?
+  nis          String
+  teacherId    Int
+  classId      Int
+  courseCode   String
+  task         String
+  UH           String
+  PTS          String
+  PAS          String
+  portofolio   String?
+  proyek       String?
+  attitude     String?
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   student Student? @relation(fields: [nis], references: [nis])
   course  Course?  @relation(fields: [courseCode], references: [code])

@@ -89,6 +89,7 @@ class StaffRepository {
           ...(id != "" && { where: { id: parseInt(id) } }),
           include: {
             courseDetail: true,
+            teacher: true,
             class: {
               include: {
                 student: {

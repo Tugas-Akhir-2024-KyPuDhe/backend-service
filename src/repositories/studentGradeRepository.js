@@ -1,16 +1,26 @@
 const prisma = require("../config/database");
 
 class StudentGradeRepository {
+  async getGradeByNIS(nis) {
+    return prisma.studentsGrades.findMany({
+      where: { nis },
+      orderBy: {
+        createdAt: "asc",
+      },
+      include: { class: true, teacher: true, course: true },
+    });
+  }
+
   async insertGrade(data) {
     return prisma.studentsGrades.create({
       data: data,
     });
   }
 
-  async findGradeByNISAndClass(nis, classId) {
+  async findGradeByNISClassAndCourse(nis, classId, courseCode) {
     return prisma.studentsGrades.findFirst({
       where: {
-        AND: [{ nis: nis }, { classId: classId }],
+        AND: [{ nis: nis }, { classId: classId }, { courseCode }],
       },
     });
   }
@@ -18,6 +28,7 @@ class StudentGradeRepository {
   async updateGrade(id, data) {
     const {
       nis,
+      academicYear,
       teacherId,
       classId,
       courseCode,
@@ -31,10 +42,13 @@ class StudentGradeRepository {
       description,
     } = data;
 
+    console.log(data);
+
     return await prisma.studentsGrades.update({
       where: { id: parseInt(id) },
       data: {
         nis,
+        academicYear,
         teacherId,
         classId,
         courseCode,
