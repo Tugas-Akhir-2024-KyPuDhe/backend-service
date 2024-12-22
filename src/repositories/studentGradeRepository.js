@@ -42,8 +42,6 @@ class StudentGradeRepository {
       description,
     } = data;
 
-    console.log(data);
-
     return await prisma.studentsGrades.update({
       where: { id: parseInt(id) },
       data: {
