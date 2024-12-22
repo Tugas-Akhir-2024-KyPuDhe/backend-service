@@ -65,7 +65,6 @@ class StudentGradeController {
         message: "Grades Student successfully updated",
       });
     } catch (error) {
-      console.log(error);
       res.status(400).json({
         status: 400,
         message: error.message,
