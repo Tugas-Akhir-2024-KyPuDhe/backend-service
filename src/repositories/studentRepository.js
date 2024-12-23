@@ -15,7 +15,8 @@ class StudentRepository {
         photo: true,
         ParentOfStudent: true,
         class: true,
-        Major: true
+        Major: true,
+        HistoryClass: { include: { currentClass: {include: {StudentsGrades:true}}, oldClass: true } },
       },
     });
   }
@@ -40,7 +41,7 @@ class StudentRepository {
 
   async getAllStudents(status, majorCode, grade) {
     const whereClause = {};
-  
+
     if (status === "registered") {
       whereClause.classId = { not: null };
       whereClause.waliKelasId = { not: null };
@@ -48,7 +49,7 @@ class StudentRepository {
       whereClause.classId = null;
       whereClause.waliKelasId = null;
     }
-  
+
     if (grade) {
       whereClause.class = {
         name: {
@@ -60,7 +61,7 @@ class StudentRepository {
     if (majorCode) {
       whereClause.Major = { majorCode };
     }
-  
+
     return await prisma.student.findMany({
       where: whereClause,
       orderBy: {
@@ -69,8 +70,6 @@ class StudentRepository {
       include: { Major: true, class: true },
     });
   }
-  
-  
 
   async updateParentOfStudent(studentId, parentData) {
     const { fatherName, motherName, parentJob, parentAddress, phone } =

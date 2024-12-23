@@ -66,6 +66,7 @@ class ClassStudentController {
         message: "insert student in the class successfuly",
       });
     } catch (error) {
+      console.log(error);
       return res.status(400).json({
         status: 400,
         message: `Failed to create class due to error: ${error.message}`,

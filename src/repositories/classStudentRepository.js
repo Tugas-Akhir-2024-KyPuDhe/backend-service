@@ -139,6 +139,8 @@ class ClassStudentRepository {
   // }
 
   async insertStudentInClass(classId, collectionNIS) {
+    const currentDate = new Date();
+    const academicYear = `${currentDate.getFullYear()}/${currentDate.getFullYear() + 1}`;
     const students = await prisma.student.findMany({
       where: {
         classId: null,
@@ -161,6 +163,18 @@ class ClassStudentRepository {
       data: {
         classId,
       },
+    });
+
+    const historyRecords = students.map((student) => ({
+      studentId: student.id,
+      oldClassId: student.classId || null,
+      currentClassId: classId,
+      academicYear,
+      statusNaik: student.classId ? "naik" : "baru",
+    }));
+  
+    await prisma.historyClass.createMany({
+      data: historyRecords,
     });
 
     const studentsWithClass = await prisma.student.findMany({

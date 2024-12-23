@@ -104,16 +104,18 @@ model Student {
 }
 
 model HistoryClass {
-  id          Int      @id @default(autoincrement())
-  studentId   Int
-  oldClassId  Int
-  tahunAjaran String
-  statusNaik  String // naik | lulus | tinggal
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  studentId      Int
+  oldClassId     Int?
+  currentClassId Int
+  academicYear   String
+  statusNaik     String // naik | lulus | tinggal
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  student  Student @relation(fields: [studentId], references: [id])
-  oldClass Class   @relation(fields: [oldClassId], references: [id])
+  student      Student @relation(fields: [studentId], references: [id])
+  oldClass     Class?   @relation(fields: [oldClassId], references: [id], name: "OldClassRelation")
+  currentClass Class   @relation(fields: [currentClassId], references: [id], name: "CurrentClassRelation")
 }
 
 model Media {
@@ -193,7 +195,8 @@ model Class {
   major           Major?           @relation(fields: [majorCode], references: [majorCode])
   student         Student[]
   homeRoomTeacher Staff?           @relation(fields: [staffId], references: [id])
-  HistoryClass    HistoryClass[]
+  HistoryClassOld HistoryClass[]   @relation("OldClassRelation")
+  HistoryClassNew HistoryClass[]   @relation("CurrentClassRelation")
   CourseInClass   CourseInClass[]
   StudentsGrades  StudentsGrades[]
 }
