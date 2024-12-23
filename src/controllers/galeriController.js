@@ -83,7 +83,8 @@ class GaleriController {
 
   async getAllGaleri(req, res) {
     try {
-      const response = await galeriRepository.getAllGaleri();
+      const { status = "Active" } = req.query;
+      const response = await galeriRepository.getAllGaleri(status);
       res.status(200).json({
         status: 200,
         message: "Successfully retrieved all galeri.",

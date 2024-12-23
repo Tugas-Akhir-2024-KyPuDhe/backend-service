@@ -9,7 +9,14 @@ class GaleriRepository {
   }
 
   async updateGaleri(id, data) {
-    const { name, description, prioritas, status, mediaIdsToDelete, newMediaData } = data;
+    const {
+      name,
+      description,
+      prioritas,
+      status,
+      mediaIdsToDelete,
+      newMediaData,
+    } = data;
 
     const galeri = await prisma.galeri.findUnique({
       where: { id: parseInt(id) },
@@ -20,19 +27,23 @@ class GaleriRepository {
       throw new Error("Galeri not found");
     }
 
-    const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
+    const NewMediaIdsToDelete = mediaIdsToDelete
+      ? mediaIdsToDelete.map((id) => parseInt(id))
+      : [];
 
     if (NewMediaIdsToDelete.length > 0) {
-      for (const media of (await prisma.media.findMany({where: {
-        id: {
-          in: NewMediaIdsToDelete,
+      for (const media of await prisma.media.findMany({
+        where: {
+          id: {
+            in: NewMediaIdsToDelete,
+          },
         },
-      },}))) {
+      })) {
         await deleteMediaFromCloud(
           media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
         );
       }
-      
+
       await prisma.media.deleteMany({
         where: {
           id: {
@@ -46,8 +57,6 @@ class GaleriRepository {
         },
       });
     }
-
-   
 
     return await prisma.galeri.update({
       where: { id: parseInt(id) },
@@ -63,7 +72,6 @@ class GaleriRepository {
       },
     });
   }
-
 
   async deleteGaleri(id) {
     const galeri = await prisma.galeri.findUnique({
@@ -90,11 +98,18 @@ class GaleriRepository {
     });
   }
 
-  async getAllGaleri() {
+  async getAllGaleri(status) {
+    let whereCondition = {};
+    if (status !== "Active") {
+      whereCondition = {};
+    } else {
+      whereCondition = { status: status };
+    }
     return prisma.galeri.findMany({
       orderBy: {
         prioritas: "asc",
       },
+      where: whereCondition,
       include: {
         media: true,
       },
