@@ -69,11 +69,19 @@ class BannerRepository {
     });
   }
 
-  async getAllBanner() {
+  async getAllBanner(status) {
+    let whereCondition = {};
+    if (status !== "active") {
+      whereCondition = {};
+    } else {
+      whereCondition = { status: status };
+    }
+
     return prisma.bannerPage.findMany({
       orderBy: {
         prioritas: "asc",
       },
+      where: whereCondition,
       include: {
         banner: true,
       },
