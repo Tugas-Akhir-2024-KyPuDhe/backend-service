@@ -79,7 +79,7 @@ class BannerController {
 
   async getAllBanner(req, res) {
     try {
-      const { status = "active" } = req.query;
+      const { status = "Active" } = req.query;
       const response = await bannerRepository.getAllBanner(status);
       res.status(200).json({
         status: 200,

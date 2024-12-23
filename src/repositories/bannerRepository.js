@@ -71,7 +71,7 @@ class BannerRepository {
 
   async getAllBanner(status) {
     let whereCondition = {};
-    if (status !== "active") {
+    if (status !== "Active") {
       whereCondition = {};
     } else {
       whereCondition = { status: status };
