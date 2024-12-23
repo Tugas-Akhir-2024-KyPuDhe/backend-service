@@ -59,7 +59,7 @@ class CourseRepository {
   async getAllCourse(gradeCLass = "", status) {
     let whereCondition = gradeCLass ? { grade: gradeCLass } : {};
 
-    if (status && status !== "active") {
+    if (status && status !== "Active") {
       whereCondition.status = status;
     }
 
