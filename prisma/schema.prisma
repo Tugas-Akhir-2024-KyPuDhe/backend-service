@@ -105,6 +105,7 @@ model Student {
 
 model HistoryClass {
   id             Int      @id @default(autoincrement())
+  uuid           String?   @default(uuid())
   studentId      Int
   oldClassId     Int?
   currentClassId Int
@@ -114,7 +115,7 @@ model HistoryClass {
   updatedAt      DateTime @updatedAt
 
   student      Student @relation(fields: [studentId], references: [id])
-  oldClass     Class?   @relation(fields: [oldClassId], references: [id], name: "OldClassRelation")
+  oldClass     Class?  @relation(fields: [oldClassId], references: [id], name: "OldClassRelation")
   currentClass Class   @relation(fields: [currentClassId], references: [id], name: "CurrentClassRelation")
 }
 

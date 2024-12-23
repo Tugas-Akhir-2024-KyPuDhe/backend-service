@@ -170,7 +170,7 @@ class ClassStudentRepository {
       oldClassId: student.classId || null,
       currentClassId: classId,
       academicYear,
-      statusNaik: student.classId ? "naik" : "baru",
+      statusNaik: "Aktif",
     }));
   
     await prisma.historyClass.createMany({

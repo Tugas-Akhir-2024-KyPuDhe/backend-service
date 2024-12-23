@@ -5,30 +5,30 @@ const prisma = new PrismaClient();
 
 async function main() {
   // #region | Seeder untuk data sekolah
-  const configSchool = {
-    name: "SMK NEGERI 1 LUMBAN JULU",
-    about:
-      "SMK Negeri 1 Lumban Julu adalah institusi pendidikan kejuruan yang berfokus pada pengembangan keterampilan siswa di bidang teknologi, bisnis, dan layanan masyarakat. Kami berdedikasi untuk mencetak lulusan yang siap bersaing di dunia kerja maupun melanjutkan pendidikan ke jenjang yang lebih tinggi.",
-    vision:
-      "Menjadi sekolah kejuruan unggulan yang menghasilkan lulusan berkualitas, berkarakter, dan berkompeten di bidangnya untuk bersaing di era global.",
-    mission:
-      "1. Menyediakan pendidikan kejuruan yang berbasis teknologi dan kewirausahaan.\n2. Meningkatkan kompetensi siswa melalui pelatihan praktik kerja industri.\n3. Membentuk karakter siswa yang jujur, disiplin, dan bertanggung jawab.\n4. Mengembangkan kurikulum yang relevan dengan kebutuhan dunia kerja.\n5. Menjalin kemitraan dengan dunia usaha dan industri.",
-    address: "Jalan Lintas Sumatera, Aeknatolu Jaya, Kecamatan Lumban Julu",
-    telp: "+62 822-8302-0850",
-    email: "info@smkn1lumbanjulu.sch.id",
-    maps: '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15942.833059396076!2d99.0161061!3d2.6008913!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031f01ad5a61e53%3A0xa1341928e9376e81!2sSMK%20Negeri%201%20Lumbanjulu!5e0!3m2!1sid!2sid!4v1731691727941!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
-    npsn: "12345678",
-    fb: "https://facebook.com/smkn1lumbanjulu",
-    ig: "https://instagram.com/smkn1lumbanjulu",
-    tiktok: "https://tiktok.com/@smkn1lumbanjulu",
-  };
+  // const configSchool = {
+  //   name: "SMK NEGERI 1 LUMBAN JULU",
+  //   about:
+  //     "SMK Negeri 1 Lumban Julu adalah institusi pendidikan kejuruan yang berfokus pada pengembangan keterampilan siswa di bidang teknologi, bisnis, dan layanan masyarakat. Kami berdedikasi untuk mencetak lulusan yang siap bersaing di dunia kerja maupun melanjutkan pendidikan ke jenjang yang lebih tinggi.",
+  //   vision:
+  //     "Menjadi sekolah kejuruan unggulan yang menghasilkan lulusan berkualitas, berkarakter, dan berkompeten di bidangnya untuk bersaing di era global.",
+  //   mission:
+  //     "1. Menyediakan pendidikan kejuruan yang berbasis teknologi dan kewirausahaan.\n2. Meningkatkan kompetensi siswa melalui pelatihan praktik kerja industri.\n3. Membentuk karakter siswa yang jujur, disiplin, dan bertanggung jawab.\n4. Mengembangkan kurikulum yang relevan dengan kebutuhan dunia kerja.\n5. Menjalin kemitraan dengan dunia usaha dan industri.",
+  //   address: "Jalan Lintas Sumatera, Aeknatolu Jaya, Kecamatan Lumban Julu",
+  //   telp: "+62 822-8302-0850",
+  //   email: "info@smkn1lumbanjulu.sch.id",
+  //   maps: '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15942.833059396076!2d99.0161061!3d2.6008913!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031f01ad5a61e53%3A0xa1341928e9376e81!2sSMK%20Negeri%201%20Lumbanjulu!5e0!3m2!1sid!2sid!4v1731691727941!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
+  //   npsn: "12345678",
+  //   fb: "https://facebook.com/smkn1lumbanjulu",
+  //   ig: "https://instagram.com/smkn1lumbanjulu",
+  //   tiktok: "https://tiktok.com/@smkn1lumbanjulu",
+  // };
 
-  (await prisma.configSchool.count({})) < 1 &&
-    (await prisma.configSchool.create({
-      data: configSchool,
-    }));
+  // (await prisma.configSchool.count({})) < 1 &&
+  //   (await prisma.configSchool.create({
+  //     data: configSchool,
+  //   }));
 
-  console.log("Seeding config school completed.");
+  // console.log("Seeding config school completed.");
   //#endregion
 
   // #region | Seeder Students
@@ -168,54 +168,54 @@ async function main() {
   // #endregion
 
   //#regon | Seeder Staff
-  const staff = {
-    name: "Joko",
-    birthPlace: "21 Juni 1961",
-    address: "Solo",
-    phone: "08536746398",
-    email: "Joko@gmail.com",
-    gender: "L",
-    mapel: "",
-    nip: "P001",
-    type: "PH",
-    position: "",
-    startDate: new Date("2024-08-07"),
-    role: "STAFF",
-  };
+  // const staff = {
+  //   name: "Joko",
+  //   birthPlace: "21 Juni 1961",
+  //   address: "Solo",
+  //   phone: "08536746398",
+  //   email: "Joko@gmail.com",
+  //   gender: "L",
+  //   mapel: "",
+  //   nip: "P001",
+  //   type: "PH",
+  //   position: "",
+  //   startDate: new Date("2024-08-07"),
+  //   role: "STAFF",
+  // };
 
-  const staffCount = await prisma.staff.count({});
-  if (staffCount < 1) {
-    // Membuat user baru jika belum ada staff
-    const hashedPassword = await bcrypt.hash("12345678", 10); // Ganti dengan password yang sesuai
+  // const staffCount = await prisma.staff.count({});
+  // if (staffCount < 1) {
+  //   // Membuat user baru jika belum ada staff
+  //   const hashedPassword = await bcrypt.hash("12345678", 10); // Ganti dengan password yang sesuai
 
-    await prisma.user.create({
-      data: {
-        username: staff.nip, // Menggunakan nip sebagai username
-        password: hashedPassword, // Password yang telah di-hash
-        roles: {
-          create: {
-            name: staff.role, // Menggunakan role yang ada pada data staff
-          },
-        },
-        staff: {
-          create: {
-            name: staff.name,
-            birthPlace: staff.birthPlace,
-            address: staff.address,
-            phone: staff.phone,
-            email: staff.email,
-            gender: staff.gender,
-            mapel: staff.mapel,
-            nip: staff.nip,
-            type: staff.type,
-            position: staff.position,
-            startDate: staff.startDate,
-          },
-        },
-      },
-    });
-  }
-  console.log("Seeding Staff completed.");
+  //   await prisma.user.create({
+  //     data: {
+  //       username: staff.nip, // Menggunakan nip sebagai username
+  //       password: hashedPassword, // Password yang telah di-hash
+  //       roles: {
+  //         create: {
+  //           name: staff.role, // Menggunakan role yang ada pada data staff
+  //         },
+  //       },
+  //       staff: {
+  //         create: {
+  //           name: staff.name,
+  //           birthPlace: staff.birthPlace,
+  //           address: staff.address,
+  //           phone: staff.phone,
+  //           email: staff.email,
+  //           gender: staff.gender,
+  //           mapel: staff.mapel,
+  //           nip: staff.nip,
+  //           type: staff.type,
+  //           position: staff.position,
+  //           startDate: staff.startDate,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
+  // console.log("Seeding Staff completed.");
   // #endregion
 }
 
