@@ -56,9 +56,13 @@ class CourseRepository {
     });
   }
 
-  async getAllCourse(gradeCLass = "") {
-    const whereCondition = gradeCLass ? { grade: gradeCLass } : {};
-  
+  async getAllCourse(gradeCLass = "", status) {
+    let whereCondition = gradeCLass ? { grade: gradeCLass } : {};
+
+    if (status && status !== "active") {
+      whereCondition.status = status;
+    }
+
     return prisma.course.findMany({
       orderBy: {
         grade: "asc",
@@ -69,7 +73,6 @@ class CourseRepository {
       },
     });
   }
-  
 
   async findCourseById(id) {
     return prisma.course.findFirst({
