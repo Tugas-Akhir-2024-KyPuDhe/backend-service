@@ -292,7 +292,7 @@ class ArtikelController {
       const files = req.files?.["media"] || [];
       let bannerId = null;
 
-      const existArtikel = await artikelRepository.findArtikelByUuid(id);
+      const existArtikel = await artikelRepository.findArtikelById(parseInt(id));
       if (!existArtikel) {
         return res.status(404).json({
           status: 400,
