@@ -127,31 +127,43 @@ class ArtikelController {
 
   async getAllArtikel(req, res) {
     const { page = 1, per_page = 15, keyword = "" } = req.query;
-    const currentPage = Number(page);
-    const itemsPerPage = Number(per_page);
 
     try {
-      const response = await artikelRepository.getAllArtikel(
-        currentPage,
-        itemsPerPage,
-        keyword
-      );
-      const totalArticles = await artikelRepository.getTotalArtikel(keyword);
-      const lastPage =
-        totalArticles > 0 ? Math.ceil(totalArticles / itemsPerPage) : 1;
-      const from = (currentPage - 1) * itemsPerPage + 1;
-      const to =
-        totalArticles > 0
-          ? Math.min(from + itemsPerPage - 1, totalArticles)
-          : 0;
+      let response, totalArticles, lastPage, from, to;
+
+      if (page === "no") {
+        // Ambil semua artikel tanpa pagination
+        response = await artikelRepository.getAllArtikelNoPagination(keyword);
+        totalArticles = response.length;
+        lastPage = 1; // Tidak ada halaman terakhir untuk non-paginated
+        from = 1;
+        to = totalArticles;
+      } else {
+        const currentPage = Number(page);
+        const itemsPerPage = Number(per_page);
+
+        response = await artikelRepository.getAllArtikel(
+          currentPage,
+          itemsPerPage,
+          keyword
+        );
+        totalArticles = await artikelRepository.getTotalArtikel(keyword);
+        lastPage =
+          totalArticles > 0 ? Math.ceil(totalArticles / itemsPerPage) : 1;
+        from = (currentPage - 1) * itemsPerPage + 1;
+        to =
+          totalArticles > 0
+            ? Math.min(from + itemsPerPage - 1, totalArticles)
+            : 0;
+      }
 
       res.status(200).json({
         status: 200,
         message: "Successfully retrieved all articles.",
         total: totalArticles,
-        per_page: itemsPerPage,
-        current_page: currentPage,
-        last_page: lastPage,
+        per_page: page === "no" ? null : Number(per_page),
+        current_page: page === "no" ? null : Number(page),
+        last_page: page === "no" ? null : lastPage,
         from: totalArticles > 0 ? from : 0,
         to: to,
         data: response,
@@ -167,7 +179,14 @@ class ArtikelController {
   async getArtikelById(req, res) {
     try {
       const { id } = req.params;
-      const response = await artikelRepository.findArtikelById(id);
+      const { type } = req.query;
+
+      let response;
+      if (type == "id") {
+        response = await artikelRepository.findArtikelById(parseInt(id));
+      } else {
+        response = await artikelRepository.findArtikelByUuid(id);
+      }
       if (!response)
         return res.status(404).json({
           status: 404,
@@ -273,9 +292,7 @@ class ArtikelController {
       const files = req.files?.["media"] || [];
       let bannerId = null;
 
-      const existArtikel = await artikelRepository.findArtikelById(
-        parseInt(id)
-      );
+      const existArtikel = await artikelRepository.findArtikelByUuid(id);
       if (!existArtikel) {
         return res.status(404).json({
           status: 400,

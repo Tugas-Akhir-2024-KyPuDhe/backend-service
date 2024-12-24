@@ -128,6 +128,24 @@ class ArtikelRepository {
     });
   }
 
+  async getAllArtikelNoPagination(search = "") {
+  return await prisma.article.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {
+      OR: [
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ],
+    },
+    include: {
+      media: true,
+      banner: true,
+    },
+  });
+}
+
   async getTotalArtikel(search = "") {
     return await prisma.article.count({
       where: {
@@ -140,8 +158,18 @@ class ArtikelRepository {
   }
 
   async findArtikelById(id) {
+      return prisma.article.findUnique({
+        where: { id },
+        include: {
+          media: true,
+          banner: true,
+        },
+      });
+  }
+
+  async findArtikelByUuid(uuid) {
       return prisma.article.findFirst({
-        where: { uuid: id },
+        where: { uuid },
         include: {
           media: true,
           banner: true,
