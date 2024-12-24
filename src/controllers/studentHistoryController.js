@@ -4,7 +4,17 @@ class studentHistoryController {
   async getAllStudentHistory(req, res) {
     try {
       const { id } = req.query;
-      const response = await studentHistoryRepository.getAllHistory(parseInt(id));
+      const student = await studentHistoryRepository.getStudentById(parseInt(id));
+      
+      if (!student) {
+        return res.status(404).json({
+          status: 404,
+          message: `Student with ID ${id} not found`,
+        });
+      }
+
+      const response = await studentHistoryRepository.getAllHistory(parseInt(id), student.nis);
+
       if (!response) {
         return res.status(404).json({
           status: 404,

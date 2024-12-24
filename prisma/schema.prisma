@@ -105,12 +105,12 @@ model Student {
 
 model HistoryClass {
   id             Int      @id @default(autoincrement())
-  uuid           String?   @default(uuid())
+  uuid           String?  @default(uuid())
   studentId      Int
   oldClassId     Int?
   currentClassId Int
   academicYear   String
-  statusNaik     String // naik | lulus | tinggal
+  status         String?  @default("Aktif")// naik | lulus | tinggal
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
