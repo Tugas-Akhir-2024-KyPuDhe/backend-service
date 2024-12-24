@@ -1,7 +1,7 @@
 const prisma = require("../config/database");
 
 class StudentHistoryRepository {
-  async getAllHistory(id, nis) {
+  async getAllHistoryStudent(id, nis) {
     return prisma.historyClass.findMany({
       orderBy: {
         academicYear: "asc",
@@ -18,7 +18,38 @@ class StudentHistoryRepository {
                   include: {
                     StudentsGrades: {
                       where: {
-                        nis: { equals: nis }, 
+                        nis: { equals: nis },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            homeRoomTeacher: true,
+          },
+        },
+      },
+    });
+  }
+
+  async getDetailHistoryStudent(uuid, nis) {
+    return prisma.historyClass.findFirst({
+      orderBy: {
+        academicYear: "asc",
+      },
+      where: { uuid },
+      include: {
+        student: true,
+        currentClass: {
+          include: {
+            CourseInClass: {
+              include: {
+                teacher: true,
+                courseDetail: {
+                  include: {
+                    StudentsGrades: {
+                      where: {
+                        nis: { equals: nis },
                       },
                     },
                   },
@@ -35,6 +66,12 @@ class StudentHistoryRepository {
   async getStudentById(id) {
     return prisma.student.findFirst({
       where: { id },
+    });
+  }
+
+  async getHistoryDetail(uuid) {
+    return prisma.historyClass.findFirst({
+      where: { uuid },
     });
   }
 }
