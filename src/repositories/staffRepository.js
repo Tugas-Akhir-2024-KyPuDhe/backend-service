@@ -94,6 +94,9 @@ class StaffRepository {
               include: {
                 student: {
                   include: {
+                    ParentOfStudent: true,
+                    class: true,
+                    Major: true,
                     StudentsGrades: true,
                   },
                 },
