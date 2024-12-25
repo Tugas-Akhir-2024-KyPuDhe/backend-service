@@ -127,13 +127,13 @@ class ArtikelController {
 
   async getAllArtikel(req, res) {
     const { page = 1, per_page = 15, keyword = "", status = "PUBLISH" } = req.query;
-
+  
     try {
       let response, totalArticles, lastPage, from, to;
-
+  
       if (page === "no") {
         // Ambil semua artikel tanpa pagination
-        response = await artikelRepository.getAllArtikelNoPagination(keyword);
+        response = await artikelRepository.getAllArtikelNoPagination(keyword, status);
         totalArticles = response.length;
         lastPage = 1; // Tidak ada halaman terakhir untuk non-paginated
         from = 1;
@@ -141,14 +141,14 @@ class ArtikelController {
       } else {
         const currentPage = Number(page);
         const itemsPerPage = Number(per_page);
-
+  
         response = await artikelRepository.getAllArtikel(
           currentPage,
           itemsPerPage,
-          keyword, 
+          keyword,
           status
         );
-        totalArticles = await artikelRepository.getTotalArtikel(keyword);
+        totalArticles = await artikelRepository.getTotalArtikel(keyword, status);
         lastPage =
           totalArticles > 0 ? Math.ceil(totalArticles / itemsPerPage) : 1;
         from = (currentPage - 1) * itemsPerPage + 1;
@@ -157,7 +157,7 @@ class ArtikelController {
             ? Math.min(from + itemsPerPage - 1, totalArticles)
             : 0;
       }
-
+  
       res.status(200).json({
         status: 200,
         message: "Successfully retrieved all articles.",
