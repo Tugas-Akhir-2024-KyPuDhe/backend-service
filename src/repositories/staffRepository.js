@@ -97,6 +97,7 @@ class StaffRepository {
                     ParentOfStudent: true,
                     class: true,
                     Major: true,
+                    photo: true,
                     StudentsGrades: true,
                   },
                 },
