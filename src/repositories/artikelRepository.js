@@ -106,7 +106,7 @@ class ArtikelRepository {
     });
   }
 
-  async getAllArtikel(page, perPage, search = "") {
+  async getAllArtikel(page, perPage, search = "", status) {
     const skip = (page - 1) * perPage;
 
     return await prisma.article.findMany({
@@ -117,6 +117,7 @@ class ArtikelRepository {
       },
       where: {
         OR: [
+          { status },
           { title: { contains: search, mode: "insensitive" } },
           { description: { contains: search, mode: "insensitive" } },
         ],

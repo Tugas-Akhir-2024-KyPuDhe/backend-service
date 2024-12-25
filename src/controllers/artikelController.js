@@ -126,7 +126,7 @@ class ArtikelController {
   }
 
   async getAllArtikel(req, res) {
-    const { page = 1, per_page = 15, keyword = "" } = req.query;
+    const { page = 1, per_page = 15, keyword = "", status = "PUBLISH" } = req.query;
 
     try {
       let response, totalArticles, lastPage, from, to;
@@ -145,7 +145,8 @@ class ArtikelController {
         response = await artikelRepository.getAllArtikel(
           currentPage,
           itemsPerPage,
-          keyword
+          keyword, 
+          status
         );
         totalArticles = await artikelRepository.getTotalArtikel(keyword);
         lastPage =
