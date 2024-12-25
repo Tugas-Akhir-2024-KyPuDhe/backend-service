@@ -29,14 +29,18 @@ class ArtikelRepository {
       throw new Error("Artikel not found");
     }
 
-    const NewMediaIdsToDelete = mediaIdsToDelete ? mediaIdsToDelete.map((id) => parseInt(id)) : [];
+    const NewMediaIdsToDelete = mediaIdsToDelete
+      ? mediaIdsToDelete.map((id) => parseInt(id))
+      : [];
 
     if (NewMediaIdsToDelete.length > 0) {
-      for (const media of (await prisma.media.findMany({where: {
-        id: {
-          in: NewMediaIdsToDelete,
+      for (const media of await prisma.media.findMany({
+        where: {
+          id: {
+            in: NewMediaIdsToDelete,
+          },
         },
-      },}))) {
+      })) {
         await deleteMediaFromCloud(
           media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
         );
@@ -108,7 +112,7 @@ class ArtikelRepository {
 
   async getAllArtikel(page, perPage, search = "", status = "PUBLISH") {
     const skip = (page - 1) * perPage;
-  
+
     return await prisma.article.findMany({
       skip: skip,
       take: perPage,
@@ -117,7 +121,7 @@ class ArtikelRepository {
       },
       where: {
         AND: [
-          { status: status }, // Filter by status
+          { status: status },
           {
             OR: [
               { title: { contains: search, mode: "insensitive" } },
@@ -134,52 +138,57 @@ class ArtikelRepository {
   }
 
   async getAllArtikelNoPagination(search = "") {
-  return await prisma.article.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-    where: {
-      OR: [
-        { title: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-      ],
-    },
-    include: {
-      media: true,
-      banner: true,
-    },
-  });
-}
-
-  async getTotalArtikel(search = "") {
-    return await prisma.article.count({
+    return await prisma.article.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
       where: {
         OR: [
           { title: { contains: search, mode: "insensitive" } },
           { description: { contains: search, mode: "insensitive" } },
         ],
       },
+      include: {
+        media: true,
+        banner: true,
+      },
+    });
+  }
+
+  async getTotalArtikel(search = "", status = "PUBLISH") {
+    return await prisma.article.count({
+      where: {
+        AND: [
+          { status: status },
+          {
+            OR: [
+              { title: { contains: search, mode: "insensitive" } },
+              { description: { contains: search, mode: "insensitive" } },
+            ],
+          },
+        ],
+      },
     });
   }
 
   async findArtikelById(id) {
-      return prisma.article.findUnique({
-        where: { id },
-        include: {
-          media: true,
-          banner: true,
-        },
-      });
+    return prisma.article.findUnique({
+      where: { id },
+      include: {
+        media: true,
+        banner: true,
+      },
+    });
   }
 
   async findArtikelByUuid(uuid) {
-      return prisma.article.findFirst({
-        where: { uuid },
-        include: {
-          media: true,
-          banner: true,
-        },
-      });
+    return prisma.article.findFirst({
+      where: { uuid },
+      include: {
+        media: true,
+        banner: true,
+      },
+    });
   }
 }
 
