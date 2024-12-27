@@ -5,9 +5,9 @@ const router = express.Router();
 const uploadFiles = staffController.uploadFiles();
 const compressMedia = staffController.compressAndUpload;
 
-router.get("/get/", authMiddleware, authorizeRoles(['STAFF']), staffController.getStaff);
-router.get("/get/class/", authMiddleware, authorizeRoles(['TEACHER']), staffController.getClassTeacher);
-router.get("/get/:nip", authMiddleware, staffController.getStaffByUsername);
+router.get("/get/", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), staffController.getStaff);
+router.get("/get/class/", authMiddleware, authorizeRoles(['TEACHER', 'STAFF']), staffController.getClassTeacher);
+router.get("/get/:nip", authMiddleware, authorizeRoles(['TEACHER', 'STAFF']), staffController.getStaffByUsername);
 router.put("/update/:id", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, staffController.updateUserStaff);
 
 module.exports = router;
