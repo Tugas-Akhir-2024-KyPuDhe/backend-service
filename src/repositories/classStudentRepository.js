@@ -21,12 +21,34 @@ class ClassStudentRepository {
   }
 
   async findClassById(id) {
-    return prisma.class.findFirst({
+    return await prisma.class.findFirst({
       where: { id },
       include: {
         homeRoomTeacher: true,
-        CourseInClass: { include: { courseDetail: true, teacher: true } },
-        student: true,
+        CourseInClass: {
+          include: {
+            courseDetail: {
+              include: {
+                StudentsGrades: {
+                  ...(id != "" && { where: { classId: parseInt(id) } }),
+                },
+              },
+            },
+            teacher: true,
+          },
+        },
+        student: {
+          include: {
+            ParentOfStudent: true,
+            class: true,
+            Major: true,
+            StudentsGrades: {
+              ...(id != "" && { where: { classId: parseInt(id) } }),
+              include: { course: true },
+            },
+          },
+        },
+        major: true,
       },
     });
   }
@@ -140,7 +162,9 @@ class ClassStudentRepository {
 
   async insertStudentInClass(classId, collectionNIS) {
     const currentDate = new Date();
-    const academicYear = `${currentDate.getFullYear()}/${currentDate.getFullYear() + 1}`;
+    const academicYear = `${currentDate.getFullYear()}/${
+      currentDate.getFullYear() + 1
+    }`;
     const students = await prisma.student.findMany({
       where: {
         classId: null,
@@ -172,7 +196,7 @@ class ClassStudentRepository {
       academicYear,
       status: "Aktif",
     }));
-  
+
     await prisma.historyClass.createMany({
       data: historyRecords,
     });

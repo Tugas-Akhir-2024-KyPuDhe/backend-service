@@ -78,6 +78,12 @@ class StaffRepository {
     });
   }
 
+  async findCourseInClassById(id) {
+    return await prisma.courseInClass.findFirst({
+      where: { id },
+    });
+  }
+
   async findClassByNip(nip, id) {
     const data = await prisma.staff.findFirst({
       where: { nip },

@@ -112,14 +112,14 @@ class StaffController {
     const { nip, id = "" } = req.query;
 
     try {
-      const staff = await staffRepository.findStaffByNip(nip);
-
-      if (!staff) {
-        return res
-          .status(404)
-          .json({ status: 404, message: "Staff not found" });
+      if (id) {
+        const courseInClass = await staffRepository.findCourseInClassById(parseInt(id));
+        if (!courseInClass) {
+          return res
+            .status(404)
+            .json({ status: 404, message: "Class not found" });
+        }
       }
-
       const classStaff = await staffRepository.findClassByNip(nip, id);
 
       res.status(200).json({
