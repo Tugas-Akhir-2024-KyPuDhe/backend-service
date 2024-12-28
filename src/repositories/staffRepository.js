@@ -107,7 +107,7 @@ class StaffRepository {
         },
       },
     });
-  
+
     if (data && data.CourseInClass) {
       data.CourseInClass = data.CourseInClass.map((course) => {
         if (course.class && course.class.student) {
@@ -121,10 +121,43 @@ class StaffRepository {
         return course;
       });
     }
-  
+
     return data;
   }
-  
+
+  async findClassRoomTeacherByNip(id) {
+    const classes = await prisma.class.findMany({
+      where: { staffId: id },
+      orderBy: { academicYear: "desc" },
+      select: {
+        id: true,
+        uuid: true,
+        name: true,
+        description: true,
+        majorCode: true,
+        staffId: true,
+        academicYear: true,
+        capacity: true,
+        createdAt: true,
+        updatedAt: true,
+        _count: {
+          select: {
+            student: true,
+          },
+        },
+      },
+    });
+
+    const result = classes.map((classItem) => {
+      const { _count, ...rest } = classItem;
+      return {
+        ...rest,
+        student: _count.student,
+      };
+    });
+
+    return result;
+  }
 }
 
 module.exports = new StaffRepository();

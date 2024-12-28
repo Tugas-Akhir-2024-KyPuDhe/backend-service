@@ -134,6 +134,32 @@ class StaffController {
     }
   }
 
+  async getClassRoomTeacher(req, res) {
+    const { id } = req.query;
+
+    try {
+      const staff = await staffRepository.findStaffById(parseInt(id));
+
+      if (!staff) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "Staff not found" });
+      }
+
+      const classStaff = await staffRepository.findClassRoomTeacherByNip(parseInt(id));
+
+      res.status(200).json({
+        status: 200,
+        message: "Class room Staff retrieved successfully",
+        data: classStaff,
+      });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
+    }
+  }
+
   async getStaff(req, res) {
     try {
       let tipeUser = req.query.tipe || "";
