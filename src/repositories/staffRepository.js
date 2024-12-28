@@ -144,7 +144,7 @@ class StaffRepository {
       return {
         ...rest,
         major,
-        student: _count.student,
+        totalStudent: _count.student,
       };
     });
 
