@@ -129,18 +129,8 @@ class StaffRepository {
     const classes = await prisma.class.findMany({
       where: { staffId: id },
       orderBy: { academicYear: "desc" },
-      include: { major: true },
-      select: {
-        id: true,
-        uuid: true,
-        name: true,
-        description: true,
-        majorCode: true,
-        staffId: true,
-        academicYear: true,
-        capacity: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
+        major: true,
         _count: {
           select: {
             student: true,
@@ -150,9 +140,10 @@ class StaffRepository {
     });
 
     const result = classes.map((classItem) => {
-      const { _count, ...rest } = classItem;
+      const { _count, major, ...rest } = classItem;
       return {
         ...rest,
+        major,
         student: _count.student,
       };
     });
