@@ -129,6 +129,7 @@ class StaffRepository {
     const classes = await prisma.class.findMany({
       where: { staffId: id },
       orderBy: { academicYear: "desc" },
+      include: { major: true },
       select: {
         id: true,
         uuid: true,
