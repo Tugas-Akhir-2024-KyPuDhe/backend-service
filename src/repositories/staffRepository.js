@@ -98,6 +98,7 @@ class StaffRepository {
             teacher: true,
             class: {
               include: {
+                major: true,
                 student: {
                   include: {
                     ParentOfStudent: true,
