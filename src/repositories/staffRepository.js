@@ -99,10 +99,11 @@ class StaffRepository {
             class: {
               include: {
                 major: true,
+                homeRoomTeacher: true,
                 student: {
                   include: {
                     ParentOfStudent: true,
-                    class: {include: {homeRoomTeacher: true}},
+                    class: true,
                     Major: true,
                     photo: true,
                     StudentsGrades: true,
