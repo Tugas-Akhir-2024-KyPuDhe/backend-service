@@ -4,6 +4,7 @@ const multer = require("multer");
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
   endpoint: process.env.S3_ENDPOINT_URL,
+  forcePathStyle: true, //with supase
   credentials: {
     accessKeyId: process.env.S3_ACCESS_KEY,
     secretAccessKey: process.env.S3_SECRET_KEY,
