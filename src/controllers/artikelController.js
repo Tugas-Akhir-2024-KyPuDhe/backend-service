@@ -131,6 +131,7 @@ class ArtikelController {
       per_page = 15,
       keyword = "",
       status = "PUBLISH",
+      type,
     } = req.query;
 
     try {
@@ -154,11 +155,13 @@ class ArtikelController {
           currentPage,
           itemsPerPage,
           keyword,
-          status
+          status,
+          type
         );
         totalArticles = await artikelRepository.getTotalArtikel(
           keyword,
-          status
+          status,
+          type,
         );
         lastPage =
           totalArticles > 0 ? Math.ceil(totalArticles / itemsPerPage) : 1;

@@ -110,7 +110,7 @@ class ArtikelRepository {
     });
   }
 
-  async getAllArtikel(page, perPage, search = "", status = "PUBLISH") {
+  async getAllArtikel(page, perPage, search = "", status = "PUBLISH", type) {
     const skip = (page - 1) * perPage;
 
     return await prisma.article.findMany({
@@ -121,7 +121,8 @@ class ArtikelRepository {
       },
       where: {
         AND: [
-          { status: status },
+          { status },
+          { type },
           {
             OR: [
               { title: { contains: search, mode: "insensitive" } },
@@ -155,11 +156,12 @@ class ArtikelRepository {
     });
   }
 
-  async getTotalArtikel(search = "", status = "PUBLISH") {
+  async getTotalArtikel(search = "", status = "PUBLISH", type) {
     return await prisma.article.count({
       where: {
         AND: [
-          { status: status },
+          { status },
+          { type },
           {
             OR: [
               { title: { contains: search, mode: "insensitive" } },
