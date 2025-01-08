@@ -6,6 +6,18 @@ class StudentPositionInClassRepository {
       data: data,
     });
   }
+
+  async deletePositionById(id) {
+    return prisma.studentPositionInClass.findUnique({
+      where: { id },
+    });
+  }
+
+  async findPositionById(id) {
+    return prisma.studentPositionInClass.findFirst({
+      where: { id: id },
+    });
+  }
 }
 
 module.exports = new StudentPositionInClassRepository();

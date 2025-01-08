@@ -3,6 +3,7 @@ const studentPositionInClassController = require("../controllers/studentPosition
 const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.post("/add", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), studentPositionInClassController.addPositionStudent);
+router.post("/store", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), studentPositionInClassController.addStudentPosition);
+router.delete("/delete/:id", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), studentPositionInClassController.deleteStudentPosition);
 
 module.exports = router;

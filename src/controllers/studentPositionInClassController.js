@@ -3,7 +3,7 @@ const classRepository = require("../repositories/classStudentRepository");
 const studentRepository = require("../repositories/studentRepository");
 
 class studentPositionInClassController {
-  async addPositionStudent(req, res) {
+  async addStudentPosition(req, res) {
     try {
       const { nis, classId, positionName } = req.body;
 
@@ -41,6 +41,30 @@ class studentPositionInClassController {
         status: 500,
         message: "Internal server error",
         error: error.message,
+      });
+    }
+  }
+
+  async deleteStudentPosition(req, res) {
+    try {
+      const { id } = req.params;
+      const existPosition =
+        await studentPositionInClassRepository.findPositionById(parseInt(id));
+      if (!existPosition) {
+        return res.status(404).json({
+          status: 404,
+          message: "Position not found. Cannot delete a non-existing position.",
+        });
+      }
+
+      await studentPositionInClassRepository.deletePositionById(parseInt(id));
+      res
+        .status(200)
+        .json({ status: 200, message: "Position deleted successfully." });
+    } catch (error) {
+      res.status(400).json({
+        status: 400,
+        message: `Failed to delete position due to error: ${error.message}`,
       });
     }
   }
