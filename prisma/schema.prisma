@@ -97,10 +97,11 @@ model Student {
   class     Class? @relation(fields: [classId], references: [id])
   waliKelas Staff? @relation(fields: [waliKelasId], references: [id])
 
-  ParentOfStudent ParentOfStudent[] @relation("ParentsOfStudent")
-  HistoryClass    HistoryClass[]
-  Major           Major?            @relation(fields: [majorCode], references: [majorCode])
-  StudentsGrades  StudentsGrades[]
+  ParentOfStudent        ParentOfStudent[]        @relation("ParentsOfStudent")
+  HistoryClass           HistoryClass[]
+  Major                  Major?                   @relation(fields: [majorCode], references: [majorCode])
+  StudentsGrades         StudentsGrades[]
+  StudentPositionInClass StudentPositionInClass[]
 }
 
 model HistoryClass {
@@ -110,7 +111,7 @@ model HistoryClass {
   oldClassId     Int?
   currentClassId Int
   academicYear   String
-  status         String?  @default("Aktif")// naik | lulus | tinggal
+  status         String?  @default("Aktif") // naik | lulus | tinggal
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -193,13 +194,14 @@ model Class {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  major           Major?           @relation(fields: [majorCode], references: [majorCode])
-  student         Student[]
-  homeRoomTeacher Staff?           @relation(fields: [staffId], references: [id])
-  HistoryClassOld HistoryClass[]   @relation("OldClassRelation")
-  HistoryClassNew HistoryClass[]   @relation("CurrentClassRelation")
-  CourseInClass   CourseInClass[]
-  StudentsGrades  StudentsGrades[]
+  major                  Major?                   @relation(fields: [majorCode], references: [majorCode])
+  student                Student[]
+  homeRoomTeacher        Staff?                   @relation(fields: [staffId], references: [id])
+  HistoryClassOld        HistoryClass[]           @relation("OldClassRelation")
+  HistoryClassNew        HistoryClass[]           @relation("CurrentClassRelation")
+  CourseInClass          CourseInClass[]
+  StudentsGrades         StudentsGrades[]
+  StudentPositionInClass StudentPositionInClass[]
 }
 
 model Major {
@@ -341,5 +343,18 @@ model StudentsGrades {
   student Student? @relation(fields: [nis], references: [nis])
   course  Course?  @relation(fields: [courseCode], references: [code])
   teacher Staff?   @relation(fields: [teacherId], references: [id])
+  class   Class?   @relation(fields: [classId], references: [id])
+}
+
+model StudentPositionInClass {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  nis          String
+  classId      Int
+  positionName String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student Student? @relation(fields: [nis], references: [nis])
   class   Class?   @relation(fields: [classId], references: [id])
 }
