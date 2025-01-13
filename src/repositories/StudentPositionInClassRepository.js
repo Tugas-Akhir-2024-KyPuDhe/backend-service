@@ -20,7 +20,7 @@ class StudentPositionInClassRepository {
   }
 
   async findPositionByClassId(id) {
-    return prisma.studentPositionInClass.findFirst({
+    return prisma.studentPositionInClass.findMany({
       where: { classId: id },
     });
   }
