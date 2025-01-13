@@ -22,6 +22,7 @@ class StudentPositionInClassRepository {
   async findPositionByClassId(id) {
     return prisma.studentPositionInClass.findMany({
       where: { classId: id },
+      include: { student: true },
     });
   }
 }
