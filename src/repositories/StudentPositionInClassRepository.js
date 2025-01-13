@@ -18,6 +18,12 @@ class StudentPositionInClassRepository {
       where: { id: id },
     });
   }
+
+  async findPositionByClassId(id) {
+    return prisma.studentPositionInClass.findFirst({
+      where: { classId: id },
+    });
+  }
 }
 
 module.exports = new StudentPositionInClassRepository();

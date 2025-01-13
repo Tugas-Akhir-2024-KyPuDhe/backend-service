@@ -45,6 +45,31 @@ class studentPositionInClassController {
     }
   }
 
+  async getPosisitionByClassId(req, res) {
+    try {
+      const { id } = req.params;
+      const response = await studentPositionInClassRepository.findPositionByClassId(parseInt(id));
+      if (!response) {
+        return res.status(404).json({
+          status: 404,
+          message:
+            "Position not found. The provided ID does not match any records.",
+        });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "Successfully retrieved the Position.",
+        data: response,
+      });
+    } catch (error) {
+      res.status(400).json({
+        status: 400,
+        message: `Failed to retrieve Position due to error: ${error.message}`,
+      });
+    }
+  }
+
   async deleteStudentPosition(req, res) {
     try {
       const { id } = req.params;

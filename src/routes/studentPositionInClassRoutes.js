@@ -4,6 +4,7 @@ const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddlewar
 const router = express.Router();
 
 router.post("/store", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), studentPositionInClassController.addStudentPosition);
+router.delete("/getByClassId/:id", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), studentPositionInClassController.getPosisitionByClassId);
 router.delete("/delete/:id", authMiddleware, authorizeRoles(['STAFF', 'TEACHER']), studentPositionInClassController.deleteStudentPosition);
 
 module.exports = router;
