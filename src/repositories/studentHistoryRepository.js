@@ -11,6 +11,7 @@ class StudentHistoryRepository {
         student: true,
         currentClass: {
           include: {
+            StudentPositionInClass: true,
             CourseInClass: {
               include: {
                 teacher: true,
