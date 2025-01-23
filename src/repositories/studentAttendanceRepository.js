@@ -27,7 +27,7 @@ class StudentAttendanceRepository {
         date: date,
       },
       include: {
-        detailAttendanceStudents: true,
+        detailAttendanceStudents: { include: { student: true } },
       },
     });
   }
@@ -38,7 +38,7 @@ class StudentAttendanceRepository {
         classId: classId,
       },
       include: {
-        detailAttendanceStudents: true,
+        detailAttendanceStudents: { include: { student: true } },
       },
     });
   }
