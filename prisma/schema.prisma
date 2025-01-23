@@ -97,11 +97,12 @@ model Student {
   class     Class? @relation(fields: [classId], references: [id])
   waliKelas Staff? @relation(fields: [waliKelasId], references: [id])
 
-  ParentOfStudent        ParentOfStudent[]        @relation("ParentsOfStudent")
-  HistoryClass           HistoryClass[]
-  Major                  Major?                   @relation(fields: [majorCode], references: [majorCode])
-  StudentsGrades         StudentsGrades[]
-  StudentPositionInClass StudentPositionInClass[]
+  ParentOfStudent          ParentOfStudent[]          @relation("ParentsOfStudent")
+  HistoryClass             HistoryClass[]
+  Major                    Major?                     @relation(fields: [majorCode], references: [majorCode])
+  StudentsGrades           StudentsGrades[]
+  StudentPositionInClass   StudentPositionInClass[]
+  DetailAttendanceStudents DetailAttendanceStudents[]
 }
 
 model HistoryClass {
@@ -202,6 +203,7 @@ model Class {
   CourseInClass          CourseInClass[]
   StudentsGrades         StudentsGrades[]
   StudentPositionInClass StudentPositionInClass[]
+  AttendanceStudents     AttendanceStudents[]
 }
 
 model Major {
@@ -357,4 +359,37 @@ model StudentPositionInClass {
 
   student Student? @relation(fields: [nis], references: [nis])
   class   Class?   @relation(fields: [classId], references: [id])
+}
+
+model AttendanceStudents {
+  id        Int       @id @default(autoincrement())
+  uuid      String    @unique @default(uuid())
+  classId   Int
+  date      DateTime
+  startTime DateTime?
+  endTime   DateTime?
+  status    Int       @default(0) //1 = final, 0 = pending
+  notes     String?
+  createdBy String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  class                    Class?                     @relation(fields: [classId], references: [id])
+  detailAttendanceStudents DetailAttendanceStudents[]
+}
+
+model DetailAttendanceStudents {
+  id           Int       @id @default(autoincrement())
+  uuid         String    @unique @default(uuid())
+  attendanceId Int
+  nis          String
+  checkInTime  DateTime?
+  checkOutTime DateTime?
+  status       Int       @default(1) //1 = hadir, 2 = izin, 3 = sakir
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  attendance AttendanceStudents @relation(fields: [attendanceId], references: [id])
+  student    Student?           @relation(fields: [nis], references: [nis])
 }
