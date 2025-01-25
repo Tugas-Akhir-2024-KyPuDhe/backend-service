@@ -97,12 +97,12 @@ model Student {
   class     Class? @relation(fields: [classId], references: [id])
   waliKelas Staff? @relation(fields: [waliKelasId], references: [id])
 
-  ParentOfStudent          ParentOfStudent[]          @relation("ParentsOfStudent")
-  HistoryClass             HistoryClass[]
-  Major                    Major?                     @relation(fields: [majorCode], references: [majorCode])
-  StudentsGrades           StudentsGrades[]
-  StudentPositionInClass   StudentPositionInClass[]
-  DetailAttendanceStudents DetailAttendanceStudents[]
+  ParentOfStudent         ParentOfStudent[]         @relation("ParentsOfStudent")
+  HistoryClass            HistoryClass[]
+  Major                   Major?                    @relation(fields: [majorCode], references: [majorCode])
+  StudentsGrades          StudentsGrades[]
+  StudentPositionInClass  StudentPositionInClass[]
+  StudentDetailAttendance StudentDetailAttendance[]
 }
 
 model HistoryClass {
@@ -203,7 +203,7 @@ model Class {
   CourseInClass          CourseInClass[]
   StudentsGrades         StudentsGrades[]
   StudentPositionInClass StudentPositionInClass[]
-  AttendanceStudents     AttendanceStudents[]
+  StudentAttendance      StudentAttendance[]
 }
 
 model Major {
@@ -361,7 +361,7 @@ model StudentPositionInClass {
   class   Class?   @relation(fields: [classId], references: [id])
 }
 
-model AttendanceStudents {
+model StudentAttendance {
   id        Int       @id @default(autoincrement())
   uuid      String    @unique @default(uuid())
   classId   Int
@@ -374,11 +374,11 @@ model AttendanceStudents {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  class                    Class?                     @relation(fields: [classId], references: [id])
-  detailAttendanceStudents DetailAttendanceStudents[]
+  class                    Class?                    @relation(fields: [classId], references: [id])
+  detailAttendanceStudents StudentDetailAttendance[]
 }
 
-model DetailAttendanceStudents {
+model StudentDetailAttendance {
   id           Int       @id @default(autoincrement())
   uuid         String    @unique @default(uuid())
   attendanceId Int
@@ -390,6 +390,6 @@ model DetailAttendanceStudents {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  attendance AttendanceStudents @relation(fields: [attendanceId], references: [id])
-  student    Student?           @relation(fields: [nis], references: [nis])
+  attendance StudentAttendance @relation(fields: [attendanceId], references: [id])
+  student    Student?          @relation(fields: [nis], references: [nis])
 }

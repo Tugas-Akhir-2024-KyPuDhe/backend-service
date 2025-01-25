@@ -2,7 +2,7 @@ const prisma = require("../config/database");
 
 class StudentAttendanceRepository {
   async createAttendance(data) {
-    return prisma.attendanceStudents.create({
+    return prisma.studentAttendance.create({
       data: data,
     });
   }
@@ -15,13 +15,13 @@ class StudentAttendanceRepository {
   }
 
   async createDetailAttendance(details) {
-    return prisma.detailAttendanceStudents.createMany({
+    return prisma.studentDetailAttendance.createMany({
       data: details,
     });
   }
 
   async getAttendanceByClassAndDate(classId, date) {
-    return prisma.attendanceStudents.findFirst({
+    return prisma.studentAttendance.findFirst({
       where: {
         classId: classId,
         date: date,
@@ -33,12 +33,24 @@ class StudentAttendanceRepository {
   }
 
   async getAttendanceByClass(classId) {
-    return prisma.attendanceStudents.findMany({
+    return prisma.studentAttendance.findMany({
       where: {
         classId: classId,
       },
       include: {
         detailAttendanceStudents: { include: { student: true } },
+      },
+    });
+  }
+
+  async updateDetailAttendance({ id, attendanceId, nis, notes, status }) {
+    return prisma.studentDetailAttendance.update({
+      where: { id }, // Berdasarkan ID detail attendance
+      data: {
+        attendanceId,
+        nis,
+        notes,
+        status,
       },
     });
   }

@@ -74,10 +74,11 @@ class StudentAttendanceController {
 
       let attendanceData;
       if (date) {
-        attendanceData = await studentAttendanceRepository.getAttendanceByClassAndDate(
-          parseInt(classId),
-          new Date(date)
-        );
+        attendanceData =
+          await studentAttendanceRepository.getAttendanceByClassAndDate(
+            parseInt(classId),
+            new Date(date)
+          );
       } else {
         attendanceData = await studentAttendanceRepository.getAttendanceByClass(
           parseInt(classId)
@@ -101,6 +102,59 @@ class StudentAttendanceController {
       res.status(500).json({
         status: 500,
         message: "Internal server error",
+      });
+    }
+  }
+
+  async updateAttendance(req, res) {
+    try {
+      const { classId } = req.params;
+      const { data } = req.body;
+
+      if (!classId || !data || data.length === 0) {
+        return res.status(400).json({
+          status: 400,
+          message: "classId and data are required, and data must not be empty",
+        });
+      }
+
+      // Ambil attendance ID berdasarkan classId
+      const existingAttendance =
+        await studentAttendanceRepository.getAttendanceByClass(parseInt(classId));
+
+      if (!existingAttendance || existingAttendance.length === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "No attendance found for the specified classId",
+        });
+      }
+
+      const attendanceId = existingAttendance[0].id;
+
+      // Format data untuk pembaruan
+      const updatePromises = data.map((detail) =>
+        studentAttendanceRepository.updateDetailAttendance({
+          id: detail.id,
+          attendanceId,
+          nis: detail.nis,
+          notes: detail.notes,
+          status: detail.status,
+        })
+      );
+
+      // Tunggu semua pembaruan selesai
+      await Promise.all(updatePromises);
+
+      res.status(200).json({
+        status: 200,
+        message: "Attendance updated successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
       });
     }
   }
