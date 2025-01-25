@@ -160,7 +160,7 @@ class StudentAttendanceController {
   async updateStatusAttendance(req, res) {
     try {
       const { attendanceId } = req.params;
-      if (!attendanceId || !data || data.length === 0) {
+      if (!attendanceId) {
         return res.status(400).json({
           status: 400,
           message:
