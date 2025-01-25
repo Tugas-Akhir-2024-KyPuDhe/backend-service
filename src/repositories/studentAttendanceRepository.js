@@ -27,7 +27,16 @@ class StudentAttendanceRepository {
         date: date,
       },
       include: {
-        detailAttendanceStudents: { include: { student: true } },
+        detailAttendanceStudents: {
+          include: {
+            student: true,
+          },
+          orderBy: {
+            student: {
+              name: "asc",
+            },
+          },
+        },
       },
     });
   }
