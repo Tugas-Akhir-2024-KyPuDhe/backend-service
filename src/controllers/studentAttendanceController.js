@@ -134,7 +134,7 @@ class StudentAttendanceController {
       const updatePromises = data.map((detail) =>
         studentAttendanceRepository.updateDetailAttendance({
           id: detail.id,
-          attendanceId,
+          attendanceId: parseInt(attendanceId),
           nis: detail.nis,
           notes: detail.notes,
           status: detail.status,
