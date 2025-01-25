@@ -239,15 +239,19 @@ class AuthController {
 
       let name;
       let staffId;
+      let nip;
       let studentId;
+      let nis;
       let photo = "";
       if (user.staff && user.staff.length > 0) {
         name = user.staff[0].name;
         staffId = user.staff[0].id;
+        nip = user.staff[0].nip;
         photo = user.staff[0].photo?.url || "";
       } else if (user.students && user.students.length > 0) {
         name = user.students[0].name;
         studentId = user.students[0].id;
+        nis = user.staff[0].nis;
         photo = user.students[0].photo?.url || "";
       } else {
         name = null;
@@ -260,7 +264,9 @@ class AuthController {
           name: name,
           roles: user.roles[0].name,
           staff_id: staffId,
+          nip: nip,
           student_id: studentId,
+          nis: nis,
         },
         process.env.JWT_SECRET,
         {
