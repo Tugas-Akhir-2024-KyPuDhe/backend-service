@@ -108,30 +108,29 @@ class StudentAttendanceController {
 
   async updateAttendance(req, res) {
     try {
-      const { classId } = req.params;
+      const { attendanceId } = req.params;
       const { data } = req.body;
 
-      if (!classId || !data || data.length === 0) {
+      if (!attendanceId || !data || data.length === 0) {
         return res.status(400).json({
           status: 400,
-          message: "classId and data are required, and data must not be empty",
+          message:
+            "attendanceId and data are required, and data must not be empty",
         });
       }
 
-      // Ambil attendance ID berdasarkan classId
       const existingAttendance =
-        await studentAttendanceRepository.getAttendanceByClass(parseInt(classId));
+        await studentAttendanceRepository.getAttendanceById(
+          parseInt(attendanceId)
+        );
 
       if (!existingAttendance || existingAttendance.length === 0) {
         return res.status(404).json({
           status: 404,
-          message: "No attendance found for the specified classId",
+          message: "No attendance found for the specified attendanceId",
         });
       }
 
-      const attendanceId = existingAttendance[0].id;
-
-      // Format data untuk pembaruan
       const updatePromises = data.map((detail) =>
         studentAttendanceRepository.updateDetailAttendance({
           id: detail.id,
@@ -142,8 +141,49 @@ class StudentAttendanceController {
         })
       );
 
-      // Tunggu semua pembaruan selesai
       await Promise.all(updatePromises);
+
+      res.status(200).json({
+        status: 200,
+        message: "Attendance updated successfully",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
+
+  async updateStatusAttendance(req, res) {
+    try {
+      const { attendanceId } = req.params;
+      if (!attendanceId || !data || data.length === 0) {
+        return res.status(400).json({
+          status: 400,
+          message:
+            "attendanceId and data are required, and data must not be empty",
+        });
+      }
+
+      const existingAttendance =
+        await studentAttendanceRepository.getAttendanceById(
+          parseInt(attendanceId)
+        );
+
+      if (!existingAttendance || existingAttendance.length === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "No attendance found for the specified attendanceId",
+        });
+      }
+
+      await studentAttendanceRepository.updateFinalAttendance(
+        parseInt(attendanceId),
+        1
+      );
 
       res.status(200).json({
         status: 200,

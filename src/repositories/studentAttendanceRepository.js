@@ -43,6 +43,15 @@ class StudentAttendanceRepository {
     });
   }
 
+  async getAttendanceById(id) {
+    return prisma.studentAttendance.findMany({
+      where: { id },
+      include: {
+        detailAttendanceStudents: { include: { student: true } },
+      },
+    });
+  }
+
   async updateDetailAttendance({ id, attendanceId, nis, notes, status }) {
     return prisma.studentDetailAttendance.update({
       where: { id }, // Berdasarkan ID detail attendance
@@ -50,6 +59,15 @@ class StudentAttendanceRepository {
         attendanceId,
         nis,
         notes,
+        status,
+      },
+    });
+  }
+
+  async updateFinalAttendance(id, status) {
+    return prisma.studentAttendance.update({
+      where: { id },
+      data: {
         status,
       },
     });
