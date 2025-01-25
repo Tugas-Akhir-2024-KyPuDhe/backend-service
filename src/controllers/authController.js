@@ -251,7 +251,7 @@ class AuthController {
       } else if (user.students && user.students.length > 0) {
         name = user.students[0].name;
         studentId = user.students[0].id;
-        nis = user.staff[0].nis;
+        nis = user.students[0].nis;
         photo = user.students[0].photo?.url || "";
       } else {
         name = null;
