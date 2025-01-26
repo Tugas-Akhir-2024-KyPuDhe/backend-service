@@ -243,6 +243,7 @@ class StudentAttendanceController {
         });
 
         return {
+          nis: student.nis,
           name: student.name,
           absensi,
         };
