@@ -2,7 +2,6 @@ const studentAttendanceRepository = require("../repositories/studentAttendanceRe
 const { mapStatusToLetter } = require("../utils/functions");
 
 class StudentAttendanceController {
-
   async createAttendance(req, res) {
     try {
       const { classId, date, createdBy, notes } = req.body;
@@ -234,11 +233,9 @@ class StudentAttendanceController {
           );
 
           return {
-            status: studentAttendance
-              ? mapStatusToLetter(studentAttendance.status)
-              : "N/A", // Default jika tidak ada data
-            notes: attendance.notes, // Format tanggal menjadi YYYY-MM-DD
-            tanggal: attendance.date.toISOString().split("T")[0], // Format tanggal menjadi YYYY-MM-DD
+            status: studentAttendance ? studentAttendance.status : 0,
+            notes: attendance.notes,
+            tanggal: attendance.date.toISOString().split("T")[0],
           };
         });
 
@@ -265,7 +262,6 @@ class StudentAttendanceController {
   }
 
   // Helper function to map status code to letter
-  
 }
 
 module.exports = new StudentAttendanceController();
