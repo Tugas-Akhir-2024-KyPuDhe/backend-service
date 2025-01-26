@@ -41,17 +41,6 @@ class StudentAttendanceRepository {
     });
   }
 
-  async getAttendanceByClass(classId) {
-    return prisma.studentAttendance.findMany({
-      where: {
-        classId: classId,
-      },
-      include: {
-        detailAttendanceStudents: { include: { student: true } },
-      },
-    });
-  }
-
   async getAttendanceById(id) {
     return prisma.studentAttendance.findMany({
       where: { id },
@@ -82,16 +71,19 @@ class StudentAttendanceRepository {
     });
   }
 
-  async getAttendanceByClass(classId) {
+  async getAttendanceByClass(classId, status = 0) {
+    const whereCondition = {
+      classId: classId,
+      ...(status !== 0 && { status: status }),
+    };
+
     return prisma.studentAttendance.findMany({
-      where: {
-        classId: classId,
-      },
+      where: whereCondition,
       include: {
         detailAttendanceStudents: { include: { student: true } },
       },
       orderBy: {
-        date: "asc", // Pastikan data diurutkan berdasarkan tanggal
+        date: "asc",
       },
     });
   }

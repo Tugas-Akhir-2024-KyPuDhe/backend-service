@@ -216,7 +216,8 @@ class StudentAttendanceController {
 
       const attendanceData =
         await studentAttendanceRepository.getAttendanceByClass(
-          parseInt(classId)
+          parseInt(classId),
+          1
         );
       if (!attendanceData || attendanceData.length === 0) {
         return res.status(404).json({
