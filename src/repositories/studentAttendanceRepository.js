@@ -81,6 +81,20 @@ class StudentAttendanceRepository {
       },
     });
   }
+
+  async getAttendanceByClass(classId) {
+    return prisma.studentAttendance.findMany({
+      where: {
+        classId: classId,
+      },
+      include: {
+        detailAttendanceStudents: { include: { student: true } },
+      },
+      orderBy: {
+        date: "asc", // Pastikan data diurutkan berdasarkan tanggal
+      },
+    });
+  }
 }
 
 module.exports = new StudentAttendanceRepository();

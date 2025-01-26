@@ -1,6 +1,8 @@
 const studentAttendanceRepository = require("../repositories/studentAttendanceRepository");
+const { mapStatusToLetter } = require("../utils/functions");
 
 class StudentAttendanceController {
+
   async createAttendance(req, res) {
     try {
       const { classId, date, createdBy, notes } = req.body;
@@ -198,6 +200,71 @@ class StudentAttendanceController {
       });
     }
   }
+
+  async getAttendanceSummary(req, res) {
+    try {
+      const { classId } = req.params;
+
+      const classData = await studentAttendanceRepository.getStudentsInClass(
+        parseInt(classId)
+      );
+      if (!classData || !classData.student || classData.student.length === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "No students found for the specified classId",
+        });
+      }
+
+      const attendanceData =
+        await studentAttendanceRepository.getAttendanceByClass(
+          parseInt(classId)
+        );
+      if (!attendanceData || attendanceData.length === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "No attendance records found for the specified classId",
+        });
+      }
+
+      // Format data menjadi sesuai permintaan
+      const result = classData.student.map((student) => {
+        const absensi = attendanceData.map((attendance) => {
+          const studentAttendance = attendance.detailAttendanceStudents.find(
+            (detail) => detail.nis === student.nis
+          );
+
+          return {
+            status: studentAttendance
+              ? mapStatusToLetter(studentAttendance.status)
+              : "N/A", // Default jika tidak ada data
+            notes: attendance.notes, // Format tanggal menjadi YYYY-MM-DD
+            tanggal: attendance.date.toISOString().split("T")[0], // Format tanggal menjadi YYYY-MM-DD
+          };
+        });
+
+        return {
+          name: student.name,
+          absensi,
+        };
+      });
+
+      res.status(200).json({
+        status: 200,
+        message: "Attendance summary retrieved successfully",
+        data: result,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
+
+  // Helper function to map status code to letter
+  
 }
 
 module.exports = new StudentAttendanceController();

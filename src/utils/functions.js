@@ -12,6 +12,20 @@ class myFunctions {
     }
     return sanitized;
   }
+  mapStatusToLetter(status) {
+    switch (status) {
+      case 1:
+        return "H"; // Hadir
+      case 2:
+        return "I"; // Izin
+      case 3:
+        return "S"; // Sakit
+      case 4:
+        return "A"; // Sakit
+      default:
+        return "N/A"; // Tidak ada data
+    }
+  }
 }
 
 module.exports = new myFunctions();
