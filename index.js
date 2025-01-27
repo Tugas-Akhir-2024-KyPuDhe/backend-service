@@ -18,6 +18,7 @@ const studentGradeRoutes = require("./src/routes/studentGradeRoutes");
 const studentHistoryRoutes = require("./src/routes/studentHistoryRoutes");
 const studentPositionInClassRoutes = require("./src/routes/studentPositionInClassRoutes");
 const studentAttendanceRoutes = require("./src/routes/studentAttendanceRoutes");
+const studyTracerRoutes = require("./src/routes/studyTracerRoutes");
 
 const cors = require("cors");
 
@@ -46,6 +47,7 @@ app.use("/api/student-grade", studentGradeRoutes);
 app.use("/api/student-history", studentHistoryRoutes);
 app.use("/api/student-position-inClass", studentPositionInClassRoutes);
 app.use("/api/student-attendance", studentAttendanceRoutes);
+app.use("/api/study-tracer", studyTracerRoutes);
 
 //error handler
 app.use((err, req, res, next) => {

@@ -393,3 +393,25 @@ model StudentDetailAttendance {
   attendance StudentAttendance @relation(fields: [attendanceId], references: [id])
   student    Student?          @relation(fields: [nis], references: [nis])
 }
+
+model StudyTracer {
+  id                             Int      @id @default(autoincrement())
+  uuid                           String   @unique @default(uuid())
+  name                           String
+  ttl                            String?
+  gender                         String
+  address                        String
+  addressNow                     String?
+  phone                          String
+  email                          String
+  startYear                      String
+  endYear                        String
+  employmentStatus               String
+  institutionName                String?
+  institutionAddress             String?
+  isSatisfactionMet              String?
+  disSatisfactionFactors         String?
+  studyIssues                    String?
+  createdAt                      DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
+}

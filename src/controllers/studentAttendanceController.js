@@ -1,5 +1,4 @@
 const studentAttendanceRepository = require("../repositories/studentAttendanceRepository");
-const { mapStatusToLetter } = require("../utils/functions");
 
 class StudentAttendanceController {
   async createAttendance(req, res) {
