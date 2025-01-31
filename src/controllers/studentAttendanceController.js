@@ -261,7 +261,77 @@ class StudentAttendanceController {
     }
   }
 
-  // Helper function to map status code to letter
+  async getAttendanceByStudent(req, res) {
+    try {
+      const { nis, classId } = req.query;
+
+      if (!nis) {
+        return res.status(400).json({
+          status: 400,
+          message: "nis is required",
+        });
+      }
+
+      // Panggil repository dengan nis dan classId
+      const attendanceData = await studentAttendanceRepository.getAttendanceByNis(nis, classId);
+
+      if (!attendanceData || attendanceData.length === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "No attendance found for the specified student and class",
+        });
+      }
+
+      // Ambil nama dan NIS siswa dari data pertama (karena NIS sama untuk semua record)
+      const studentName = attendanceData[0].student.name;
+      const studentNis = attendanceData[0].student.nis;
+
+      // Kelompokkan data absensi berdasarkan bulan
+      const groupedByMonth = attendanceData.reduce((acc, record) => {
+        const date = new Date(record.attendance.date);
+        const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`; // Format: YYYY-MM
+
+        if (!acc[monthYear]) {
+          acc[monthYear] = [];
+        }
+
+        acc[monthYear].push({
+          id: record.id,
+          attendanceId: record.attendanceId,
+          status: record.status,
+          notes: record.notes,
+          date: record.attendance.date.toISOString().split("T")[0], // Format: YYYY-MM-DD
+          className: record.attendance.class.name, // Nama kelas
+        });
+
+        return acc;
+      }, {});
+
+      // Ubah format groupedByMonth ke dalam array yang diinginkan
+      const formattedAttendances = Object.keys(groupedByMonth).map((month) => ({
+        month: month,
+        records: groupedByMonth[month],
+      }));
+
+      res.status(200).json({
+        status: 200,
+        message: "Attendance retrieved successfully",
+        data: {
+          nis: studentNis,
+          name: studentName,
+          attendances: formattedAttendances,
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
+  
 }
 
 module.exports = new StudentAttendanceController();

@@ -87,6 +87,33 @@ class StudentAttendanceRepository {
       },
     });
   }
+
+  async getAttendanceByNis(nis, classId, status=1) {
+    const attendanceData = await prisma.studentDetailAttendance.findMany({
+      where: {
+        nis: nis,
+        attendance: {
+          status: status,
+          classId: classId ? parseInt(classId) : undefined,
+        },
+      },
+      include: {
+        attendance: {
+          include: {
+            class: true,
+          },
+        },
+        student: true,
+      },
+      orderBy: {
+        attendance: {
+          date: "asc",
+        },
+      },
+    });
+
+    return attendanceData;
+  }
 }
 
 module.exports = new StudentAttendanceRepository();
