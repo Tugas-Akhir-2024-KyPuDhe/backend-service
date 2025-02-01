@@ -89,20 +89,52 @@ class CourseInClassController {
     }
   }
 
-  async getCourseInClassByuuid(req, res){
-    const { uuid } = req.params;
+  async getCourseInClass(req, res) {
     try {
-      const response = await courseInClassRepository.findCourseInClassByUuid(uuid);
+      const { classId, day } = req.query;
+
+      let response;
+
+      if (classId && day) {
+        response =
+          await courseInClassRepository.findCourseInClassByClassIdAndDay(
+            classId,
+            day
+          );
+        if (response.length === 0) {
+          return res.status(404).json({
+            status: 404,
+            message: `No courses found for ${day} in this class.`,
+          });
+        }
+      } else if (classId) {
+        response = await courseInClassRepository.findClassById(
+          parseInt(classId)
+        );
+        if (!response) {
+          return res.status(404).json({
+            status: 404,
+            message: "Course not found.",
+          });
+        }
+      } else {
+        return res.status(400).json({
+          status: 400,
+          message:
+            "Invalid parameters. Please provide either uuid or classId and day.",
+        });
+      }
+
       res.status(200).json({
         status: 200,
-        message: "Successfully retrieved detail course.",
+        message: "Successfully retrieved course data.",
         data: response,
       });
     } catch (error) {
       res.status(500).json({
         status: 500,
-        message: "Failed to retrieve course due to internal server error.",
-        error,
+        message: "Failed to retrieve course data due to internal server error.",
+        error: error.message,
       });
     }
   }

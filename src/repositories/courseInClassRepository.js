@@ -69,6 +69,27 @@ class CourseInClassRepository {
       },
     });
   }
+
+  async findClassById(id) {
+    return prisma.courseInClass.findMany({
+      where: { classId: id },
+      include: {
+        courseDetail: true
+      },
+    });
+  }
+
+  async findCourseInClassByClassIdAndDay(classId, day) {
+    return prisma.courseInClass.findMany({
+      where: {
+        classId: parseInt(classId),
+        day: day,
+      },
+      include: {
+        courseDetail: true,
+      },
+    });
+  }
 }
 
 module.exports = new CourseInClassRepository();
