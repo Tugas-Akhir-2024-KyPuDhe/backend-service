@@ -17,7 +17,13 @@ class UserRepository {
             ParentOfStudent: true,
             class: true,
             Major: true,
-            HistoryClass: { include: { currentClass: true } },
+            HistoryClass: {
+              include: {
+                currentClass: { include: { homeRoomTeacher: true, } },
+                oldClass: { include: { homeRoomTeacher: true, } },
+                oldClass: true,
+              },
+            },
           },
         },
       },
