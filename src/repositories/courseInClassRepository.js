@@ -74,7 +74,8 @@ class CourseInClassRepository {
     return prisma.courseInClass.findMany({
       where: { classId: id },
       include: {
-        courseDetail: true
+        courseDetail: true,
+        teacher: true,
       },
     });
   }
@@ -87,6 +88,7 @@ class CourseInClassRepository {
       },
       include: {
         courseDetail: true,
+        teacher: true,
       },
     });
   }
