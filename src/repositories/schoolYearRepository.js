@@ -28,7 +28,7 @@ class SchoolYearRepository {
   async getAllSchoolYear() {
     return prisma.schoolYear.findMany({
       orderBy: {
-        prioritas: "asc",
+        name: "asc",
       },
     });
   }
