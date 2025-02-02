@@ -49,7 +49,7 @@ app.use("/api/student-history", studentHistoryRoutes);
 app.use("/api/student-position-inClass", studentPositionInClassRoutes);
 app.use("/api/student-attendance", studentAttendanceRoutes);
 app.use("/api/study-tracer", studyTracerRoutes);
-app.use("/api/tahun-ajaran", SchoolYearRoutes);
+app.use("/api/school-year", SchoolYearRoutes);
 
 //error handler
 app.use((err, req, res, next) => {
