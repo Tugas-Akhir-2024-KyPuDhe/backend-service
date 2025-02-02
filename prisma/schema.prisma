@@ -105,6 +105,18 @@ model Student {
   StudentDetailAttendance StudentDetailAttendance[]
 }
 
+model SchoolYear {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  description String?
+  status      String   @default("Active")
+  createdBy   String?
+  updateBy    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model HistoryClass {
   id             Int      @id @default(autoincrement())
   uuid           String?  @default(uuid())
@@ -395,23 +407,23 @@ model StudentDetailAttendance {
 }
 
 model StudyTracer {
-  id                             Int      @id @default(autoincrement())
-  uuid                           String   @unique @default(uuid())
-  name                           String
-  ttl                            String?
-  gender                         String
-  address                        String
-  addressNow                     String?
-  phone                          String
-  email                          String
-  startYear                      String
-  endYear                        String
-  employmentStatus               String
-  institutionName                String?
-  institutionAddress             String?
-  isSatisfactionMet              String?
-  disSatisfactionFactors         String?
-  studyIssues                    String?
-  createdAt                      DateTime @default(now())
-  updatedAt                      DateTime @updatedAt
+  id                     Int      @id @default(autoincrement())
+  uuid                   String   @unique @default(uuid())
+  name                   String
+  ttl                    String?
+  gender                 String
+  address                String
+  addressNow             String?
+  phone                  String
+  email                  String
+  startYear              String
+  endYear                String
+  employmentStatus       String
+  institutionName        String?
+  institutionAddress     String?
+  isSatisfactionMet      String?
+  disSatisfactionFactors String?
+  studyIssues            String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 }
