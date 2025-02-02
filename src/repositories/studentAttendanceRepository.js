@@ -83,7 +83,7 @@ class StudentAttendanceRepository {
         detailAttendanceStudents: { include: { student: true } },
       },
       orderBy: {
-        date: "asc",
+        date: "desc",
       },
     });
   }
@@ -107,7 +107,7 @@ class StudentAttendanceRepository {
       },
       orderBy: {
         attendance: {
-          date: "asc",
+          date: "desc",
         },
       },
     });
