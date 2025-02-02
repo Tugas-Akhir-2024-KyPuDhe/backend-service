@@ -3,9 +3,9 @@ const studentAttendanceController = require("../controllers/studentAttendanceCon
 const { authMiddleware, authorizeRoles } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-router.get("/get/", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER']), studentAttendanceController.getAttendance);
-router.get("/get/student/", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER']), studentAttendanceController.getAttendanceByStudent);
-router.get("/get/summary/:classId", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER']), studentAttendanceController.getAttendanceSummary);
+router.get("/get/", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER', 'STAFF']), studentAttendanceController.getAttendance);
+router.get("/get/student/", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER', 'STAFF']), studentAttendanceController.getAttendanceByStudent);
+router.get("/get/summary/:classId", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER', 'STAFF']), studentAttendanceController.getAttendanceSummary);
 router.post("/store/", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER']), studentAttendanceController.createAttendance);
 router.put("/update/:attendanceId", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER']), studentAttendanceController.updateAttendance);
 router.put("/update/final/:attendanceId", authMiddleware, authorizeRoles(['STUDENT', 'TEACHER']), studentAttendanceController.updateStatusAttendance);
