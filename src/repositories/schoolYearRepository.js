@@ -38,6 +38,12 @@ class SchoolYearRepository {
       where: { id: id },
     });
   }
+
+  async findSchoolYearByName(name) {
+    return prisma.schoolYear.findFirst({
+      where: { name },
+    });
+  }
 }
 
 module.exports = new SchoolYearRepository();

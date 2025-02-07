@@ -89,6 +89,17 @@ class SchoolYearController {
         });
       }
 
+      const schoolYearExist = await schoolYearRepository.findSchoolYearByName(
+        name
+      );
+
+      if (schoolYearExist) {
+        return res.status(400).json({
+          status: 400,
+          message: `School year with name ${name} already available`,
+        });
+      }
+
       await schoolYearRepository.createSchoolYear({
         name,
         createdBy,
