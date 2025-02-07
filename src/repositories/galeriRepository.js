@@ -74,7 +74,7 @@ class GaleriRepository {
   }
 
   async deleteGaleri(id) {
-    const galeri = await prisma.galeri.findUnique({
+    const galeri = await prisma.galeri.findFirst({
       where: { id },
       include: { media: true },
     });
