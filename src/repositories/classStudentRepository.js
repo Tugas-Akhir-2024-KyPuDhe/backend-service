@@ -24,7 +24,6 @@ class ClassStudentRepository {
     return await prisma.class.findFirst({
       where: { id },
       include: {
-        HistoryClassNew: true,
         StudentPositionInClass: { include: { student: true } },
         homeRoomTeacher: true,
         CourseInClass: {
@@ -44,6 +43,7 @@ class ClassStudentRepository {
             ParentOfStudent: true,
             class: true,
             Major: true,
+            HistoryClass: true,
             StudentsGrades: {
               ...(id != "" && { where: { classId: parseInt(id) } }),
               include: { course: true },
