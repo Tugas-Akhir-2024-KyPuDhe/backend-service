@@ -94,8 +94,8 @@ class SchoolYearController {
       );
 
       if (schoolYearExist) {
-        return res.status(400).json({
-          status: 400,
+        return res.status(409).json({
+          status: 409,
           message: `School year with name ${name} already available`,
         });
       }
