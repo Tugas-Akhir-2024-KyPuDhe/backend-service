@@ -150,7 +150,7 @@ class GaleriController {
   async deleteMediaById(req, res) {
     try {
       const { mediaId } = req.params;
-      await galeriRepository.deleteMediaById(mediaId);
+      await galeriRepository.deleteMediaById(parseInt(mediaId));
 
       res.status(200).json({
         status: 200,
