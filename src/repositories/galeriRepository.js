@@ -74,7 +74,7 @@ class GaleriRepository {
   }
 
   async deleteGaleri(id) {
-    const galeri = await prisma.galeri.findFirst({
+    const galeri = await prisma.galeri.findUnique({
       where: { id },
       include: { media: true },
     });
@@ -126,7 +126,7 @@ class GaleriRepository {
   }
 
   async deleteMediaById(mediaId) {
-    const media = await prisma.media.findUnique({
+    const media = await prisma.media.findFirst({
       where: { id: parseInt(mediaId) },
     });
 
