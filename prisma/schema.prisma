@@ -156,23 +156,24 @@ model Media {
 }
 
 model ConfigSchool {
-  id        Int      @id @default(autoincrement())
-  uuid      String   @default(uuid())
-  name      String
-  about     String
-  vision    String?
-  mission   String?
-  address   String?
-  mediaId   Int?
-  telp      String?
-  email     String
-  maps      String?
-  npsn      String
-  fb        String?
-  ig        String?
-  tiktok    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  uuid          String   @default(uuid())
+  name          String
+  historySchool String?
+  about         String
+  vision        String?
+  mission       String?
+  address       String?
+  mediaId       Int?
+  telp          String?
+  email         String
+  maps          String?
+  npsn          String
+  fb            String?
+  ig            String?
+  tiktok        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   logo Media? @relation(fields: [mediaId], references: [id])
 }

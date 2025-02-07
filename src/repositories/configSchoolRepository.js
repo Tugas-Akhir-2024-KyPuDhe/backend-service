@@ -19,6 +19,7 @@ class ConfigSchoolRepository {
   async updateConfigSchool(id, data) {
     const {
       name,
+      historySchool,
       about,
       vision,
       mission,
@@ -45,6 +46,7 @@ class ConfigSchoolRepository {
       where: { id: parseInt(id) },
       data: {
         name,
+        historySchool,
         about,
         vision,
         mission,

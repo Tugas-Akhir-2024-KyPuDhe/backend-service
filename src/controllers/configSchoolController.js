@@ -119,6 +119,7 @@ class ConfigShoolController {
       const { id } = req.params;
       const {
         name,
+        historySchool,
         about,
         vision,
         mission,
@@ -171,6 +172,7 @@ class ConfigShoolController {
       }
       await configSchoolRepository.updateConfigSchool(id, {
         name,
+        historySchool,
         about,
         vision,
         mission,

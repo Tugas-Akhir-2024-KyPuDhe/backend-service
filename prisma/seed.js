@@ -7,6 +7,8 @@ async function main() {
   // #region | Seeder untuk data sekolah
   // const configSchool = {
   //   name: "SMK NEGERI 1 LUMBAN JULU",
+  //   historySchool:
+  //     "SMK Negeri 1 Lumban Julu adalah institusi pendidikan kejuruan yang berfokus pada pengembangan keterampilan siswa di bidang teknologi, bisnis, dan layanan masyarakat. Kami berdedikasi untuk mencetak lulusan yang siap bersaing di dunia kerja maupun melanjutkan pendidikan ke jenjang yang lebih tinggi.",
   //   about:
   //     "SMK Negeri 1 Lumban Julu adalah institusi pendidikan kejuruan yang berfokus pada pengembangan keterampilan siswa di bidang teknologi, bisnis, dan layanan masyarakat. Kami berdedikasi untuk mencetak lulusan yang siap bersaing di dunia kerja maupun melanjutkan pendidikan ke jenjang yang lebih tinggi.",
   //   vision:
