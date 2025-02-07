@@ -126,8 +126,9 @@ class GaleriRepository {
   }
 
   async deleteMediaById(mediaId) {
+    console.log(mediaId);
     const media = await prisma.media.findFirst({
-      where: { id: parseInt(mediaId) },
+      where: { id: mediaId },
     });
 
     if (!media) {
@@ -137,7 +138,7 @@ class GaleriRepository {
       media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
     );
     await prisma.media.delete({
-      where: { id: parseInt(mediaId) },
+      where: { id: mediaId },
     });
 
     return media;
