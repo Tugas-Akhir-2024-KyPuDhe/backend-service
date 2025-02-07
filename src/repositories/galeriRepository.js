@@ -124,6 +124,24 @@ class GaleriRepository {
       },
     });
   }
+
+  async deleteMediaById(mediaId) {
+    const media = await prisma.media.findUnique({
+      where: { id: parseInt(mediaId) },
+    });
+
+    if (!media) {
+      throw new Error("Media not found");
+    }
+    await deleteMediaFromCloud(
+      media.url.replace(`${process.env.AWS_URL_IMG}/`, "")
+    );
+    await prisma.media.delete({
+      where: { id: parseInt(mediaId) },
+    });
+
+    return media;
+  }
 }
 
 module.exports = new GaleriRepository();

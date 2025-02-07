@@ -9,6 +9,7 @@ router.get("/get", galeriController.getAllGaleri);
 router.get("/get/:id", galeriController.getGaleriById);
 router.put("/update/:id", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, galeriController.updateGaleri);
 router.delete("/delete/:id", authMiddleware, authorizeRoles(['STAFF']), galeriController.deleteGaleriById);
+router.delete("/delete/media/:id", authMiddleware, authorizeRoles(['STAFF']), galeriController.deleteMediaById);
 router.post("/store", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, galeriController.createGaleri);
 
 module.exports = router;

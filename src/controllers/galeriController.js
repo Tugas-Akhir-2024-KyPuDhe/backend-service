@@ -147,6 +147,23 @@ class GaleriController {
     }
   }
 
+  async deleteMediaById(req, res) {
+    try {
+      const { mediaId } = req.params;
+      await galeriRepository.deleteMediaById(mediaId);
+
+      res.status(200).json({
+        status: 200,
+        message: "Media deleted successfully.",
+      });
+    } catch (error) {
+      res.status(400).json({
+        status: 400,
+        message: `Failed to delete media due to error: ${error.message}`,
+      });
+    }
+  }
+
   async createGaleri(req, res) {
     try {
       const { name, description, prioritas } = req.body;
