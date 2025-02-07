@@ -102,6 +102,7 @@ class StaffRepository {
                 homeRoomTeacher: true,
                 student: {
                   include: {
+                    HistoryClass: true,
                     ParentOfStudent: true,
                     class: true,
                     Major: true,
