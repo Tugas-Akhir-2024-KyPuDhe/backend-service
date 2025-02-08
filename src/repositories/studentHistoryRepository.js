@@ -4,7 +4,7 @@ class StudentHistoryRepository {
   async getAllHistoryStudent(id, nis) {
     return prisma.historyClass.findMany({
       orderBy: {
-        academicYear: "asc",
+        academicYear: "desc",
       },
       where: { studentId: id },
       include: {

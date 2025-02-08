@@ -39,17 +39,24 @@ class ClassStudentRepository {
           },
         },
         student: {
+          where: {classId: id},
           include: {
-            ParentOfStudent: true,
             class: true,
             Major: true,
-            HistoryClass: true,
-            StudentsGrades: {
-              ...(id != "" && { where: { classId: parseInt(id) } }),
-              include: { course: true },
-            },
           },
         },
+        // student: {
+        //   include: {
+        //     ParentOfStudent: true,
+        //     class: true,
+        //     Major: true,
+        //     HistoryClass: true,
+        //     StudentsGrades: {
+        //       ...(id != "" && { where: { classId: parseInt(id) } }),
+        //       include: { course: true },
+        //     },
+        //   },
+        // },
         major: true,
       },
     });
@@ -167,30 +174,35 @@ class ClassStudentRepository {
     const academicYear = `${currentDate.getFullYear()}/${
       currentDate.getFullYear() + 1
     }`;
+
     const students = await prisma.student.findMany({
-      where: {
-        // classId: null,
-        nis: { in: collectionNIS },
-      },
+      where: { nis: { in: collectionNIS } },
       orderBy: { id: "asc" },
     });
 
     if (students.length === 0) {
-      throw new Error(
-        "No students found with the provided NIS or all are already assigned to a class."
-      );
+      throw new Error("No students found with the provided NIS.");
     }
 
-    // Update classId untuk setiap siswa yang ditemukan
-    await prisma.student.updateMany({
-      where: {
-        id: { in: students.map((student) => student.id) },
-      },
-      data: {
-        classId,
-      },
-    });
+    // Buat data untuk dimasukkan ke dalam tabel StudentsinClass
+    const studentsInClassData = students.map((student) => ({
+      name: student.name,
+      classId,
+      status: student.status || "Active",
+      birthPlace: student.birthPlace,
+      address: student.address,
+      phone: student.phone,
+      email: student.email,
+      gender: student.gender,
+      majorCode: student.majorCode,
+      nis: student.nis,
+      nisn: student.nisn,
+      startYear: student.startYear,
+      endYear: student.endYear,
+      mediaId: student.mediaId,
+    }));
 
+    // Buat riwayat historyClass
     const historyRecords = students.map((student) => ({
       studentId: student.id,
       oldClassId: student.classId || null,
@@ -199,11 +211,14 @@ class ClassStudentRepository {
       status: "Aktif",
     }));
 
-    await prisma.historyClass.createMany({
-      data: historyRecords,
-    });
+    // Gunakan transaksi Prisma agar perubahan bersifat atomik
+    await prisma.$transaction([
+      prisma.studentsinClass.createMany({ data: studentsInClassData }),
+      prisma.historyClass.createMany({ data: historyRecords }),
+    ]);
 
-    const studentsWithClass = await prisma.student.findMany({
+    // Ambil daftar siswa yang telah dimasukkan ke StudentsinClass
+    const studentsWithClass = await prisma.studentsinClass.findMany({
       where: { classId },
       orderBy: { id: "asc" },
     });

@@ -14,9 +14,14 @@ class StudentRepository {
         },
         photo: true,
         ParentOfStudent: true,
-        class: true,
+        // class: true,
         Major: true,
-        HistoryClass: { include: { currentClass: {include: {StudentsGrades:true}}, oldClass: true } },
+        // HistoryClass: {
+        //   include: {
+        //     currentClass: { include: { StudentsGrades: true } },
+        //     oldClass: true,
+        //   },
+        // },
       },
     });
   }

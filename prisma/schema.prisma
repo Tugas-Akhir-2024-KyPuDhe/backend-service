@@ -94,7 +94,7 @@ model Student {
 
   user      User   @relation(fields: [id], references: [id])
   photo     Media? @relation(fields: [mediaId], references: [id])
-  class     Class? @relation(fields: [classId], references: [id])
+  // class     Class? @relation(fields: [classId], references: [id])
   waliKelas Staff? @relation(fields: [waliKelasId], references: [id])
 
   ParentOfStudent         ParentOfStudent[]         @relation("ParentsOfStudent")
@@ -128,9 +128,10 @@ model HistoryClass {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  student      Student @relation(fields: [studentId], references: [id])
-  oldClass     Class?  @relation(fields: [oldClassId], references: [id], name: "OldClassRelation")
-  currentClass Class   @relation(fields: [currentClassId], references: [id], name: "CurrentClassRelation")
+  student          Student @relation(fields: [studentId], references: [id])
+  oldClass         Class?  @relation(fields: [oldClassId], references: [id], name: "OldClassRelation")
+  currentClass     Class   @relation(fields: [currentClassId], references: [id], name: "CurrentClassRelation")
+  studentinClassId Int?
 }
 
 model Media {
@@ -150,9 +151,10 @@ model Media {
   students        Student[]
   ConfigSchool    ConfigSchool[]
 
-  ArticleBanner Article[]
-  BannerPage    BannerPage[]
-  Course        Course[]
+  ArticleBanner  Article[]
+  BannerPage     BannerPage[]
+  Course         Course[]
+  StudentinClass StudentsinClass[]
 }
 
 model ConfigSchool {
@@ -209,7 +211,6 @@ model Class {
   updatedAt    DateTime @updatedAt
 
   major                  Major?                   @relation(fields: [majorCode], references: [majorCode])
-  student                Student[]
   homeRoomTeacher        Staff?                   @relation(fields: [staffId], references: [id])
   HistoryClassOld        HistoryClass[]           @relation("OldClassRelation")
   HistoryClassNew        HistoryClass[]           @relation("CurrentClassRelation")
@@ -217,6 +218,33 @@ model Class {
   StudentsGrades         StudentsGrades[]
   StudentPositionInClass StudentPositionInClass[]
   StudentAttendance      StudentAttendance[]
+  student                StudentsinClass[]
+}
+
+model StudentsinClass {
+  id         Int       @id @default(autoincrement())
+  uuid       String    @default(uuid())
+  name       String
+  classId    Int?
+  status     String?   @default("Active") // Active | Alumni | Stay
+  birthPlace String?
+  address    String?
+  phone      String?
+  email      String?
+  gender     String?
+  majorCode  String?
+  nis        String
+  nisn       String
+  startYear  DateTime
+  endYear    DateTime?
+  mediaId    Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  photo Media? @relation(fields: [mediaId], references: [id])
+  class Class? @relation(fields: [classId], references: [id])
+
+  Major Major? @relation(fields: [majorCode], references: [majorCode])
 }
 
 model Major {
@@ -229,9 +257,10 @@ model Major {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  media   Media[]   @relation("MajorMedia")
-  student Student[]
-  class   Class[]
+  media          Media[]           @relation("MajorMedia")
+  student        Student[]
+  class          Class[]
+  StudentinClass StudentsinClass[]
 }
 
 model Extracurricular {
@@ -286,7 +315,8 @@ model ParentOfStudent {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  student Student[] @relation("ParentsOfStudent")
+  student          Student[] @relation("ParentsOfStudent")
+  studentinClassId Int?
 }
 
 model Galeri {
@@ -355,10 +385,11 @@ model StudentsGrades {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  student Student? @relation(fields: [nis], references: [nis])
-  course  Course?  @relation(fields: [courseCode], references: [code])
-  teacher Staff?   @relation(fields: [teacherId], references: [id])
-  class   Class?   @relation(fields: [classId], references: [id])
+  student          Student? @relation(fields: [nis], references: [nis])
+  course           Course?  @relation(fields: [courseCode], references: [code])
+  teacher          Staff?   @relation(fields: [teacherId], references: [id])
+  class            Class?   @relation(fields: [classId], references: [id])
+  studentinClassId Int?
 }
 
 model StudentPositionInClass {
@@ -370,8 +401,9 @@ model StudentPositionInClass {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  student Student? @relation(fields: [nis], references: [nis])
-  class   Class?   @relation(fields: [classId], references: [id])
+  student          Student? @relation(fields: [nis], references: [nis])
+  class            Class?   @relation(fields: [classId], references: [id])
+  studentinClassId Int?
 }
 
 model StudentAttendance {
@@ -403,8 +435,9 @@ model StudentDetailAttendance {
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
-  attendance StudentAttendance @relation(fields: [attendanceId], references: [id])
-  student    Student?          @relation(fields: [nis], references: [nis])
+  attendance       StudentAttendance @relation(fields: [attendanceId], references: [id])
+  student          Student?          @relation(fields: [nis], references: [nis])
+  studentinClassId Int?
 }
 
 model StudyTracer {

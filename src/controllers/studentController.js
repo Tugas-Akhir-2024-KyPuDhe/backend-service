@@ -99,7 +99,6 @@ class StudentController {
 
     try {
       const student = await studentRepository.findStudentByNis(nis);
-
       if (!student) {
         return res
           .status(404)
