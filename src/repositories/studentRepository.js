@@ -55,13 +55,13 @@ class StudentRepository {
       whereClause.waliKelasId = null;
     }
 
-    if (grade) {
-      whereClause.class = {
-        name: {
-          startsWith: `${grade}-`, // Contoh: mencari "X" akan mencocokkan "X-RPL-1", "X-RPL-2"
-        },
-      };
-    }
+    // if (grade) {
+    //   whereClause.class = {
+    //     name: {
+    //       startsWith: `${grade}-`, // Contoh: mencari "X" akan mencocokkan "X-RPL-1", "X-RPL-2"
+    //     },
+    //   };
+    // }
 
     if (majorCode) {
       whereClause.Major = { majorCode };
