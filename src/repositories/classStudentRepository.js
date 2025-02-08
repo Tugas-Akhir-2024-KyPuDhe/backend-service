@@ -169,7 +169,7 @@ class ClassStudentRepository {
     }`;
     const students = await prisma.student.findMany({
       where: {
-        classId: null,
+        // classId: null,
         nis: { in: collectionNIS },
       },
       orderBy: { id: "asc" },
