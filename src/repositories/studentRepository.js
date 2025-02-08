@@ -69,9 +69,6 @@ class StudentRepository {
 
     return await prisma.student.findMany({
       where: whereClause,
-      orderBy: {
-        class: { name: "asc" },
-      },
       include: { Major: true },
     });
   }
