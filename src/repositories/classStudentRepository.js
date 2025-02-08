@@ -39,7 +39,7 @@ class ClassStudentRepository {
           },
         },
         student: {
-          where: {classId: id},
+          where: { classId: id },
           include: {
             class: true,
             Major: true,
@@ -183,6 +183,15 @@ class ClassStudentRepository {
     if (students.length === 0) {
       throw new Error("No students found with the provided NIS.");
     }
+
+    // Update history sebelumnya menjadi "Non Aktif"
+    await prisma.historyClass.updateMany({
+      where: {
+        studentId: { in: students.map((student) => student.id) },
+        status: "Aktif", // Pastikan hanya yang masih aktif yang diperbarui
+      },
+      data: { status: "Non Aktif" },
+    });
 
     // Buat data untuk dimasukkan ke dalam tabel StudentsinClass
     const studentsInClassData = students.map((student) => ({
