@@ -173,8 +173,8 @@ class AuthController {
       const existingUser = await authRepository.findUserByUsername(cleanNip);
       if (existingUser) {
         return res
-          .status(400)
-          .json({ status: 400, message: "NIP already exists" });
+          .status(409)
+          .json({ status: 409, message: "NIP already exists" });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
