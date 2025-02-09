@@ -16,6 +16,7 @@ class UserRepository {
             photo: true,
             ParentOfStudent: true,
             Major: true,
+            class: true,
             HistoryClass: {
               include: {
                 currentClass: { include: { homeRoomTeacher: true, } },
