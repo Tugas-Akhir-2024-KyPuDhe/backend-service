@@ -47,12 +47,10 @@ class StudentRepository {
   async getAllStudents(status, majorCode, grade) {
     const whereClause = {};
 
-    if (status === "registered") {
-      whereClause.classId = { not: null };
-      whereClause.waliKelasId = { not: null };
-    } else if (status === "not_registered") {
-      whereClause.classId = null;
-      whereClause.waliKelasId = null;
+    if (status === "New") {
+      whereClause.status = status;
+    }else if (status === "Active") {
+      whereClause.waliKelasId = { not: status };
     }
 
     // if (grade) {
