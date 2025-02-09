@@ -199,6 +199,7 @@ class ClassStudentRepository {
       },
       data: {
         classId,
+        status: "Active"
       },
     });
 
