@@ -170,11 +170,6 @@ class ClassStudentRepository {
   // }
 
   async insertStudentInClass(classId, collectionNIS) {
-    const currentDate = new Date();
-    const academicYear = `${currentDate.getFullYear()}/${
-      currentDate.getFullYear() + 1
-    }`;
-
     const students = await prisma.student.findMany({
       where: { nis: { in: collectionNIS } },
       orderBy: { id: "asc" },
@@ -184,13 +179,17 @@ class ClassStudentRepository {
       throw new Error("No students found with the provided NIS.");
     }
 
+    const classes = await prisma.class.findFirst({
+      where: { id: classId },
+    })
+
     // Update history sebelumnya menjadi "Non Aktif"
     await prisma.historyClass.updateMany({
       where: {
         studentId: { in: students.map((student) => student.id) },
         status: "Aktif", // Pastikan hanya yang masih aktif yang diperbarui
       },
-      data: { status: "Non Aktif" },
+      data: { status: "Lulus" },
     });
 
     // Buat data untuk dimasukkan ke dalam tabel StudentsinClass
@@ -216,7 +215,7 @@ class ClassStudentRepository {
       studentId: student.id,
       oldClassId: student.classId || null,
       currentClassId: classId,
-      academicYear,
+      academicYear: classes.academicYear,
       status: "Aktif",
     }));
 
