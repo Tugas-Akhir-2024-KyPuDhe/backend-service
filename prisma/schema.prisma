@@ -77,7 +77,7 @@ model Student {
   name        String
   classId     Int?
   waliKelasId Int?
-  status      String?   @default("New")  // New | Active | Alumni | Stay
+  status      String?   @default("New") // New | Active | Alumni | Stay
   birthPlace  String?
   address     String?
   phone       String?
@@ -94,7 +94,7 @@ model Student {
 
   user      User   @relation(fields: [id], references: [id])
   photo     Media? @relation(fields: [mediaId], references: [id])
-  // class     Class? @relation(fields: [classId], references: [id])
+  class     Class? @relation(fields: [classId], references: [id])
   waliKelas Staff? @relation(fields: [waliKelasId], references: [id])
 
   ParentOfStudent         ParentOfStudent[]         @relation("ParentsOfStudent")
@@ -219,6 +219,7 @@ model Class {
   StudentPositionInClass StudentPositionInClass[]
   StudentAttendance      StudentAttendance[]
   student                StudentsinClass[]
+  mainStudent            Student[]
 }
 
 model StudentsinClass {

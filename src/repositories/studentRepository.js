@@ -14,7 +14,7 @@ class StudentRepository {
         },
         photo: true,
         ParentOfStudent: true,
-        // class: true,
+        class: true,
         Major: true,
         // HistoryClass: {
         //   include: {
@@ -53,13 +53,13 @@ class StudentRepository {
       whereClause.status = status;
     }
 
-    // if (grade) {
-    //   whereClause.class = {
-    //     name: {
-    //       startsWith: `${grade}-`, // Contoh: mencari "X" akan mencocokkan "X-RPL-1", "X-RPL-2"
-    //     },
-    //   };
-    // }
+    if (grade) {
+      whereClause.class = {
+        name: {
+          startsWith: `${grade}-`, // Contoh: mencari "X" akan mencocokkan "X-RPL-1", "X-RPL-2"
+        },
+      };
+    }
 
     if (majorCode) {
       whereClause.Major = { majorCode };
@@ -67,7 +67,7 @@ class StudentRepository {
 
     return await prisma.student.findMany({
       where: whereClause,
-      include: { Major: true },
+      include: { Major: true, class: true },
     });
   }
 
