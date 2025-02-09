@@ -50,7 +50,7 @@ class StudentRepository {
     if (status === "New") {
       whereClause.status = status;
     } else if (status === "Active") {
-      whereClause.waliKelasId = status;
+      whereClause.status = status;
     }
 
     // if (grade) {
