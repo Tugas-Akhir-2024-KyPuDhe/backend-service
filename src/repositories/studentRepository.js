@@ -49,8 +49,8 @@ class StudentRepository {
 
     if (status === "New") {
       whereClause.status = status;
-    }else if (status === "Active") {
-      whereClause.waliKelasId = { not: status };
+    } else if (status === "Active") {
+      whereClause.waliKelasId = status;
     }
 
     // if (grade) {
