@@ -177,7 +177,7 @@ async function main() {
   //   phone: "08536746398",
   //   email: "Joko@gmail.com",
   //   gender: "L",
-  //   mapel: "",
+  //   mapel: [],
   //   nip: "P001",
   //   type: "PH",
   //   position: "",

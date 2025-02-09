@@ -1,9 +1,9 @@
-const schoolYearRepository = require("../repositories/schoolYearRepository");
+const academicYearRepository = require("../repositories/academicYearRepository");
 
-class SchoolYearController {
-  async getAllSchoolYear(req, res) {
+class AcademicYearController {
+  async getAllAcademicYear(req, res) {
     try {
-      const response = await schoolYearRepository.getAllSchoolYear();
+      const response = await academicYearRepository.getAllAcademicYear();
       res.status(200).json({
         status: 200,
         message: "School Year retrieved successfully",
@@ -18,10 +18,10 @@ class SchoolYearController {
     }
   }
 
-  async getSchoolYearById(req, res) {
+  async getAcademicYearById(req, res) {
     try {
       const { id } = req.params;
-      const response = await schoolYearRepository.findSchoolYearById(
+      const response = await academicYearRepository.findAcademicYearById(
         parseInt(id)
       );
       if (!response)
@@ -44,27 +44,27 @@ class SchoolYearController {
     }
   }
 
-  async deleteSchoolYearById(req, res) {
+  async deleteAcademicYearById(req, res) {
     try {
       const { id } = req.params;
-      const schoolYear = await schoolYearRepository.findSchoolYearById(
+      const academicYear = await academicYearRepository.findAcademicYearById(
         parseInt(id)
       );
-      if (!schoolYear) {
+      if (!academicYear) {
         return res.status(404).json({
           status: 404,
           message: `School year with ID ${id} not found`,
         });
       }
 
-      if (schoolYear.status == "Active") {
+      if (academicYear.status == "Active") {
         return res.status(409).json({
           status: 409,
           message: `School year is active can't be deleted`,
         });
       }
 
-      await schoolYearRepository.deleteSchoolYear(parseInt(id));
+      await academicYearRepository.deleteAcademicYear(parseInt(id));
 
       return res.status(200).json({
         status: 200,
@@ -78,7 +78,7 @@ class SchoolYearController {
     }
   }
 
-  async createSchoolYear(req, res) {
+  async createAcademicYear(req, res) {
     try {
       const { name, createdBy } = req.body;
 
@@ -89,18 +89,18 @@ class SchoolYearController {
         });
       }
 
-      const schoolYearExist = await schoolYearRepository.findSchoolYearByName(
+      const academicYearExist = await academicYearRepository.findAcademicYearByName(
         name
       );
 
-      if (schoolYearExist) {
+      if (academicYearExist) {
         return res.status(409).json({
           status: 409,
           message: `School year with name ${name} already available`,
         });
       }
 
-      await schoolYearRepository.createSchoolYear({
+      await academicYearRepository.createAcademicYear({
         name,
         createdBy,
       });
@@ -117,15 +117,15 @@ class SchoolYearController {
     }
   }
 
-  async updateSchoolYear(req, res) {
+  async updateAcademicYear(req, res) {
     try {
       const { id } = req.params;
       const { name, status } = req.body;
 
-      const existSchoolYear = await schoolYearRepository.findSchoolYearById(
+      const existAcademicYear = await academicYearRepository.findAcademicYearById(
         parseInt(id)
       );
-      if (!existSchoolYear) {
+      if (!existAcademicYear) {
         return res.status(404).json({
           status: 400,
           message:
@@ -133,7 +133,7 @@ class SchoolYearController {
         });
       }
 
-      await schoolYearRepository.updateSchoolYear(id, {
+      await academicYearRepository.updateAcademicYear(id, {
         name,
         status,
       });
@@ -151,4 +151,4 @@ class SchoolYearController {
   }
 }
 
-module.exports = new SchoolYearController();
+module.exports = new AcademicYearController();

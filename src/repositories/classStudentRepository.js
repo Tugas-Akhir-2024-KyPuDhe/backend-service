@@ -192,6 +192,16 @@ class ClassStudentRepository {
       data: { status: "Lulus" },
     });
 
+    // Update classId untuk setiap siswa yang ditemukan(Kelas siswa saat ini)
+    await prisma.student.updateMany({
+      where: {
+        id: { in: students.map((student) => student.id) },
+      },
+      data: {
+        classId,
+      },
+    });
+
     // Buat data untuk dimasukkan ke dalam tabel StudentsinClass
     const studentsInClassData = students.map((student) => ({
       name: student.name,
