@@ -8,6 +8,7 @@ const compressMedia = authController.compressAndUpload;
 router.post("/register/student", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, authController.registerStudent);
 router.post("/register/staff", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, authController.registerStaff);
 router.post("/login", authController.login);
+router.post("/change-password", authMiddleware, authController.changePassword);
 router.get("/verify-token", authController.verifyToken);
 
 module.exports = router;

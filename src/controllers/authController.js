@@ -164,7 +164,7 @@ class AuthController {
       startDate,
       role,
     } = req.body;
-    const mapelArray = mapel.split(',').map((item) => item.trim());
+    const mapelArray = mapel.split(",").map((item) => item.trim());
     let mediaId = null;
 
     const cleanNip = nip.replace(/\s+/g, ""); //HILANGKAN SPACE
@@ -307,6 +307,40 @@ class AuthController {
       });
     } catch (error) {
       res.status(400).json({ message: error.message });
+    }
+  }
+
+  async changePassword(req, res) {
+    const { userId, oldPassword, newPassword } = req.body;
+
+    try {
+      // Cari user berdasarkan ID
+      const user = await authRepository.findUserById(userId);
+      if (!user) {
+        return res.status(404).json({ status: 404, message: "User not found" });
+      }
+
+      // Validasi password lama
+      const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+      if (!isPasswordValid) {
+        return res
+          .status(400)
+          .json({ status: 400, message: "Old password is incorrect" });
+      }
+
+      // Hash password baru
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update password di database
+      await authRepository.updateUser(userId, { password: hashedPassword });
+
+      res
+        .status(200)
+        .json({ status: 200, message: "Password changed successfully" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
     }
   }
 }
