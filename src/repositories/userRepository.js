@@ -18,9 +18,12 @@ class UserRepository {
             Major: true,
             class: true,
             HistoryClass: {
+              orderBy: {
+                academicYear: "desc",
+              },
               include: {
-                currentClass: { include: { homeRoomTeacher: true, } },
-                oldClass: { include: { homeRoomTeacher: true, } },
+                currentClass: { include: { homeRoomTeacher: true } },
+                oldClass: { include: { homeRoomTeacher: true } },
                 oldClass: true,
               },
             },
