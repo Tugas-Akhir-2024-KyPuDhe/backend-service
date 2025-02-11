@@ -17,6 +17,9 @@ class StudentRepository {
         class: true,
         Major: true,
         HistoryClass: {
+          orderBy: {
+            academicYear: "desc",
+          },
           include: {
             currentClass: { include: { StudentsGrades: true } },
             oldClass: true,
