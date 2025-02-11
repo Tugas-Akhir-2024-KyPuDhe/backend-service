@@ -45,22 +45,18 @@ class ClassStudentRepository {
             Major: true,
           },
         },
-        student: {
-          include: {
-            ParentOfStudent: true,
-            class: true,
-            Major: true,
-            HistoryClass: {
-              orderBy: {
-                academicYear: "desc",
-              },
-            },
-            StudentsGrades: {
-              ...(id != "" && { where: { classId: parseInt(id) } }),
-              include: { course: true },
-            },
-          },
-        },
+        // student: {
+        //   include: {
+        //     ParentOfStudent: true,
+        //     class: true,
+        //     Major: true,
+        //     HistoryClass: true,
+        //     StudentsGrades: {
+        //       ...(id != "" && { where: { classId: parseInt(id) } }),
+        //       include: { course: true },
+        //     },
+        //   },
+        // },
         major: true,
       },
     });
@@ -185,7 +181,7 @@ class ClassStudentRepository {
 
     const classes = await prisma.class.findFirst({
       where: { id: classId },
-    });
+    })
 
     // Update history sebelumnya menjadi "Non Aktif"
     await prisma.historyClass.updateMany({
@@ -203,7 +199,7 @@ class ClassStudentRepository {
       },
       data: {
         classId,
-        status: "Active",
+        status: "Active"
       },
     });
 
