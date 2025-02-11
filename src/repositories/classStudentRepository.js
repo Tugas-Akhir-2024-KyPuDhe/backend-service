@@ -10,7 +10,7 @@ class ClassStudentRepository {
   async getAllClass() {
     return prisma.class.findMany({
       orderBy: {
-        academicYear: "asc",
+        academicYear: "desc",
       },
       include: {
         homeRoomTeacher: true,
