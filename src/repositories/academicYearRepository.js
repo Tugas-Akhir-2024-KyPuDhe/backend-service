@@ -28,7 +28,7 @@ class AcademicYearRepository {
   async getAllAcademicYear() {
     return prisma.academicYear.findMany({
       orderBy: {
-        name: "asc",
+        name: "desc",
       },
     });
   }
