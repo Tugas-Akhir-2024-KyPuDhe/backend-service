@@ -324,8 +324,8 @@ class AuthController {
       const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
       if (!isPasswordValid) {
         return res
-          .status(400)
-          .json({ status: 400, message: "Old password is incorrect" });
+          .status(401)
+          .json({ status: 401, message: "Old password is incorrect" });
       }
 
       // Hash password baru
