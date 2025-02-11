@@ -155,6 +155,7 @@ model Media {
   BannerPage     BannerPage[]
   Course         Course[]
   StudentinClass StudentsinClass[]
+  ProblemReport  ProblemReport[]
 }
 
 model ConfigSchool {
@@ -462,4 +463,19 @@ model StudyTracer {
   studyIssues            String?
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
+}
+
+model ProblemReport {
+  id                 Int      @id @default(autoincrement())
+  uuid               String   @unique @default(uuid())
+  idName             String
+  pageProblem        String
+  problemDescription String
+  mediaId            Int?
+  telp               String
+  status             Int      @default(1)
+  createdBy          String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  media              Media?   @relation(fields: [mediaId], references: [id])
 }
