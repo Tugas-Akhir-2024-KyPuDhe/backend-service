@@ -38,25 +38,25 @@ class ClassStudentRepository {
             teacher: true,
           },
         },
-        student: {
-          where: { classId: id },
-          include: {
-            class: true,
-            Major: true,
-          },
-        },
-        // student: {
+        // mainStudent: {
+        //   where: { classId: id },
         //   include: {
-        //     ParentOfStudent: true,
         //     class: true,
         //     Major: true,
-        //     HistoryClass: true,
-        //     StudentsGrades: {
-        //       ...(id != "" && { where: { classId: parseInt(id) } }),
-        //       include: { course: true },
-        //     },
         //   },
         // },
+        mainStudent: {
+          include: {
+            ParentOfStudent: true,
+            class: true,
+            Major: true,
+            HistoryClass: true,
+            StudentsGrades: {
+              ...(id != "" && { where: { classId: parseInt(id) } }),
+              include: { course: true },
+            },
+          },
+        },
         major: true,
       },
     });

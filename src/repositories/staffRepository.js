@@ -100,7 +100,7 @@ class StaffRepository {
               include: {
                 major: true,
                 homeRoomTeacher: true,
-                student: {
+                mainStudent: {
                   include: {
                     HistoryClass: {
                       orderBy: {
@@ -123,8 +123,8 @@ class StaffRepository {
 
     if (data && data.CourseInClass) {
       data.CourseInClass = data.CourseInClass.map((course) => {
-        if (course.class && course.class.student) {
-          course.class.student = course.class.student.map((student) => {
+        if (course.class && course.class.mainStudent) {
+          course.class.mainStudent = course.class.mainStudent.map((student) => {
             student.StudentsGrades = student.StudentsGrades.filter(
               (grade) => grade.courseCode === course.courseCode
             );
