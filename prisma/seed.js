@@ -169,11 +169,11 @@ async function main() {
 
   //#regon | Seeder Staff
   // const staff = {
-  //   name: "Joko",
+  //   name: "developer",
   //   birthPlace: "21 Juni 1961",
   //   address: "Solo",
   //   phone: "08536746398",
-  //   email: "Joko@gmail.com",
+  //   email: "developer@gmail.com",
   //   gender: "L",
   //   mapel: [],
   //   nip: "P001",

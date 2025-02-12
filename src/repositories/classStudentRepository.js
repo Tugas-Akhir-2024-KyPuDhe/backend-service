@@ -45,7 +45,20 @@ class ClassStudentRepository {
         //     Major: true,
         //   },
         // },
+        student: {
+          include: {
+            ParentOfStudent: true,
+            class: true,
+            Major: true,
+            HistoryClass: true,
+            StudentsGrades: {
+              ...(id != "" && { where: { classId: parseInt(id) } }),
+              include: { course: true },
+            },
+          },
+        },
         mainStudent: {
+          where: { nis: { in: ['334455'] } },
           include: {
             ParentOfStudent: true,
             class: true,

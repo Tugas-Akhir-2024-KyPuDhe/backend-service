@@ -100,6 +100,20 @@ class StaffRepository {
               include: {
                 major: true,
                 homeRoomTeacher: true,
+                student: {
+                  include: {
+                    HistoryClass: {
+                      orderBy: {
+                        academicYear: "desc",
+                      },
+                    },
+                    ParentOfStudent: true,
+                    class: true,
+                    Major: true,
+                    photo: true,
+                    StudentsGrades: true,
+                  }
+                },
                 mainStudent: {
                   include: {
                     HistoryClass: {
