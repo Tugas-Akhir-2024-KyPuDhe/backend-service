@@ -1,75 +1,43 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
+const {
+  dataConfigSchool,
+  customStudents,
+  dataMajor,
+  dataStaff,
+  dataCourse,
+  dataDeveloper,
+} = require("./data");
 
 const prisma = new PrismaClient();
 
 async function main() {
   // #region | Seeder untuk data sekolah
-  // const configSchool = {
-  //   name: "SMK NEGERI 1 LUMBAN JULU",
-  //   historySchool:
-  //     "SMK Negeri 1 Lumban Julu adalah institusi pendidikan kejuruan yang berfokus pada pengembangan keterampilan siswa di bidang teknologi, bisnis, dan layanan masyarakat. Kami berdedikasi untuk mencetak lulusan yang siap bersaing di dunia kerja maupun melanjutkan pendidikan ke jenjang yang lebih tinggi.",
-  //   about:
-  //     "SMK Negeri 1 Lumban Julu adalah institusi pendidikan kejuruan yang berfokus pada pengembangan keterampilan siswa di bidang teknologi, bisnis, dan layanan masyarakat. Kami berdedikasi untuk mencetak lulusan yang siap bersaing di dunia kerja maupun melanjutkan pendidikan ke jenjang yang lebih tinggi.",
-  //   vision:
-  //     "Menjadi sekolah kejuruan unggulan yang menghasilkan lulusan berkualitas, berkarakter, dan berkompeten di bidangnya untuk bersaing di era global.",
-  //   mission:
-  //     "1. Menyediakan pendidikan kejuruan yang berbasis teknologi dan kewirausahaan.\n2. Meningkatkan kompetensi siswa melalui pelatihan praktik kerja industri.\n3. Membentuk karakter siswa yang jujur, disiplin, dan bertanggung jawab.\n4. Mengembangkan kurikulum yang relevan dengan kebutuhan dunia kerja.\n5. Menjalin kemitraan dengan dunia usaha dan industri.",
-  //   address: "Jalan Lintas Sumatera, Aeknatolu Jaya, Kecamatan Lumban Julu",
-  //   telp: "+62 822-8302-0850",
-  //   email: "info@smkn1lumbanjulu.sch.id",
-  //   maps: '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15942.833059396076!2d99.0161061!3d2.6008913!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031f01ad5a61e53%3A0xa1341928e9376e81!2sSMK%20Negeri%201%20Lumbanjulu!5e0!3m2!1sid!2sid!4v1731691727941!5m2!1sid!2sid" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>',
-  //   npsn: "12345678",
-  //   fb: "https://facebook.com/smkn1lumbanjulu",
-  //   ig: "https://instagram.com/smkn1lumbanjulu",
-  //   tiktok: "https://tiktok.com/@smkn1lumbanjulu",
-  // };
+  (await prisma.configSchool.count({})) < 1 &&
+    (await prisma.configSchool.create({
+      data: dataConfigSchool,
+    }));
 
-  // (await prisma.configSchool.count({})) < 1 &&
-  //   (await prisma.configSchool.create({
-  //     data: configSchool,
-  //   }));
-
-  // console.log("Seeding config school completed.");
+  console.log("Seeding config school completed.");
   //#endregion
 
-  // #region | Seeder Students
-  const customStudents = [
-    {
-      name: "Dhea Romantika",
-      nis: "223344",
-      nisn: "102938",
-      majorCode: "TKJ",
-      birthPlace: "Medan, 24 Februari 2003",
-      address: "Jl. Mawar No.1",
-      phone: "081234567890",
-      email: "dhea.romantika@example.com",
-      gender: "P",
-    },
-    {
-      name: "Rizky Fadillah",
-      nis: "112233",
-      nisn: "203948",
-      majorCode: "MM",
-      birthPlace: "Jakarta, 17 Desember 2002",
-      address: "Jl. Melati No.2",
-      phone: "081234567891",
-      email: "rizky.fadillah@example.com",
-      gender: "L",
-    },
-    {
-      name: "Muhammad Syahputra",
-      nis: "334455",
-      nisn: "304958",
-      majorCode: "RPL",
-      birthPlace: "Bandung, 22 April 2003",
-      address: "Jl. Kenanga No.3",
-      phone: "081234567892",
-      email: "muhammad.syahputra@example.com",
-      gender: "L",
-    },
-  ];
+  // #region | Seeder Major
+  for (const major of dataMajor) {
+    await prisma.major.create({
+      data: major,
+    });
+  }
+  console.log("Seeding major completed.");
 
+  // #region | Seeder Course
+  for (const course of dataCourse) {
+    await prisma.course.create({
+      data: course,
+    });
+  }
+  console.log("Seeding course completed.");
+
+  // #region | Seeder Students
   const defaultPassword = await bcrypt.hash("12345678", 10);
   const startYear = new Date("2024-07-01");
   const majors = ["TKJ", "MM", "RPL", "TITL"];
@@ -112,25 +80,20 @@ async function main() {
       },
     });
   }
-  console.log("Custom students seeded.");
+  console.log("Seeding custom students completed.");
 
-  // Insert default students for each major
-  const nisSet = new Set(customStudents.map((s) => s.nis)); // Avoid duplicate NIS
+  const nisSet = new Set(customStudents.map((s) => s.nis));
   const nisnSet = new Set(customStudents.map((s) => s.nisn));
 
   for (const major of majors) {
-    console.log(`Creating default students for major: ${major}`);
-
     for (let i = 1; i <= 10; i++) {
       let nis, nisn;
 
-      // Generate unique 6-digit NIS
       do {
         nis = `${Math.floor(100000 + Math.random() * 900000)}`;
       } while (nisSet.has(nis));
       nisSet.add(nis);
 
-      // Generate unique 6-digit NISN
       do {
         nisn = `${Math.floor(100000 + Math.random() * 900000)}`;
       } while (nisnSet.has(nisn));
@@ -138,7 +101,6 @@ async function main() {
 
       const studentName = `Siswa ${i}`;
 
-      // Create user first, then associate student
       await prisma.user.create({
         data: {
           username: `${nis}`,
@@ -163,59 +125,77 @@ async function main() {
         },
       });
     }
+    console.log(`Seeding students for major: ${major} completed.`);
   }
-  console.log("Default students seeded.");
+  // #endregion
+
+  //#regon | Seeder Developer
+  const developerCount = await prisma.staff.count({});
+  if (developerCount < 1) {
+    const hashedPassword = await bcrypt.hash("12345678", 10);
+
+    await prisma.user.create({
+      data: {
+        username: dataDeveloper.nip,
+        password: hashedPassword,
+        roles: {
+          create: {
+            name: dataDeveloper.role,
+          },
+        },
+        staff: {
+          create: {
+            name: dataDeveloper.name,
+            birthPlace: dataDeveloper.birthPlace,
+            address: dataDeveloper.address,
+            phone: dataDeveloper.phone,
+            email: dataDeveloper.email,
+            gender: dataDeveloper.gender,
+            mapel: dataDeveloper.mapel,
+            nip: dataDeveloper.nip,
+            type: dataDeveloper.type,
+            position: dataDeveloper.position,
+            startDate: dataDeveloper.startDate,
+          },
+        },
+      },
+    });
+  }
+  console.log("Seeding developer completed.");
   // #endregion
 
   //#regon | Seeder Staff
-  // const staff = {
-  //   name: "developer",
-  //   birthPlace: "21 Juni 1961",
-  //   address: "Solo",
-  //   phone: "08536746398",
-  //   email: "developer@gmail.com",
-  //   gender: "L",
-  //   mapel: [],
-  //   nip: "P001",
-  //   type: "PH",
-  //   position: "",
-  //   startDate: new Date("2024-08-07"),
-  //   role: "STAFF",
-  // };
+  for (const staff of dataStaff) {
+    const hashedPassword = await bcrypt.hash("12345678", 10);
 
-  // const staffCount = await prisma.staff.count({});
-  // if (staffCount < 1) {
-  //   // Membuat user baru jika belum ada staff
-  //   const hashedPassword = await bcrypt.hash("12345678", 10); // Ganti dengan password yang sesuai
-
-  //   await prisma.user.create({
-  //     data: {
-  //       username: staff.nip, // Menggunakan nip sebagai username
-  //       password: hashedPassword, // Password yang telah di-hash
-  //       roles: {
-  //         create: {
-  //           name: staff.role, // Menggunakan role yang ada pada data staff
-  //         },
-  //       },
-  //       staff: {
-  //         create: {
-  //           name: staff.name,
-  //           birthPlace: staff.birthPlace,
-  //           address: staff.address,
-  //           phone: staff.phone,
-  //           email: staff.email,
-  //           gender: staff.gender,
-  //           mapel: staff.mapel,
-  //           nip: staff.nip,
-  //           type: staff.type,
-  //           position: staff.position,
-  //           startDate: staff.startDate,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
-  // console.log("Seeding Staff completed.");
+    await prisma.user.create({
+      data: {
+        username: staff.nip,
+        password: hashedPassword,
+        roles: {
+          create: {
+            name: staff.role,
+          },
+        },
+        staff: {
+          create: {
+            name: staff.name,
+            birthPlace: staff.birthPlace,
+            address: staff.address,
+            phone: staff.phone,
+            email: staff.email,
+            gender: staff.gender,
+            mapel: staff.mapel,
+            nip: staff.nip,
+            type: staff.type,
+            position: staff.position,
+            startDate: staff.startDate,
+          },
+        },
+      },
+    });
+  }
+  console.log("Seeding staff completed.");
   // #endregion
 }
 

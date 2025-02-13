@@ -58,7 +58,6 @@ class ClassStudentRepository {
           },
         },
         mainStudent: {
-          where: { nis: { in: ['334455'] } },
           include: {
             ParentOfStudent: true,
             class: true,
