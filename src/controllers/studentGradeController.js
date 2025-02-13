@@ -4,43 +4,14 @@ const prisma = require("../config/database");
 class StudentGradeController {
   async insertGradeStudent(req, res) {
     try {
-      const {
-        academicYear,
-        nis,
-        teacherId,
-        classId,
-        courseCode,
-        task,
-        UH,
-        PTS,
-        PAS,
-        portofolio,
-        proyek,
-        attitude,
-        description,
-      } = req.body;
+      const grades = req.body; // Menerima array object
 
-      const existGrade =
-        await studentGradeRepository.findGradeByNISClassAndCourse(
+      const results = await Promise.all(grades.map(async (grade) => {
+        const {
+          academicYear,
           nis,
+          teacherId,
           classId,
-          courseCode
-        );
-
-      //cari siswa yg nis nya ysb dan classId nya ysb di table studentsinClass
-      const studentinClass = await prisma.studentsinClass.findFirst({
-        where: {
-          nis: nis,
-          classId: classId,
-        },
-      });
-
-      if (!existGrade) {
-        await studentGradeRepository.insertGrade({
-          nis,
-          academicYear,
-          teacherId: parseInt(teacherId),
-          classId: parseInt(classId),
           courseCode,
           task,
           UH,
@@ -50,29 +21,62 @@ class StudentGradeController {
           proyek,
           attitude,
           description,
-          studentsinClassId: studentinClass.id,
+        } = grade;
+
+        const existGrade =
+          await studentGradeRepository.findGradeByNISClassAndCourse(
+            nis,
+            classId,
+            courseCode
+          );
+
+        const studentinClass = await prisma.studentsinClass.findFirst({
+          where: {
+            nis: nis,
+            classId: classId,
+          },
         });
-      } else {
-        await studentGradeRepository.updateGrade(parseInt(existGrade.id), {
-          nis,
-          academicYear,
-          teacherId: parseInt(teacherId),
-          classId: parseInt(classId),
-          courseCode,
-          task,
-          UH,
-          PTS,
-          PAS,
-          portofolio,
-          proyek,
-          attitude,
-          description,
-        });
-      }
+
+        if (!existGrade) {
+          return await studentGradeRepository.insertGrade({
+            nis,
+            academicYear,
+            teacherId: parseInt(teacherId),
+            classId: parseInt(classId),
+            courseCode,
+            task,
+            UH,
+            PTS,
+            PAS,
+            portofolio,
+            proyek,
+            attitude,
+            description,
+            studentsinClassId: studentinClass.id,
+          });
+        } else {
+          return await studentGradeRepository.updateGrade(parseInt(existGrade.id), {
+            nis,
+            academicYear,
+            teacherId: parseInt(teacherId),
+            classId: parseInt(classId),
+            courseCode,
+            task,
+            UH,
+            PTS,
+            PAS,
+            portofolio,
+            proyek,
+            attitude,
+            description,
+          });
+        }
+      }));
 
       return res.status(201).json({
         status: 201,
         message: "Grades Student successfully updated",
+        data: results,
       });
     } catch (error) {
       res.status(400).json({

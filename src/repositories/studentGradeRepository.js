@@ -26,39 +26,9 @@ class StudentGradeRepository {
   }
 
   async updateGrade(id, data) {
-    const {
-      nis,
-      academicYear,
-      teacherId,
-      classId,
-      courseCode,
-      task,
-      UH,
-      PTS,
-      PAS,
-      portofolio,
-      proyek,
-      attitude,
-      description,
-    } = data;
-
     return await prisma.studentsGrades.update({
       where: { id: parseInt(id) },
-      data: {
-        nis,
-        academicYear,
-        teacherId,
-        classId,
-        courseCode,
-        task,
-        UH,
-        PTS,
-        PAS,
-        portofolio,
-        proyek,
-        attitude,
-        description,
-      },
+      data: data,
     });
   }
 }

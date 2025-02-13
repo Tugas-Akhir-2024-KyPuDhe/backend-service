@@ -454,7 +454,7 @@ const dataCourse = [
   {
     name: "Informatika",
     code: "XINFOR",
-    grade: "XI",
+    grade: "X",
   },
   {
     name: "Projek Ilmu Pengetahuan Alam dan Sosial",
