@@ -193,29 +193,29 @@ class ClassStudentRepository {
 
     const classes = await prisma.class.findFirst({
       where: { id: classId },
-    })
+    });
 
     // Update history sebelumnya menjadi "Non Aktif"
     await prisma.historyClass.updateMany({
       where: {
         studentId: { in: students.map((student) => student.id) },
-        status: "Aktif", // Pastikan hanya yang masih aktif yang diperbarui
+        status: "Aktif",
       },
       data: { status: "Lulus" },
     });
 
-    // Update classId untuk setiap siswa yang ditemukan(Kelas siswa saat ini)
+    // Update classId untuk setiap siswa
     await prisma.student.updateMany({
       where: {
         id: { in: students.map((student) => student.id) },
       },
       data: {
         classId,
-        status: "Active"
+        status: "Active",
       },
     });
 
-    // Buat data untuk dimasukkan ke dalam tabel StudentsinClass
+    // Insert ke StudentsinClass dan dapatkan ID yang baru
     const studentsInClassData = students.map((student) => ({
       name: student.name,
       classId,
@@ -233,29 +233,27 @@ class ClassStudentRepository {
       mediaId: student.mediaId,
     }));
 
-    // Buat riwayat historyClass
-    const historyRecords = students.map((student) => ({
+    // Gunakan transaksi Prisma untuk menyimpan StudentsinClass dan mendapatkan data yang baru dimasukkan
+    const insertedStudentsInClass = await prisma.$transaction(
+      studentsInClassData.map((data) => prisma.studentsinClass.create({ data }))
+    );
+
+    // Buat historyClass dengan studentsinClassId yang baru dimasukkan
+    const historyRecords = students.map((student, index) => ({
       studentId: student.id,
       oldClassId: student.classId || null,
       currentClassId: classId,
       academicYear: classes.academicYear,
+      studentsinClassId: insertedStudentsInClass[index].id, // Ambil id dari hasil insert
       status: "Aktif",
     }));
 
-    // Gunakan transaksi Prisma agar perubahan bersifat atomik
-    await prisma.$transaction([
-      prisma.studentsinClass.createMany({ data: studentsInClassData }),
-      prisma.historyClass.createMany({ data: historyRecords }),
-    ]);
+    // Insert ke historyClass
+    await prisma.historyClass.createMany({ data: historyRecords });
 
-    // Ambil daftar siswa yang telah dimasukkan ke StudentsinClass
-    const studentsWithClass = await prisma.studentsinClass.findMany({
-      where: { classId },
-      orderBy: { id: "asc" },
-    });
+    return insertedStudentsInClass;
+}
 
-    return studentsWithClass;
-  }
 }
 
 module.exports = new ClassStudentRepository();
