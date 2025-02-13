@@ -120,9 +120,12 @@ class StudentRepository {
       },
     });
 
-    return response.ParentOfStudent
-  }
+    const parentData = Array.isArray(response.ParentOfStudent)
+      ? response.ParentOfStudent[0]
+      : response.ParentOfStudent;
 
+    return parentData;
+  }
 }
 
 module.exports = new StudentRepository();
