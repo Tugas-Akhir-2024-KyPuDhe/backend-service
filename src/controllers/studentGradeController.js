@@ -1,5 +1,6 @@
 const e = require("express");
 const studentGradeRepository = require("../repositories/studentGradeRepository");
+const prisma = require("../config/database");
 class StudentGradeController {
   async insertGradeStudent(req, res) {
     try {
@@ -26,6 +27,14 @@ class StudentGradeController {
           courseCode
         );
 
+      //cari siswa yg nis nya ysb dan classId nya ysb di table studentsinClass
+      const studentinClass = await prisma.studentsinClass.findFirst({
+        where: {
+          nis: nis,
+          classId: classId,
+        },
+      });
+
       if (!existGrade) {
         await studentGradeRepository.insertGrade({
           nis,
@@ -41,6 +50,7 @@ class StudentGradeController {
           proyek,
           attitude,
           description,
+          studentsinClassId: studentinClass.id,
         });
       } else {
         await studentGradeRepository.updateGrade(parseInt(existGrade.id), {
