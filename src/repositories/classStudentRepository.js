@@ -252,8 +252,7 @@ class ClassStudentRepository {
     await prisma.historyClass.createMany({ data: historyRecords });
 
     return insertedStudentsInClass;
-}
-
+  }
 }
 
 module.exports = new ClassStudentRepository();

@@ -111,6 +111,18 @@ class StudentRepository {
       });
     }
   }
+
+  async findParentStudentByNis(nis) {
+    const response = await prisma.student.findUnique({
+      where: { nis },
+      include: {
+        ParentOfStudent: true,
+      },
+    });
+
+    return response.ParentOfStudent
+  }
+
 }
 
 module.exports = new StudentRepository();

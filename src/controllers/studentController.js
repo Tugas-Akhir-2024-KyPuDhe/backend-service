@@ -177,6 +177,38 @@ class StudentController {
     }
   }
 
+  async getParentOfStudent(req, res) {
+    const { nis } = req.query;
+
+    if (!nis) {
+      return res
+        .status(404)
+        .json({ status: 404, message: "nis student is required" });
+    }
+
+    try {
+      const parent = await studentRepository.findParentStudentByNis(nis);
+
+      if (!parent) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "parent of Student not found" });
+      }
+
+      res.status(200).json({
+        status: 200,
+        message: "Parent retrieved successfully",
+        data: parent,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
+
   async getNewStudent(req, res) {
     try {
       const majorCode = req.query.majorCode;
