@@ -101,6 +101,9 @@ class StudentRepository {
           parentJob,
           parentAddress,
           phone,
+          mainStudent: {
+            connect: { id: studentId },
+          },
           student: {
             connect: { id: studentId },
           },

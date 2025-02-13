@@ -102,11 +102,12 @@ class StaffRepository {
                 homeRoomTeacher: true,
                 student: {
                   include: {
-                    HistoryClass: {
-                      orderBy: {
-                        academicYear: "desc",
-                      },
-                    },
+                    HistoryClass: true,
+                    // HistoryClass: {
+                    //   orderBy: {
+                    //     academicYear: "desc",
+                    //   },
+                    // },
                     ParentOfStudent: true,
                     class: true,
                     Major: true,
