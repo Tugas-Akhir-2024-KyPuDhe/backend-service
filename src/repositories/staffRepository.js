@@ -108,7 +108,6 @@ class StaffRepository {
                     //     academicYear: "desc",
                     //   },
                     // },
-                    ParentOfStudent: true,
                     class: true,
                     Major: true,
                     photo: true,
