@@ -200,7 +200,7 @@ class ClassStudentRepository {
         studentId: { in: students.map((student) => student.id) },
         status: "Aktif",
       },
-      data: { status: "Lulus" },
+      data: { status: "Naik Kelas" },
     });
 
     // Update classId untuk setiap siswa
