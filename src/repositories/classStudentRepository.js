@@ -47,7 +47,7 @@ class ClassStudentRepository {
         // },
         student: {
           include: {
-            ParentOfStudent: true,
+            // ParentOfStudent: true,
             class: true,
             Major: true,
             HistoryClass: true,
