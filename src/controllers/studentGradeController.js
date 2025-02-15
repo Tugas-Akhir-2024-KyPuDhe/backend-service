@@ -19,6 +19,7 @@ class StudentGradeController {
           PAS,
           portofolio,
           proyek,
+          finalGrade,
           attitude,
           description,
         } = grade;
@@ -51,6 +52,7 @@ class StudentGradeController {
             portofolio,
             proyek,
             attitude,
+            finalGrade,
             description,
             studentsinClassId: studentinClass.id,
           });
@@ -68,6 +70,7 @@ class StudentGradeController {
             portofolio,
             proyek,
             attitude,
+            finalGrade,
             description,
           });
         }

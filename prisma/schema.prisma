@@ -323,7 +323,7 @@ model ParentOfStudent {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  student Student[]         @relation("ParentsOfStudent")
+  student Student[] @relation("ParentsOfStudent")
 }
 
 model Galeri {
@@ -388,6 +388,7 @@ model StudentsGrades {
   portofolio   String?
   proyek       String?
   attitude     String?
+  finalGrade   String?
   description  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
