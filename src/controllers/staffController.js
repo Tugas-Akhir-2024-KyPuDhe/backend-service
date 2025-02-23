@@ -120,7 +120,7 @@ class StaffController {
             .json({ status: 404, message: "Class not found" });
         }
       }
-      const classStaff = await staffRepository.findClassByNip(nip, parseInt(courseIdInClass));
+      const classStaff = await staffRepository.findClassByNip(nip, courseIdInClass);
 
       res.status(200).json({
         status: 200,
