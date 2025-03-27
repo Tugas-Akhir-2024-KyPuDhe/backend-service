@@ -17,7 +17,7 @@ jobs:
             cd backend-service
             git pull origin main
             npm install
-            pm2 start server.js --name backend-service
+            pm2 start index.js --name backend-service
             pm2 save
             pm2 startup
             pm2 restart backend-service
