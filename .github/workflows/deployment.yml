@@ -1,0 +1,23 @@
+name: Deployment
+on:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: 22
+          script: |
+            cd ~/home/smkn1lumbanjulu/backend
+            git pull origin main
+            npm install
+            pm2 start server.js --name backend
+            pm2 save
+            pm2 startup
+            pm2 restart backend
