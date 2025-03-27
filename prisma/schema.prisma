@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -58,6 +52,8 @@ model Staff {
   address    String?
   phone      String?
   email      String?
+  gender     String?
+  mapel      String[]
   nip        String?   @unique
   type       String
   position   String?
@@ -67,29 +63,76 @@ model Staff {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  user  User    @relation(fields: [id], references: [id])
-  photo Media?  @relation(fields: [mediaId], references: [id])
-  Class Class[]
+  user           User             @relation(fields: [id], references: [id])
+  photo          Media?           @relation(fields: [mediaId], references: [id])
+  Class          Class[]
+  Student        Student[]
+  CourseInClass  CourseInClass[]
+  StudentsGrades StudentsGrades[]
 }
 
 model Student {
-  id         Int       @id @default(autoincrement())
-  uuid       String    @default(uuid())
-  name       String
-  birthPlace String?
-  address    String?
-  nis        String    @unique
-  nisn       String    @unique
-  phone      String?
-  email      String?
-  startYear  DateTime
-  endYear    DateTime?
-  mediaId    Int?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  uuid        String    @default(uuid())
+  name        String
+  classId     Int?
+  waliKelasId Int?
+  status      String?   @default("New") // New | Active | Alumni | Stay
+  birthPlace  String?
+  address     String?
+  phone       String?
+  email       String?
+  gender      String?
+  majorCode   String?
+  nis         String    @unique
+  nisn        String    @unique
+  startYear   DateTime
+  endYear     DateTime?
+  mediaId     Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  user  User   @relation(fields: [id], references: [id])
-  photo Media? @relation(fields: [mediaId], references: [id])
+  user      User   @relation(fields: [id], references: [id])
+  photo     Media? @relation(fields: [mediaId], references: [id])
+  class     Class? @relation(fields: [classId], references: [id])
+  waliKelas Staff? @relation(fields: [waliKelasId], references: [id])
+
+  ParentOfStudent         ParentOfStudent[]         @relation("ParentsOfStudent")
+  HistoryClass            HistoryClass[]
+  Major                   Major?                    @relation(fields: [majorCode], references: [majorCode])
+  StudentsGrades          StudentsGrades[]
+  StudentPositionInClass  StudentPositionInClass[]
+  StudentDetailAttendance StudentDetailAttendance[]
+}
+
+model AcademicYear {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  description String?
+  status      String   @default("Active")
+  createdBy   String?
+  updateBy    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model HistoryClass {
+  id             Int      @id @default(autoincrement())
+  uuid           String?  @default(uuid())
+  studentId      Int
+  oldClassId     Int?
+  currentClassId Int
+  academicYear   String
+  status         String?  @default("Aktif") // naik | lulus | tinggal
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  student           Student          @relation(fields: [studentId], references: [id])
+  oldClass          Class?           @relation(fields: [oldClassId], references: [id], name: "OldClassRelation")
+  currentClass      Class            @relation(fields: [currentClassId], references: [id], name: "CurrentClassRelation")
+  StudentsinClass   StudentsinClass? @relation(fields: [studentsinClassId], references: [id])
+  studentsinClassId Int?
 }
 
 model Media {
@@ -104,33 +147,39 @@ model Media {
   Major           Major[]           @relation("MajorMedia")
   Extracurricular Extracurricular[] @relation("ExtracurricularMedia")
   Facility        Facility[]        @relation("FacilityMedia")
+  Galeri          Galeri[]          @relation("GaleriMedia")
   staff           Staff[] //one to one
   students        Student[]
   ConfigSchool    ConfigSchool[]
 
-  ArticleBanner Article[]
-  BannerPage    BannerPage[]
+  ArticleBanner  Article[]
+  BannerPage     BannerPage[]
+  Course         Course[]
+  StudentinClass StudentsinClass[]
+  ProblemReport  ProblemReport[]
 }
 
 model ConfigSchool {
-  id        Int      @id @default(autoincrement())
-  uuid      String   @default(uuid())
-  name      String
-  about     String
-  vision    String?
-  mision    String?
-  address   String?
-  mediaId   Int?
-  telp      String?
-  email     String
-  npsn      String
-  fb        String?
-  ig        String?
-  tiktok    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  uuid          String   @default(uuid())
+  name          String
+  historySchool String?
+  about         String
+  vision        String?
+  mission       String?
+  address       String?
+  mediaId       Int?
+  telp          String?
+  email         String
+  maps          String?
+  npsn          String
+  fb            String?
+  ig            String?
+  tiktok        String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  logo Media? @relation(fields: [mediaId], references: [id]) // Relasi one-to-one untuk logo
+  logo Media? @relation(fields: [mediaId], references: [id])
 }
 
 model Article {
@@ -139,9 +188,9 @@ model Article {
   bannerId    Int?
   title       String
   description String
-  date        DateTime @default(now())
   status      String
   type        String
+  category    String?
   createdBy   String?
   updateBy    String?
   createdAt   DateTime @default(now())
@@ -152,29 +201,74 @@ model Article {
 }
 
 model Class {
-  id          Int      @id @default(autoincrement())
-  uuid        String   @default(uuid())
-  name        String
-  major       String
-  schoolYear  String
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  name         String
+  description  String?
+  majorCode    String?
+  staffId      Int?
+  status       Int?     @default(1) // 1= active, 2=end
+  academicYear String?
+  capacity     Int?     @default(30)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  homeRoomTeacher Staff? @relation(fields: [staffId], references: [id])
-  staffId         Int?
+  major                  Major?                   @relation(fields: [majorCode], references: [majorCode])
+  homeRoomTeacher        Staff?                   @relation(fields: [staffId], references: [id])
+  HistoryClassOld        HistoryClass[]           @relation("OldClassRelation")
+  HistoryClassNew        HistoryClass[]           @relation("CurrentClassRelation")
+  CourseInClass          CourseInClass[]
+  StudentsGrades         StudentsGrades[]
+  StudentPositionInClass StudentPositionInClass[]
+  StudentAttendance      StudentAttendance[]
+  student                StudentsinClass[]
+  mainStudent            Student[]
+}
+
+model StudentsinClass {
+  id         Int       @id @default(autoincrement())
+  uuid       String    @default(uuid())
+  name       String
+  classId    Int?
+  status     String?   @default("Active") // Active | Alumni | Stay
+  birthPlace String?
+  address    String?
+  phone      String?
+  email      String?
+  gender     String?
+  majorCode  String?
+  nis        String
+  nisn       String
+  startYear  DateTime
+  endYear    DateTime?
+  mediaId    Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  photo Media? @relation(fields: [mediaId], references: [id])
+  class Class? @relation(fields: [classId], references: [id])
+
+  HistoryClass            HistoryClass[]
+  Major                   Major?                    @relation(fields: [majorCode], references: [majorCode])
+  StudentsGrades          StudentsGrades[]
+  StudentPositionInClass  StudentPositionInClass[]
+  StudentDetailAttendance StudentDetailAttendance[]
 }
 
 model Major {
   id          Int      @id @default(autoincrement())
   uuid        String   @default(uuid())
+  majorCode   String?  @unique
   name        String
   description String?
   prioritas   Int      @default(15)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  media Media[] @relation("MajorMedia")
+  media          Media[]           @relation("MajorMedia")
+  student        Student[]
+  class          Class[]
+  StudentinClass StudentsinClass[]
 }
 
 model Extracurricular {
@@ -216,4 +310,180 @@ model BannerPage {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   banner      Media?   @relation(fields: [bannerId], references: [id])
+}
+
+model ParentOfStudent {
+  id            Int      @id @default(autoincrement())
+  uuid          String   @default(uuid())
+  fatherName    String
+  motherName    String
+  parentJob     String?
+  parentAddress String?
+  phone         String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  student Student[] @relation("ParentsOfStudent")
+}
+
+model Galeri {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  description String?
+  prioritas   Int      @default(15)
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  media Media[] @relation("GaleriMedia")
+}
+
+model Course {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @default(uuid())
+  name        String
+  code        String   @unique
+  grade       String
+  description String?
+  imageId     Int?
+  status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  image          Media?           @relation(fields: [imageId], references: [id])
+  CourseInClass  CourseInClass[]
+  StudentsGrades StudentsGrades[]
+}
+
+model CourseInClass {
+  id         Int      @id @default(autoincrement())
+  uuid       String   @default(uuid())
+  courseCode String
+  teacherId  Int
+  classId    Int
+  day        String
+  timeStart  String
+  timeEnd    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  courseDetail Course? @relation(fields: [courseCode], references: [code])
+  teacher      Staff?  @relation(fields: [teacherId], references: [id])
+  class        Class?  @relation(fields: [classId], references: [id])
+}
+
+model StudentsGrades {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  academicYear String?
+  nis          String
+  teacherId    Int
+  classId      Int
+  courseCode   String
+  task         String
+  UH           String
+  PTS          String
+  PAS          String
+  portofolio   String?
+  proyek       String?
+  attitude     String?
+  finalGrade   String?
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student           Student?         @relation(fields: [nis], references: [nis])
+  course            Course?          @relation(fields: [courseCode], references: [code])
+  teacher           Staff?           @relation(fields: [teacherId], references: [id])
+  class             Class?           @relation(fields: [classId], references: [id])
+  StudentsinClass   StudentsinClass? @relation(fields: [studentsinClassId], references: [id])
+  studentsinClassId Int?
+}
+
+model StudentPositionInClass {
+  id           Int      @id @default(autoincrement())
+  uuid         String   @default(uuid())
+  nis          String
+  classId      Int
+  positionName String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  student           Student?         @relation(fields: [nis], references: [nis])
+  class             Class?           @relation(fields: [classId], references: [id])
+  StudentsinClass   StudentsinClass? @relation(fields: [studentsinClassId], references: [id])
+  studentsinClassId Int?
+}
+
+model StudentAttendance {
+  id        Int       @id @default(autoincrement())
+  uuid      String    @unique @default(uuid())
+  classId   Int
+  date      DateTime
+  startTime DateTime?
+  endTime   DateTime?
+  status    Int       @default(0) //1 = final, 0 = pending
+  notes     String?
+  createdBy String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  class                    Class?                    @relation(fields: [classId], references: [id])
+  detailAttendanceStudents StudentDetailAttendance[]
+}
+
+model StudentDetailAttendance {
+  id           Int       @id @default(autoincrement())
+  uuid         String    @unique @default(uuid())
+  attendanceId Int
+  nis          String
+  checkInTime  DateTime?
+  checkOutTime DateTime?
+  status       Int       @default(1) //1 = hadir, 2 = izin, 3 = sakir
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  attendance        StudentAttendance @relation(fields: [attendanceId], references: [id])
+  student           Student?          @relation(fields: [nis], references: [nis])
+  StudentsinClass   StudentsinClass?  @relation(fields: [studentsinClassId], references: [id])
+  studentsinClassId Int?
+}
+
+model StudyTracer {
+  id                     Int      @id @default(autoincrement())
+  uuid                   String   @unique @default(uuid())
+  name                   String
+  ttl                    String?
+  gender                 String
+  address                String
+  addressNow             String?
+  phone                  String
+  email                  String
+  startYear              String
+  endYear                String
+  employmentStatus       String
+  institutionName        String?
+  institutionAddress     String?
+  isSatisfactionMet      String?
+  disSatisfactionFactors String?
+  studyIssues            String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model ProblemReport {
+  id                 Int      @id @default(autoincrement())
+  uuid               String   @unique @default(uuid())
+  idName             String
+  pageProblem        String
+  problemDescription String
+  mediaId            Int?
+  telp               String
+  status             Int      @default(1)
+  createdBy          String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  media              Media?   @relation(fields: [mediaId], references: [id])
 }
