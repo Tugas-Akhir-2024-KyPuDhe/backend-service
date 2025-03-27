@@ -1,4 +1,4 @@
-const studentPositionInClassRepository = require("../repositories/StudentPositionInClassRepository");
+const studentPositionInClassRepository = require("../repositories/studentPositionInClassRepository");
 const classRepository = require("../repositories/classStudentRepository");
 const studentRepository = require("../repositories/studentRepository");
 
