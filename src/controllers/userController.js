@@ -188,10 +188,10 @@ class UserController {
 
       let updateData = {};
 
-      if (password) {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        updateData.password = hashedPassword;
-      }
+      // if (password) {
+      //   const hashedPassword = await bcrypt.hash(password, 10);
+      //   updateData.password = hashedPassword;
+      // }
       if (existingUser.staff.length > 0) {
         updateData.staff = {
           update: {

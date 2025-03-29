@@ -35,24 +35,16 @@ class StudentController {
     try {
       const { id } = req.params;
       let sanitizedTitle;
-      const existingUser = await studentRepository.findUserById(parseInt(id));
-      if (existingUser.staff.length > 0) {
-        const staffMember = existingUser.staff[0];
-        sanitizedTitle =
-          staffMember.nip && staffMember.name
-            ? `staff_${staffMember.nip}_${staffMember.name
-                .replace(/\s+/g, "_")
-                .replace(/[^a-zA-Z0-9_]/g, "")}`
-            : "default";
-      } else if (existingUser.students.length > 0) {
-        const student = existingUser.students[0];
-        sanitizedTitle =
-          student.nis && student.name
-            ? `siswa_${student.nis}_${student.name
-                .replace(/\s+/g, "_")
-                .replace(/[^a-zA-Z0-9_]/g, "")}`
-            : "default";
-      }
+      const existingUser = await studentRepository.findStudentById(
+        parseInt(id)
+      );
+      const student = existingUser;
+      sanitizedTitle =
+        student.nis && student.name
+          ? `siswa_${student.nis}_${student.name
+              .replace(/\s+/g, "_")
+              .replace(/[^a-zA-Z0-9_]/g, "")}`
+          : "default";
 
       if (req.files) {
         if (req.files["photo"]) {
@@ -219,6 +211,87 @@ class StudentController {
         message: "Student retrieved successfully",
         data: student,
       });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ status: 500, message: "Internal server error", error });
+    }
+  }
+
+  async updateStudent(req, res) {
+    const { id } = req.params;
+    const {
+      name,
+      birthPlace,
+      address,
+      phone,
+      email,
+      gender,
+      nis,
+      nisn,
+      startDate,
+    } = req.body;
+    let mediaId = null;
+
+    try {
+      const existingUserStudent = await studentRepository.findStudentById(
+        parseInt(id)
+      );
+      if (!existingUserStudent) {
+        return res.status(404).json({ message: "User Student not found" });
+      }
+
+      mediaId = existingUserStudent.mediaId;
+      if (req.photoLocation) {
+        const photo = req.files["photo"][0];
+        if (mediaId === null) {
+          const mediaResponse = await prisma.media.create({
+            data: {
+              url: req.photoLocation,
+              type: photo.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          mediaId = mediaResponse.id;
+        } else {
+          await deleteMediaFromCloud(
+            existingUserStudent.photo.url.replace(
+              `${process.env.AWS_URL_IMG}/`,
+              ""
+            )
+          );
+          const mediaResponse = await prisma.media.update({
+            where: { id: parseInt(mediaId) },
+            data: {
+              url: req.photoLocation,
+              type: photo.mimetype.startsWith("image") ? "image" : "video",
+            },
+          });
+          mediaId = mediaResponse.id;
+        }
+      }
+
+      const studentData = {
+        name,
+        birthPlace,
+        address,
+        phone,
+        email,
+        gender,
+        nis,
+        nisn,
+        startDate,
+        mediaId,
+      };
+
+      await studentRepository.updateStudent(id, studentData);
+
+      if (existingUserStudent.nis != nis) {
+        await studentRepository.updateUserStudent(id, { username: nis });
+      }
+
+      res
+        .status(200)
+        .json({ status: 200, message: "User Student updated successfully" });
     } catch (error) {
       res
         .status(500)

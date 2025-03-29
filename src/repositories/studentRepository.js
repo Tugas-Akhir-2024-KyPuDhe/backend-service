@@ -29,6 +29,34 @@ class StudentRepository {
     });
   }
 
+  async findStudentById(id) {
+    return await prisma.student.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            password: true,
+            username: true,
+            roles: true,
+          },
+        },
+        photo: true,
+        ParentOfStudent: true,
+        class: true,
+        Major: true,
+        HistoryClass: {
+          orderBy: {
+            academicYear: "desc",
+          },
+          include: {
+            currentClass: { include: { StudentsGrades: true } },
+            oldClass: true,
+          },
+        },
+      },
+    });
+  }
+
   async getAllNewStudent(majorCode) {
     const whereClause = {
       classId: null,
@@ -122,6 +150,20 @@ class StudentRepository {
       : response.ParentOfStudent;
 
     return parentData;
+  }
+
+  async updateUserStudent(id, data) {
+    return await prisma.user.update({
+      where: { id: parseInt(id) },
+      data,
+    });
+  }
+
+  async updateStudent(id, data) {
+    return await prisma.student.update({
+      where: { id: parseInt(id) },
+      data,
+    });
   }
 }
 

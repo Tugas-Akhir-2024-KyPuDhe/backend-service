@@ -225,7 +225,7 @@ class StaffController {
           mediaId = mediaResponse.id;
         } else {
           await deleteMediaFromCloud(
-            existingUserStaff.phone.url.replace(
+            existingUserStaff.photo.url.replace(
               `${process.env.AWS_URL_IMG}/`,
               ""
             )
