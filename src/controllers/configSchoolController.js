@@ -95,12 +95,13 @@ class ConfigShoolController {
       const teacher = await configSchoolRepository.countTeacher();
       const staff = await configSchoolRepository.countStaff();
       const major = await configSchoolRepository.countMajor();
+      const alumni = await configSchoolRepository.countAlumni();
       const data = {
         student,
         teacher,
         staff,
         major,
-        alumni: 381,
+        alumni,
       };
       res.status(200).json({
         status: 200,

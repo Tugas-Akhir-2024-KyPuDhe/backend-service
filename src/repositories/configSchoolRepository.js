@@ -124,6 +124,13 @@ class ConfigSchoolRepository {
   async countMajor() {
     return await prisma.major.count({});
   }
+
+  async countAlumni() {
+    const studyTracer = await prisma.studyTracer.count({});
+    const student = await prisma.student.count({where: {status: "Lulus"}})
+
+    return studyTracer + student;
+  }
 }
 
 module.exports = new ConfigSchoolRepository();
