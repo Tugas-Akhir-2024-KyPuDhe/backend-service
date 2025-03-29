@@ -11,6 +11,7 @@ const {
   s3Client,
   deleteMediaFromCloud,
 } = require("../config/awsClound");
+const myFunctions = require("./../utils/functions");
 
 class AuthController {
   uploadFiles() {
@@ -341,6 +342,32 @@ class AuthController {
       res
         .status(500)
         .json({ status: 500, message: "Internal server error", error });
+    }
+  }
+
+  async resetPassword(req, res) {
+    const { id } = req.params;
+
+    try {
+      const user = await authRepository.findUserById(id);
+      if (!user) {
+        return res.status(404).json({ status: 404, message: "User not found" });
+      }
+      const randomPassword = myFunctions.generateRandomPassword(8);
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+      await authRepository.updateUser(id, { password: hashedPassword });
+      res.status(200).json({
+        status: 200,
+        message: "Password reset successfully",
+        data: { newPassword: randomPassword },
+      });
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message,
+      });
     }
   }
 }

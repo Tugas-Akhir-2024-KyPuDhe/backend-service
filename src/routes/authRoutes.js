@@ -9,6 +9,7 @@ router.post("/register/student", authMiddleware, authorizeRoles(['STAFF']), uplo
 router.post("/register/staff", authMiddleware, authorizeRoles(['STAFF']), uploadFiles, compressMedia, authController.registerStaff);
 router.post("/login", authController.login);
 router.post("/change-password", authMiddleware, authController.changePassword);
-router.get("/verify-token", authController.verifyToken);
+router.post("/reset-password/:id", authMiddleware, authorizeRoles(['STAFF']), authController.resetPassword);
+router.get("/verify-token",  authController.verifyToken);
 
 module.exports = router;
