@@ -190,11 +190,40 @@ class ClassStudentRepository {
       throw new Error("No students found with the provided NIS.");
     }
 
+    // Jika classId adalah '00', ubah status siswa menjadi Lulus
+    if (classId === "00") {
+      // Update history sebelumnya menjadi "Lulus"
+      await prisma.historyClass.updateMany({
+        where: {
+          studentId: { in: students.map((student) => student.id) },
+          status: "Aktif",
+        },
+        data: { status: "Lulus" },
+      });
+
+      // Update status siswa menjadi Lulus tanpa mengubah classId
+      await prisma.student.updateMany({
+        where: {
+          id: { in: students.map((student) => student.id) },
+        },
+        data: {
+          status: "Lulus",
+        },
+      });
+
+      return { message: "Students status updated to Graduated successfully" };
+    }
+
+    // Proses normal untuk classId selain '00'
     const classes = await prisma.class.findFirst({
       where: { id: classId },
     });
 
-    // Update history sebelumnya menjadi "Non Aktif"
+    if (!classes) {
+      throw new Error("Class not found");
+    }
+
+    // Update history sebelumnya menjadi "Naik Kelas"
     await prisma.historyClass.updateMany({
       where: {
         studentId: { in: students.map((student) => student.id) },
@@ -243,7 +272,7 @@ class ClassStudentRepository {
       oldClassId: student.classId || null,
       currentClassId: classId,
       academicYear: classes.academicYear,
-      studentsinClassId: insertedStudentsInClass[index].id, // Ambil id dari hasil insert
+      studentsinClassId: insertedStudentsInClass[index].id,
       status: "Aktif",
     }));
 
