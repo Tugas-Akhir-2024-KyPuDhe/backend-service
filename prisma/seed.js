@@ -82,51 +82,51 @@ async function main() {
   }
   console.log("Seeding custom students completed.");
 
-  const nisSet = new Set(customStudents.map((s) => s.nis));
-  const nisnSet = new Set(customStudents.map((s) => s.nisn));
+  // const nisSet = new Set(customStudents.map((s) => s.nis));
+  // const nisnSet = new Set(customStudents.map((s) => s.nisn));
 
-  for (const major of majors) {
-    for (let i = 1; i <= 10; i++) {
-      let nis, nisn;
+  // for (const major of majors) {
+  //   for (let i = 1; i <= 10; i++) {
+  //     let nis, nisn;
 
-      do {
-        nis = `${Math.floor(100000 + Math.random() * 900000)}`;
-      } while (nisSet.has(nis));
-      nisSet.add(nis);
+  //     do {
+  //       nis = `${Math.floor(100000 + Math.random() * 900000)}`;
+  //     } while (nisSet.has(nis));
+  //     nisSet.add(nis);
 
-      do {
-        nisn = `${Math.floor(100000 + Math.random() * 900000)}`;
-      } while (nisnSet.has(nisn));
-      nisnSet.add(nisn);
+  //     do {
+  //       nisn = `${Math.floor(100000 + Math.random() * 900000)}`;
+  //     } while (nisnSet.has(nisn));
+  //     nisnSet.add(nisn);
 
-      const studentName = `Siswa ${i}`;
+  //     const studentName = `Siswa ${i}`;
 
-      await prisma.user.create({
-        data: {
-          username: `${nis}`,
-          password: defaultPassword,
-          roles: {
-            create: { name: "STUDENT" },
-          },
-          students: {
-            create: {
-              name: studentName,
-              nis,
-              nisn,
-              majorCode: major,
-              birthPlace: formatBirthPlace("Kota A", birthDate),
-              address: `Alamat ${i}, ${major}`,
-              phone: `081234567${i}`,
-              email: `student${i}@example.com`,
-              gender: i % 2 === 0 ? "P" : "L",
-              startYear,
-            },
-          },
-        },
-      });
-    }
-    console.log(`Seeding students for major: ${major} completed.`);
-  }
+  //     await prisma.user.create({
+  //       data: {
+  //         username: `${nis}`,
+  //         password: defaultPassword,
+  //         roles: {
+  //           create: { name: "STUDENT" },
+  //         },
+  //         students: {
+  //           create: {
+  //             name: studentName,
+  //             nis,
+  //             nisn,
+  //             majorCode: major,
+  //             birthPlace: formatBirthPlace("Kota A", birthDate),
+  //             address: `Alamat ${i}, ${major}`,
+  //             phone: `081234567${i}`,
+  //             email: `student${i}@example.com`,
+  //             gender: i % 2 === 0 ? "P" : "L",
+  //             startYear,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }
+  //   console.log(`Seeding students for major: ${major} completed.`);
+  // }
   // #endregion
 
   //#regon | Seeder Developer
