@@ -38,21 +38,21 @@ async function main() {
   console.log("Seeding course completed.");
 
   // #region | Seeder Students
-  const defaultPassword = await bcrypt.hash("12345678", 10);
-  const startYear = new Date("2024-07-01");
-  const majors = ["TKJ", "MM", "RPL", "TITL"];
+  // const defaultPassword = await bcrypt.hash("12345678", 10);
+  // const startYear = new Date("2024-07-01");
+  // const majors = ["TKJ", "MM", "RPL", "TITL"];
 
-  function formatBirthPlace(city, birthDate) {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    const formattedDate = birthDate.toLocaleDateString("id-ID", options);
-    return `${city}, ${formattedDate}`; // Contoh: "Medan, 15 Juni 2005"
-  }
-  // Generate birth date
-  const birthDate = new Date(
-    2004 + Math.floor(Math.random() * 3), // Year: Random between 2004-2006
-    Math.floor(Math.random() * 12), // Month: Random between 0-11
-    Math.floor(Math.random() * 28) + 1 // Day: Random between 1-28
-  );
+  // function formatBirthPlace(city, birthDate) {
+  //   const options = { year: "numeric", month: "long", day: "numeric" };
+  //   const formattedDate = birthDate.toLocaleDateString("id-ID", options);
+  //   return `${city}, ${formattedDate}`; // Contoh: "Medan, 15 Juni 2005"
+  // }
+  // // Generate birth date
+  // const birthDate = new Date(
+  //   2004 + Math.floor(Math.random() * 3), // Year: Random between 2004-2006
+  //   Math.floor(Math.random() * 12), // Month: Random between 0-11
+  //   Math.floor(Math.random() * 28) + 1 // Day: Random between 1-28
+  // );
 
   // Insert custom students
   for (const student of customStudents) {

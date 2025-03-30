@@ -56,8 +56,8 @@ const dataConfigSchool = {
 
 const customStudents = [
   {
-    name: "ALEX ANGGIAT HALOMOAN MANURUNG",
-    nis: "",
+    name: "Alex Anggiat Halomoan Manurung",
+    nis: "0091180224",
     nisn: "0091180224",
     majorCode: "TKJ",
     birthPlace: "Medan, 17 Oktober 2009",
@@ -67,8 +67,8 @@ const customStudents = [
     gender: "L",
   },
   {
-    name: "CHARLI SIRAIT",
-    nis: "",
+    name: "Charli Sirait",
+    nis: "0095031363",
     nisn: "0095031363",
     majorCode: "TKJ",
     birthPlace: "Lumban Lintong, 13 Maret 2009",
@@ -78,8 +78,8 @@ const customStudents = [
     gender: "L",
   },
   {
-    name: "EKLESIA SINAGA",
-    nis: "",
+    name: "Eklesia Sinaga",
+    nis: "0081230202",
     nisn: "0081230202",
     majorCode: "TKJ",
     birthPlace: "Palembang, 24 November 2008",
@@ -89,8 +89,8 @@ const customStudents = [
     gender: "L",
   },
   {
-    name: "FRISKA MANIK",
-    nis: "",
+    name: "Friska Manik",
+    nis: "0073936824",
     nisn: "0073936824",
     majorCode: "TKJ",
     birthPlace: "Panji Bako , 20 Desember 2007",
@@ -100,8 +100,8 @@ const customStudents = [
     gender: "P",
   },
   {
-    name: "GEBI STEVANI SIHOMBING",
-    nis: "",
+    name: "Gebi Stevani Sihombing",
+    nis: "0096236210",
     nisn: "0096236210",
     majorCode: "TKJ",
     birthPlace: "Narumontak, 18 September 2009",
@@ -111,8 +111,8 @@ const customStudents = [
     gender: "P",
   },
   {
-    name: "GOSPEL PAUL SINAGA",
-    nis: "",
+    name: "Gospel Paul Sinaga",
+    nis: "0083564800",
     nisn: "0083564800",
     majorCode: "TKJ",
     birthPlace: "Girsang, 21 Oktober 2008",
@@ -122,8 +122,8 @@ const customStudents = [
     gender: "L",
   },
   {
-    name: "IRA NAOMI MARSANDA ARITONANG",
-    nis: "",
+    name: "Ira Naomi Marsanda Aritonang",
+    nis: "0094305425",
     nisn: "0094305425",
     majorCode: "TKJ",
     birthPlace: "Pekanbaru, 20 Juli 2009",
@@ -133,8 +133,8 @@ const customStudents = [
     gender: "P",
   },
   {
-    name: "JOHANNES NATHANIEL JULIUS",
-    nis: "",
+    name: "Johannes Nathaniel Julius",
+    nis: "0089067461",
     nisn: "0089067461",
     majorCode: "TKJ",
     birthPlace: "Tangerang, 20 November 2008",
@@ -144,8 +144,8 @@ const customStudents = [
     gender: "L",
   },
   {
-    name: "JOHANNES TAMBA",
-    nis: "",
+    name: "Johannes Tamba",
+    nis: "0092197925",
     nisn: "0092197925",
     majorCode: "TKJ",
     birthPlace: "Pematang Siantar, 29 Januari 2010",
@@ -155,8 +155,8 @@ const customStudents = [
     gender: "L",
   },
   {
-    name: "JOSUA MANURUNG",
-    nis: "",
+    name: "Josua Manurung",
+    nis: "0109804056",
     nisn: "0109804056",
     majorCode: "TKJ",
     birthPlace: "Sosor Lintong, 07 Maret 2010",
