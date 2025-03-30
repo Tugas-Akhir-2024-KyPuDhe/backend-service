@@ -229,6 +229,7 @@ class StudentController {
       gender,
       nis,
       nisn,
+      majorCode,
       startDate,
     } = req.body;
     let mediaId = null;
@@ -280,6 +281,7 @@ class StudentController {
         nis,
         nisn,
         startDate,
+        majorCode,
         mediaId,
       };
 

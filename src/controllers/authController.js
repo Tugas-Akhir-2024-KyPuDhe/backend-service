@@ -107,6 +107,7 @@ class AuthController {
       gender,
       nis,
       nisn,
+      majorCode,
       startYear,
     } = req.body;
 
@@ -134,6 +135,7 @@ class AuthController {
             nis,
             nisn,
             phone,
+            majorCode,
             startYear: new Date(startYear),
           },
         },
