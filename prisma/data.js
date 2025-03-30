@@ -1021,244 +1021,276 @@ const dataFasilitas = [
   {
     name: "Ruang Kelas",
     description: `
-      <div class="facility-description">
-        <h3>Ruang Kelas Modern dengan Fasilitas Lengkap</h3>
-        
-        <p>Institusi kami bangga menyediakan <strong>15 ruang kelas</strong> yang dirancang khusus untuk menciptakan lingkungan belajar optimal di semua semester. Setiap ruang kelas kami memenuhi standar nasional pendidikan dengan luas rata-rata 64m² (8x8m) yang mampu menampung 30-32 siswa secara nyaman.</p>
-        
-        <section>
-          <h4>Desain dan Ergonomi</h4>
-          <p>Ruang kelas kami mengimplementasikan konsep <em>active learning classroom</em> dengan tata letak fleksibel yang dapat diadaptasi untuk berbagai metode pembelajaran:</p>
-          <ul>
-            <li>Meja dan kursi ergonomis yang dapat diatur sesuai kebutuhan pembelajaran (model klasikal, diskusi kelompok, atau presentasi)</li>
-            <li>Jarak pandang optimal ke papan tulis/papan putih interaktif dari semua posisi tempat duduk</li>
-            <li>Pencahayaan alami melalui jendela besar dengan tirai pengatur intensitas cahaya</li>
-            <li>Sistem pencahayaan buatan menggunakan LED 4000K untuk mengurangi kelelahan mata</li>
-            <li>Akustik ruangan yang dirancang khusus untuk kejelasan suara guru</li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Teknologi Pembelajaran</h4>
-          <p>Setiap ruang kelas dilengkapi dengan perangkat teknologi pendidikan mutakhir:</p>
-          <ul>
-            <li>Proyektor LCD 4000 lumen dengan layar lebar 120 inci</li>
-            <li>Sistem audio terintegrasi dengan 4 speaker surround</li>
-            <li>Whiteboard interaktif dengan teknologi touchscreen</li>
-            <li>Konektivitas WiFi 5GHz dengan bandwidth dedicated</li>
-            <li>Port charging USB dan stopkontak di setiap meja siswa</li>
-            <li>Sistem kontrol lingkungan (AC, pencahayaan, tirai) terpusat</li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Fasilitas Pendukung</h4>
-          <p>Untuk mendukung kenyamanan belajar mengajar, kami menyediakan:</p>
-          <ul>
-            <li>Lemari penyimpanan kelas dengan sistem penguncian elektronik</li>
-            <li>Display board magnetik untuk pajangan karya siswa</li>
-            <li>Area bacaan kecil dengan rak buku referensi</li>
-            <li>Stasiun cuci tangan kecil di sudut ruangan</li>
-            <li>Emergency exit dengan signage jelas sesuai standar keselamatan</li>
-          </ul>
-        </section>
-        
-        <p>Ruang kelas kami menjalani pemeliharaan rutin setiap 3 bulan dan renovasi besar setiap 3 tahun untuk memastikan fasilitas selalu dalam kondisi prima. Desain interior diperbarui secara berkala mengikuti perkembangan terbaru dalam ilmu pendidikan dan ergonomi.</p>
-      </div>
+    <div class="facility-item">
+      <p>Kami memiliki 15 ruang kelas yang digunakan untuk kegiatan belajar mengajar sehari-hari. Setiap ruang berukuran 7x8 meter dengan kapasitas 30-35 siswa.</p>
+      <p>Fasilitas standar yang tersedia:</p>
+      <ul>
+        <li>Papan tulis putih (whiteboard) berukuran besar</li>
+        <li>Meja dan kursi siswa yang memadai</li>
+        <li>Lemari penyimpanan perlengkapan kelas</li>
+        <li>Ventilasi dan pencahayaan alami yang cukup</li>
+        <li>Kipas angin di setiap ruangan</li>
+        <li>Proyektor dan layar untuk beberapa ruang khusus</li>
+      </ul>
+      <p>Ruang kelas kami dibersihkan setiap hari oleh petugas kebersihan dan dilakukan perawatan berkala untuk menjaga kenyamanan proses belajar.</p>
+    </div>
     `,
   },
   {
     name: "Ruang Perpustakaan",
     description: `
-      <div class="facility-description">
-        <h3>Pusat Sumber Belajar Terintegrasi</h3>
-        
-        <p>Perpustakaan kami yang terdiri dari <strong>1 ruang utama seluas 200m²</strong> berfungsi sebagai jantung akademik institusi, menyediakan lebih dari 5.000 judul bahan pustaka dalam berbagai format.</p>
-        
-        <section>
-          <h4>Zona dan Koleksi</h4>
-          <p>Perpustakaan terbagi dalam beberapa zona khusus:</p>
-          <ul>
-            <li><strong>Zona Referensi</strong>: Menyimpan 1.200+ buku teks, ensiklopedia, kamus, dan publikasi resmi</li>
-            <li><strong>Zona Sirkulasi</strong>: 3.500+ buku fiksi dan non-fiksi untuk peminjaman</li>
-            <li><strong>Zona Periodikal</strong>: 50+ judul majalah dan surat kabar terkini</li>
-            <li><strong>Zona Digital</strong>: 15 komputer dengan akses ke 10.000+ e-book dan jurnal online</li>
-            <li><strong>Zona Audiovisual</strong>: Koleksi DVD edukasi dan perangkat pemutaran</li>
-            <li><strong>Zona Kerja Kelompok</strong>: 5 ruang diskusi dengan kapasitas 6-8 orang</li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Layanan Unggulan</h4>
-          <p>Perpustakaan kami menyediakan berbagai layanan modern:</p>
-          <ul>
-            <li>Sistem otomasi perpustakaan berbasis RFID untuk peminjaman mandiri</li>
-            <li>Akses katalog online melalui portal khusus</li>
-            <li>Layanan referensi personal oleh pustakawan profesional</li>
-            <li>Program literasi informasi dan pelatihan penelitian</li>
-            <li>Pojok baca nyaman dengan sofa dan meja baca ergonomis</li>
-            <li>Layanan fotokopi dan scan dokumen berlisensi</li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Fasilitas Fisik</h4>
-          <p>Desain ruang perpustakaan kami memenuhi standar internasional:</p>
-          <ul>
-            <li>Sistem pencahayaan LED 500 lux untuk area baca</li>
-            <li>Pengaturan suhu 22-24°C dengan AC sentral</li>
-            <li>Sistem kelembaban terkontrol untuk preservasi koleksi</li>
-            <li>Lantai kedap suara dengan karpet khusus</li>
-            <li>Furniture kayu solid dengan finishing anti-gores</li>
-            <li>Sistem keamanan CCTV dan detektor logam</li>
-          </ul>
-        </section>
-        
-        <p>Perpustakaan buka Senin-Jumat pukul 07.30-17.00 WIB dan Sabtu 08.00-14.00 WIB, dengan layanan peminjaman hingga 7 hari dan perpanjangan online. Kami terus memperbarui koleksi dengan 100-150 judul baru setiap bulannya.</p>
-      </div>
+    <div class="facility-item">
+      <p>Perpustakaan sekolah kami menyediakan berbagai koleksi buku pelajaran, referensi, dan bacaan umum untuk menunjang pembelajaran.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Rak buku dengan sistem penataan sederhana</li>
+        <li>Meja baca untuk 20 orang sekaligus</li>
+        <li>Koleksi buku pelajaran dan buku penunjang</li>
+        <li>Beberapa majalah dan surat kabar</li>
+        <li>Katalog manual untuk memudahkan pencarian</li>
+      </ul>
+      <p>Perpustakaan buka setiap hari sekolah dari jam 7.30 sampai 14.00, dengan layanan peminjaman buku selama 3 hari.</p>
+    </div>
     `,
   },
   {
     name: "Ruang Laboratorium",
     description: `
-      <div class="facility-description">
-        <h3>Laboratorium Sains dan Teknologi Mutakhir</h3>
-        
-        <p>Kami memiliki <strong>2 laboratorium khusus</strong> (IPA dan Komputer) dengan total luas 300m² yang dilengkapi peralatan standar industri untuk mendukung pembelajaran berbasis praktikum.</p>
-        
-        <section>
-          <h4>Laboratorium IPA Terpadu</h4>
-          <p>Laboratorium seluas 180m² ini terbagi menjadi 3 zona:</p>
-          <ul>
-            <li><strong>Zona Fisika</strong>:
-              <ul>
-                <li>10 set alat mekanika dasar</li>
-                <li>Kit optik dan gelombang lengkap</li>
-                <li>Generator Van de Graaff</li>
-                <li>Osiloskop digital</li>
-              </ul>
-            </li>
-            <li><strong>Zona Kimia</strong>:
-              <ul>
-                <li>12 station kerja dengan exhaust hood</li>
-                <li>Spektrofotometer UV-Vis</li>
-                <li>pH meter dan konduktometer digital</li>
-                <li>Perangkat titrasi otomatis</li>
-              </ul>
-            </li>
-            <li><strong>Zona Biologi</strong>:
-              <ul>
-                <li>30 mikroskop binokuler</li>
-                <li>Model anatomi manusia skala 1:1</li>
-                <li>Kit PCR dasar</li>
-                <li>Akuarium ekosistem</li>
-              </ul>
-            </li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Laboratorium Komputer</h4>
-          <p>Lab komputer seluas 120m² dengan:</p>
-          <ul>
-            <li>40 unit PC workstation (Intel i7, 16GB RAM, SSD 512GB)</li>
-            <li>Monitor 24" Full HD dengan anti-glare</li>
-            <li>Jaringan 1Gbps dengan bandwidth 500Mbps</li>
-            <li>Software lengkap (office, programming, desain grafis)</li>
-            <li>Server lokal untuk penyimpanan proyek siswa</li>
-            <li>Interactive display 86" sebagai pengganti whiteboard</li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Sistem Pendukung</h4>
-          <p>Fasilitas pendukung laboratorium kami:</p>
-          <ul>
-            <li>Sistem ventilasi khusus dengan 12 ACH (air changes per hour)</li>
-            <li>Emergency shower dan eye wash station</li>
-            <li>Fire suppression system jenis clean agent</li>
-            <li>Ruang penyimpanan bahan dengan kontrol suhu</li>
-            <li>Locker khusus untuk alat-alat berbahaya</li>
-            <li>SOP keselamatan laboratorium yang ketat</li>
-          </ul>
-        </section>
-        
-        <p>Laboratorium kami dioperasikan oleh 2 teknisi laboratorium berpengalaman dan tersedia untuk praktikum reguler maupun penelitian siswa. Pemeliharaan rutin dilakukan setiap bulan untuk memastikan semua peralatan dalam kondisi optimal.</p>
-      </div>
+    <div class="facility-item">
+      <p>Kami memiliki 2 laboratorium sederhana untuk praktikum IPA dan komputer yang digunakan sesuai jadwal pelajaran.</p>
+      <p>Laboratorium IPA dilengkapi dengan:</p>
+      <ul>
+        <li>Meja praktikum tahan bahan kimia</li>
+        <li>Alat-alat percobaan fisika dan kimia dasar</li>
+        <li>Mikroskop untuk praktikum biologi</li>
+        <li>Lemari penyimpanan alat dan bahan</li>
+      </ul>
+      <p>Laboratorium Komputer memiliki:</p>
+      <ul>
+        <li>20 unit komputer dengan spesifikasi standar</li>
+        <li>Software pembelajaran dasar</li>
+        <li>Jaringan lokal dan printer</li>
+        <li>AC untuk menjaga suhu ruangan</li>
+      </ul>
+    </div>
     `,
   },
-  // [Tambahkan deskripsi serupa untuk fasilitas lainnya...]
   {
     name: "Ruang Praktik",
     description: `
-      <div class="facility-description">
-        <h3>Ruang Pengembangan Keterampilan Praktis</h3>
-        
-        <p>Meskipun saat ini kami belum memiliki ruang praktik permanen, kami telah menyusun rencana pengembangan <strong>kompleks praktikum terpadu</strong> seluas 500m² yang akan dibangun dalam dua tahap.</p>
-        
-        <section>
-          <h4>Rencana Tahap Pertama (2024-2025)</h4>
-          <p>Akan mencakup:</p>
-          <ul>
-            <li><strong>Workshop Teknik Dasar</strong>:
-              <ul>
-                <li>10 set meja kerja dengan vice bench</li>
-                <li>Peralatan kayu, logam, dan elektronik dasar</li>
-                <li>Mesin CNC kecil untuk pembelajaran</li>
-                <li>Area finishing dan perakitan</li>
-              </ul>
-            </li>
-            <li><strong>Studio Seni dan Kerajinan</strong>:
-              <ul>
-                <li>Meja gambar dengan lighting khusus</li>
-                <li>Wheel pottery dan kiln kecil</li>
-                <li>Area tekstil dan menjahit</li>
-                <li>Peralatan seni grafis dasar</li>
-              </ul>
-            </li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Rencana Tahap Kedua (2026-2027)</h4>
-          <p>Akan mengembangkan:</p>
-          <ul>
-            <li><strong>Simulasi Lingkungan Kerja</strong>:
-              <ul>
-                <li>Mini office untuk praktik administrasi</li>
-                <li>Mock-up retail space</li>
-                <li>Simulasi front desk hotel</li>
-                <li>Area customer service training</li>
-              </ul>
-            </li>
-            <li><strong>Studio Multimedia</strong>:
-              <ul>
-                <li>Set fotografi dengan green screen</li>
-                <li>Peralatan audio recording</li>
-                <li>Video editing station</li>
-                <li>Graphic design workstation</li>
-              </ul>
-            </li>
-          </ul>
-        </section>
-        
-        <section>
-          <h4>Konsep Desain</h4>
-          <p>Ruang praktik masa depan kami dirancang dengan:</p>
-          <ul>
-            <li>Layout modular yang dapat dikonfigurasi ulang</li>
-            <li>Sistem penyimpanan alat berbasis shadow board</li>
-            <li>Zona bersih dan zona kotor terpisah</li>
-            <li>Display area untuk memamerkan karya siswa</li>
-            <li>Safety signage dan pembatas area yang jelas</li>
-          </ul>
-        </section>
-        
-        <p>Proyek ini telah masuk dalam Rencana Strategis Institusi 2024-2028 dengan anggaran khusus. Kami terbuka untuk kerjasama dengan industri dalam pengembangan fasilitas ini.</p>
-      </div>
+    <div class="facility-item">
+      <p>Saat ini kami sedang merencanakan pembangunan ruang praktik untuk kegiatan keterampilan siswa. Rencana kami meliputi:</p>
+      <ul>
+        <li>Area kerja dasar untuk praktek kayu dan logam</li>
+        <li>Peralatan pertukangan sederhana</li>
+        <li>Ruang serbaguna untuk berbagai kegiatan praktik</li>
+        <li>Penyimpanan alat yang aman dan teratur</li>
+      </ul>
+      <p>Ruang ini akan digunakan untuk mata pelajaran keterampilan dan ekstrakurikuler tertentu, dengan pengawasan ketat dari guru.</p>
+    </div>
     `,
   },
-  // [Lanjutkan untuk fasilitas lainnya dengan tingkat detail yang sama...]
+  {
+    name: "Ruang Pimpinan",
+    description: `
+    <div class="facility-item">
+      <p>Ruang pimpinan kami digunakan oleh kepala sekolah dan wakil kepala sekolah untuk kegiatan administrasi dan pertemuan.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Meja kerja dan kursi tamu</li>
+        <li>Lemari arsip penting</li>
+        <li>Papan informasi jadwal kegiatan</li>
+        <li>Komputer dan printer untuk kebutuhan administrasi</li>
+        <li>Ruang kecil untuk rapat dengan 6-8 orang</li>
+      </ul>
+      <p>Ruang ini juga digunakan untuk menerima tamu penting dan orang tua siswa yang memerlukan konsultasi khusus.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Guru",
+    description: `
+    <div class="facility-item">
+      <p>Ruang guru kami berfungsi sebagai tempat istirahat dan persiapan mengajar bagi para pendidik.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Meja kerja bersama untuk guru</li>
+        <li>Rak penyimpanan dokumen mengajar</li>
+        <li>Papan pengumuman dan jadwal mengajar</li>
+        <li>Area kecil untuk konsumsi dengan dispenser air</li>
+        <li>Lemari loker pribadi untuk guru</li>
+      </ul>
+      <p>Ruang ini menjadi tempat diskusi antar guru dan persiapan materi pembelajaran sebelum masuk kelas.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Ibadah",
+    description: `
+    <div class="facility-item">
+      <p>Kami menyediakan ruang serbaguna yang dapat digunakan untuk kegiatan keagamaan sesuai kebutuhan.</p>
+      <p>Fasilitas dasar yang tersedia:</p>
+      <ul>
+        <li>Ruang bersih dengan alas yang nyaman</li>
+        <li>Lemari kecil untuk penyimpanan alat ibadah</li>
+        <li>Papan jadwal kegiatan keagamaan</li>
+        <li>Sound system sederhana</li>
+      </ul>
+      <p>Ruang ini digunakan secara bergantian untuk berbagai kegiatan keagamaan sesuai jadwal yang telah ditentukan.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang UKS",
+    description: `
+    <div class="facility-item">
+      <p>Unit Kesehatan Sekolah (UKS) kami menyediakan layanan dasar untuk pertolongan pertama.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Tempat tidur peristirahatan</li>
+        <li>Kotak P3K lengkap</li>
+        <li>Alat pengukur tensi dan termometer</li>
+        <li>Obat-obatan dasar</li>
+        <li>Catatan kesehatan siswa</li>
+      </ul>
+      <p>UKS buka setiap hari sekolah dengan jadwal tertentu dan didukung oleh guru yang telah mendapat pelatihan P3K.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Toilet",
+    description: `
+    <div class="facility-item">
+      <p>Kami memiliki 6 blok toilet yang tersebar di area sekolah dengan kondisi bersih dan terawat.</p>
+      <p>Fasilitas toilet kami meliputi:</p>
+      <ul>
+        <li>Toilet siswa putra dan putri terpisah</li>
+        <li>Toilet khusus guru</li>
+        <li>Toilet disabilitas di lokasi strategis</li>
+        <li>Wastafel dengan air mengalir</li>
+        <li>Tempat sampah di setiap unit</li>
+      </ul>
+      <p>Toilet dibersihkan secara rutin 3 kali sehari oleh petugas kebersihan untuk menjaga higienitas.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Gudang",
+    description: `
+    <div class="facility-item">
+      <p>Kami memiliki ruang penyimpanan untuk berbagai keperluan sekolah dan peralatan.</p>
+      <p>Fungsi utama ruang gudang:</p>
+      <ul>
+        <li>Penyimpanan alat kebersihan sekolah</li>
+        <li>Penyimpanan peralatan olahraga</li>
+        <li>Tempat menyimpan dokumen arsip lama</li>
+        <li>Penyimpanan peralatan maintenance</li>
+      </ul>
+      <p>Ruang gudang dikelola oleh petugas khusus dengan sistem pencatatan sederhana untuk memudahkan pengecekan barang.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Sirkulasi",
+    description: `
+    <div class="facility-item">
+      <p>Area sirkulasi di sekolah kami dirancang untuk mobilitas yang lancar dan aman.</p>
+      <p>Fitur utama:</p>
+      <ul>
+        <li>Koridor yang cukup luas antar ruangan</li>
+        <li>Tangga dengan pegangan yang aman</li>
+        <li>Papan penunjuk arah</li>
+        <li>Area tunggu di beberapa titik strategis</li>
+        <li>Pencahayaan yang memadai</li>
+      </ul>
+      <p>Area sirkulasi kami selalu dijaga kebersihannya dan bebas dari halangan untuk mencegah kecelakaan.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Tempat Bermain/Olahraga",
+    description: `
+    <div class="facility-item">
+      <p>Kami menyediakan area terbuka untuk kegiatan olahraga dan bermain siswa.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Lapangan basket dengan ring standar</li>
+        <li>Lapangan voli dengan net</li>
+        <li>Area serbaguna untuk berbagai permainan</li>
+        <li>Beberapa alat olahraga ringan</li>
+        <li>Tempat duduk di pinggir lapangan</li>
+      </ul>
+      <p>Area ini digunakan untuk pelajaran olahraga, ekstrakurikuler, dan waktu istirahat siswa.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang TU",
+    description: `
+    <div class="facility-item">
+      <p>Ruang Tata Usaha merupakan pusat administrasi sekolah yang melayani berbagai keperluan.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Meja pelayanan untuk staf TU</li>
+        <li>Komputer dan printer untuk administrasi</li>
+        <li>Lemari arsip dokumen penting</li>
+        <li>Area tunggu untuk tamu</li>
+        <li>Papan informasi administrasi</li>
+      </ul>
+      <p>Ruang TU buka setiap hari kerja dan melayani berbagai kebutuhan administrasi siswa, guru, dan orang tua.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Konseling",
+    description: `
+    <div class="facility-item">
+      <p>Ruang konseling kami memberikan layanan bimbingan bagi siswa yang membutuhkan.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Ruang nyaman untuk konseling privat</li>
+        <li>Meja dan kursi untuk diskusi</li>
+        <li>Alat peraga untuk bimbingan</li>
+        <li>Koleksi buku pengembangan diri</li>
+        <li>Papan jadwal konselor</li>
+      </ul>
+      <p>Ruang ini digunakan oleh guru BK untuk memberikan bimbingan akademik maupun pribadi kepada siswa.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang OSIS",
+    description: `
+    <div class="facility-item">
+      <p>Ruang OSIS menjadi markas kegiatan organisasi siswa di sekolah kami.</p>
+      <p>Fasilitas yang tersedia:</p>
+      <ul>
+        <li>Meja kerja untuk pengurus OSIS</li>
+        <li>Papan pengumuman kegiatan</li>
+        <li>Rak penyimpanan dokumen organisasi</li>
+        <li>Area diskusi kecil</li>
+        <li>Lemari perlengkapan kegiatan</li>
+      </ul>
+      <p>Ruang ini digunakan untuk rapat pengurus OSIS, penyimpanan alat kegiatan, dan koordinasi berbagai acara sekolah.</p>
+    </div>
+    `,
+  },
+  {
+    name: "Ruang Bangunan",
+    description: `
+    <div class="facility-item">
+      <p>Kami memiliki beberapa ruang pendukung untuk keperluan operasional sekolah.</p>
+      <p>Fungsi ruang bangunan:</p>
+      <ul>
+        <li>Penyimpanan peralatan maintenance</li>
+        <li>Ruang kerja petugas kebersihan</li>
+        <li>Tempat penyimpanan sementara bahan bangunan</li>
+        <li>Gudang peralatan taman</li>
+      </ul>
+      <p>Ruang ini dikelola oleh petugas kebersihan dan maintenance sekolah untuk mendukung kelancaran operasional sehari-hari.</p>
+    </div>
+    `,
+  },
 ];
 
 module.exports = {
