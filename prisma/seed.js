@@ -7,11 +7,15 @@ const {
   dataStaff,
   dataCourse,
   dataDeveloper,
+  dataFasilitas,
 } = require("./data");
 
 const prisma = new PrismaClient();
 
 async function main() {
+  const defaultPassword = await bcrypt.hash("12345678", 10);
+  const startYear = new Date("2024-07-01");
+
   // #region | Seeder untuk data sekolah
   (await prisma.configSchool.count({})) < 1 &&
     (await prisma.configSchool.create({
@@ -28,6 +32,16 @@ async function main() {
     });
   }
   console.log("Seeding major completed.");
+  //#endregion
+
+  // #region | Seeder Fasilitas
+  for (const fasilitas of dataFasilitas) {
+    await prisma.facility.create({
+      data: fasilitas,
+    });
+  }
+  console.log("Seeding Fasilitas completed.");
+  //#endregion
 
   // #region | Seeder Course
   for (const course of dataCourse) {
@@ -36,9 +50,8 @@ async function main() {
     });
   }
   console.log("Seeding course completed.");
+  // #endregion
 
-  const defaultPassword = await bcrypt.hash("12345678", 10);
-  const startYear = new Date("2024-07-01");
   // #region | Seeder Students
   // const majors = ["TKJ", "MM", "RPL", "TITL"];
 
@@ -54,7 +67,7 @@ async function main() {
   //   Math.floor(Math.random() * 28) + 1 // Day: Random between 1-28
   // );
 
-  // Insert custom students
+  // #region | Insert custom students
   for (const student of customStudents) {
     const user = await prisma.user.create({
       data: {
@@ -81,6 +94,7 @@ async function main() {
     });
   }
   console.log("Seeding custom students completed.");
+  // #endregion
 
   // const nisSet = new Set(customStudents.map((s) => s.nis));
   // const nisnSet = new Set(customStudents.map((s) => s.nisn));
@@ -129,7 +143,7 @@ async function main() {
   // }
   // #endregion
 
-  //#regon | Seeder Developer
+  //#region | Seeder Developer
   const developerCount = await prisma.staff.count({});
   if (developerCount < 1) {
     const hashedPassword = await bcrypt.hash("12345678", 10);
@@ -164,7 +178,7 @@ async function main() {
   console.log("Seeding developer completed.");
   // #endregion
 
-  //#regon | Seeder Staff
+  //#region | Seeder Staff
   for (const staff of dataStaff) {
     const hashedPassword = await bcrypt.hash("12345678", 10);
 
