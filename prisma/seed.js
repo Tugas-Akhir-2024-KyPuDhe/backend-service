@@ -37,8 +37,8 @@ async function main() {
   }
   console.log("Seeding course completed.");
 
+  const defaultPassword = await bcrypt.hash("12345678", 10);
   // #region | Seeder Students
-  // const defaultPassword = await bcrypt.hash("12345678", 10);
   // const startYear = new Date("2024-07-01");
   // const majors = ["TKJ", "MM", "RPL", "TITL"];
 
