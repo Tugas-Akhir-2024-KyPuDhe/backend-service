@@ -381,14 +381,14 @@ model StudentsGrades {
   teacherId    Int
   classId      Int
   courseCode   String
-  task         String
-  UH           String
-  PTS          String
-  PAS          String
-  portofolio   String?
-  proyek       String?
-  attitude     String?
-  finalGrade   String?
+  task         Int
+  UH           Int
+  PTS          Int
+  PAS          Int
+  portofolio   Int?
+  proyek       Int?
+  attitude     Int?
+  finalGrade   Int?
   description  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

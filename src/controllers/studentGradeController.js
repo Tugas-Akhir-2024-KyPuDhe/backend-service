@@ -6,44 +6,13 @@ class StudentGradeController {
     try {
       const grades = req.body; // Menerima array object
 
-      const results = await Promise.all(grades.map(async (grade) => {
-        const {
-          academicYear,
-          nis,
-          teacherId,
-          classId,
-          courseCode,
-          task,
-          UH,
-          PTS,
-          PAS,
-          portofolio,
-          proyek,
-          finalGrade,
-          attitude,
-          description,
-        } = grade;
-
-        const existGrade =
-          await studentGradeRepository.findGradeByNISClassAndCourse(
+      const results = await Promise.all(
+        grades.map(async (grade) => {
+          const {
+            academicYear,
             nis,
+            teacherId,
             classId,
-            courseCode
-          );
-
-        const studentinClass = await prisma.studentsinClass.findFirst({
-          where: {
-            nis: nis,
-            classId: classId,
-          },
-        });
-
-        if (!existGrade) {
-          return await studentGradeRepository.insertGrade({
-            nis,
-            academicYear,
-            teacherId: parseInt(teacherId),
-            classId: parseInt(classId),
             courseCode,
             task,
             UH,
@@ -51,30 +20,66 @@ class StudentGradeController {
             PAS,
             portofolio,
             proyek,
-            attitude,
             finalGrade,
-            description,
-            studentsinClassId: studentinClass.id,
-          });
-        } else {
-          return await studentGradeRepository.updateGrade(parseInt(existGrade.id), {
-            nis,
-            academicYear,
-            teacherId: parseInt(teacherId),
-            classId: parseInt(classId),
-            courseCode,
-            task,
-            UH,
-            PTS,
-            PAS,
-            portofolio,
-            proyek,
             attitude,
-            finalGrade,
             description,
+          } = grade;
+
+          const existGrade =
+            await studentGradeRepository.findGradeByNISClassAndCourse(
+              nis,
+              classId,
+              courseCode
+            );
+
+          const studentinClass = await prisma.studentsinClass.findFirst({
+            where: {
+              nis: nis,
+              classId: classId,
+            },
           });
-        }
-      }));
+
+          if (!existGrade) {
+            return await studentGradeRepository.insertGrade({
+              nis,
+              academicYear,
+              teacherId: parseInt(teacherId),
+              classId: parseInt(classId),
+              courseCode,
+              task: parseInt(task),
+              UH: parseInt(UH),
+              PTS: parseInt(PTS),
+              PAS: parseInt(PAS),
+              portofolio: parseInt(portofolio),
+              proyek: parseInt(proyek),
+              attitude: parseInt(attitude),
+              finalGrade: parseInt(finalGrade),
+              description,
+              studentsinClassId: studentinClass.id,
+            });
+          } else {
+            return await studentGradeRepository.updateGrade(
+              parseInt(existGrade.id),
+              {
+                nis,
+                academicYear,
+                teacherId: parseInt(teacherId),
+                classId: parseInt(classId),
+                courseCode,
+                task: parseInt(task),
+                UH: parseInt(UH),
+                PTS: parseInt(PTS),
+                PAS: parseInt(PAS),
+                portofolio: parseInt(portofolio),
+                proyek: parseInt(proyek),
+                attitude: parseInt(attitude),
+                finalGrade: parseInt(finalGrade),
+                description,
+              }
+            );
+          }
+        })
+      );
 
       return res.status(201).json({
         status: 201,
