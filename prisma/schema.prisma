@@ -381,10 +381,10 @@ model StudentsGrades {
   teacherId    Int
   classId      Int
   courseCode   String
-  task         Int
-  UH           Int
-  PTS          Int
-  PAS          Int
+  task         Int?
+  UH           Int?
+  PTS          Int?
+  PAS          Int?
   portofolio   Int?
   proyek       Int?
   attitude     Int?

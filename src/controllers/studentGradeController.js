@@ -5,7 +5,6 @@ class StudentGradeController {
   async insertGradeStudent(req, res) {
     try {
       const grades = req.body; // Menerima array object
-
       const results = await Promise.all(
         grades.map(async (grade) => {
           const {
@@ -41,11 +40,11 @@ class StudentGradeController {
 
           if (!existGrade) {
             return await studentGradeRepository.insertGrade({
-              nis,
+              // nis,
               academicYear,
-              teacherId: parseInt(teacherId),
-              classId: parseInt(classId),
-              courseCode,
+              // teacherId: parseInt(teacherId),
+              // classId: parseInt(classId),
+              // courseCode,
               task: parseInt(task),
               UH: parseInt(UH),
               PTS: parseInt(PTS),
@@ -55,9 +54,21 @@ class StudentGradeController {
               attitude: parseInt(attitude),
               finalGrade: parseInt(finalGrade),
               description,
-              // StudentsinClass: {
-              //   connect: { id: studentinClass.id, }
-              // }
+              student: {
+                connect: { nis: nis, },
+              },
+              course: {
+                connect: { code: courseCode, },
+              },
+              teacher: {
+                connect: { id: parseInt(teacherId), },
+              },
+              class: {
+                connect: { id: parseInt(classId), },
+              },
+              StudentsinClass: {
+                connect: { id: studentinClass.id, }
+              }
             });
           } else {
             return await studentGradeRepository.updateGrade(
