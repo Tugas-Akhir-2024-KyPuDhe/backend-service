@@ -55,9 +55,9 @@ class StudentGradeController {
               attitude: parseInt(attitude),
               finalGrade: parseInt(finalGrade),
               description,
-              StudentsinClass: {
-                connect: { id: studentinClass.id, }
-              }
+              // StudentsinClass: {
+              //   connect: { id: studentinClass.id, }
+              // }
             });
           } else {
             return await studentGradeRepository.updateGrade(
