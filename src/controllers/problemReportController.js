@@ -187,7 +187,40 @@ class ProblemReportController {
     }
   }
 
-  async updateProblemReport(req, res) {}
+  async updateProblemReport(req, res) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+  
+      const allowedStatuses = ['baru', 'pending', 'perbaikan', 'selesai', 'ditolak'];
+      if (status && !allowedStatuses.includes(status)) {
+        return res.status(400).json({
+          status: 400,
+          message: "Invalid status value",
+        });
+      }
+  
+      const existProblemReport = await problemReportRepository.findProblemReportById(parseInt(id));
+      if (!existProblemReport) {
+        return res.status(404).json({
+          status: 404,
+          message: `Problem Report with ID ${id} not found`,
+        });
+      }
+  
+      await problemReportRepository.updateProblemReport(parseInt(id), { status });
+  
+      return res.status(200).json({
+        status: 200,
+        message: `Problem Report status successfully updated to ${status}`,
+      });
+    } catch (error) {
+      res.status(400).json({
+        status: 400,
+        message: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new ProblemReportController();

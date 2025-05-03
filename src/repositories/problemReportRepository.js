@@ -9,7 +9,12 @@ class ProblemReportRepository {
   }
 
   async updateProblemReport(id, data) {
-    
+    return prisma.problemReport.update({
+      where: { id },
+      data: {
+        status: data.status 
+      }
+    });
   }
 
   async deleteProblemReport(id) {
