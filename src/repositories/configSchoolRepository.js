@@ -126,7 +126,7 @@ class ConfigSchoolRepository {
   }
 
   async countAlumni() {
-    const studyTracer = await prisma.studyTracer.count({});
+    const studyTracer = await prisma.studyTracer.count({where: {statusApprove: 'Disetujui'}});
     const student = await prisma.student.count({where: {status: "Lulus"}})
 
     return studyTracer + student;
