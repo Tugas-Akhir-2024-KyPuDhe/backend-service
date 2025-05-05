@@ -159,6 +159,7 @@ class StudyTracerController {
         isSatisfactionMet,
         disSatisfactionFactors,
         studyIssues,
+        statusApprove,
       } = req.body;
 
       const existStudyTracer = await studyTracerRepository.findStudyTracerById(
@@ -187,6 +188,7 @@ class StudyTracerController {
         isSatisfactionMet,
         disSatisfactionFactors,
         studyIssues,
+        statusApprove
       };
 
       await studyTracerRepository.updateStudyTracer(
