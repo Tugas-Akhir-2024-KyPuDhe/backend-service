@@ -122,7 +122,8 @@ class StudentAttendanceRepository {
         date: {
           gte: new Date(dateStart),
           lte: new Date(dateEnd)
-        }
+        },
+        status: 1 // Hanya ambil yang sudah final
       },
       include: {
         detailAttendanceStudents: {

@@ -336,6 +336,7 @@ class StudentAttendanceController {
     try {
       const { classId, date_start, date_end } = req.query;
   
+      // Validasi input
       if (!classId || !date_start || !date_end) {
         return res.status(400).json({
           status: 400,
@@ -366,45 +367,74 @@ class StudentAttendanceController {
         });
       }
   
+      // Dapatkan data siswa di kelas
+      const classData = await studentAttendanceRepository.getStudentsInClass(
+        parseInt(classId)
+      );
+  
+      if (!classData || !classData.student || classData.student.length === 0) {
+        return res.status(404).json({
+          status: 404,
+          message: "No students found in the specified class"
+        });
+      }
+  
+      // Dapatkan data absensi
       const attendanceData = await studentAttendanceRepository.getAttendanceByClassAndDateRange(
         parseInt(classId),
         date_start,
         date_end
       );
   
-      // Format response untuk mengisi tanggal yang tidak ada dengan data kosong
-      const startDate = new Date(date_start);
-      const endDate = new Date(date_end);
-      const allDates = [];
-      
-      // Generate semua tanggal dalam rentang
-      for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
-        allDates.push(new Date(date).toISOString().split('T')[0]);
-      }
-  
       // Format response
-      const formattedResponse = allDates.map(dateStr => {
-        const foundAttendance = attendanceData.find(att => 
-          att.date.toISOString().split('T')[0] === dateStr
-        );
-        
-        if (foundAttendance) {
-          return {
-            date: dateStr,
-            attendance: foundAttendance
-          };
-        } else {
-          return {
-            date: dateStr,
-            attendance: null
-          };
+      const result = classData.student.map(student => {
+        // Buat array untuk semua tanggal dalam rentang
+        const absensi = [];
+        const currentDate = new Date(date_start);
+        const endDate = new Date(date_end);
+  
+        while (currentDate <= endDate) {
+          const dateStr = currentDate.toISOString().split('T')[0];
+          
+          // Cari data absensi untuk tanggal ini
+          const attendanceForDate = attendanceData.find(att => 
+            att.date.toISOString().split('T')[0] === dateStr
+          );
+  
+          if (attendanceForDate) {
+            // Cari status siswa di absensi ini
+            const studentAttendance = attendanceForDate.detailAttendanceStudents.find(
+              detail => detail.nis === student.nis
+            );
+  
+            absensi.push({
+              status: studentAttendance ? studentAttendance.status : 0,
+              notes: studentAttendance ? studentAttendance.notes || "" : "",
+              tanggal: dateStr
+            });
+          } else {
+            // Jika tidak ada data absensi untuk tanggal ini
+            absensi.push({
+              status: 0, // 0 bisa berarti tidak ada data
+              notes: "",
+              tanggal: dateStr
+            });
+          }
+  
+          currentDate.setDate(currentDate.getDate() + 1);
         }
+  
+        return {
+          nis: student.nis,
+          name: student.name,
+          absensi
+        };
       });
   
       res.status(200).json({
         status: 200,
-        message: "Weekly attendance retrieved successfully",
-        data: formattedResponse
+        message: "Attendance summary retrieved successfully",
+        data: result
       });
     } catch (error) {
       console.error(error);
