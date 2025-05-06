@@ -114,6 +114,33 @@ class StudentAttendanceRepository {
 
     return attendanceData;
   }
+
+  async getAttendanceByClassAndDateRange(classId, dateStart, dateEnd) {
+    return prisma.studentAttendance.findMany({
+      where: {
+        classId: classId,
+        date: {
+          gte: new Date(dateStart),
+          lte: new Date(dateEnd)
+        }
+      },
+      include: {
+        detailAttendanceStudents: {
+          include: {
+            student: true
+          },
+          orderBy: {
+            student: {
+              name: "asc"
+            }
+          }
+        }
+      },
+      orderBy: {
+        date: "asc"
+      }
+    });
+  }
 }
 
 module.exports = new StudentAttendanceRepository();

@@ -332,6 +332,89 @@ class StudentAttendanceController {
     }
   }
   
+  async getWeeklyAttendance(req, res) {
+    try {
+      const { classId, date_start, date_end } = req.query;
+  
+      if (!classId || !date_start || !date_end) {
+        return res.status(400).json({
+          status: 400,
+          message: "classId, date_start, and date_end are required"
+        });
+      }
+  
+      // Validasi format tanggal
+      if (isNaN(new Date(date_start).getTime())) {
+        return res.status(400).json({
+          status: 400,
+          message: "Invalid date_start format. Use YYYY-MM-DD"
+        });
+      }
+  
+      if (isNaN(new Date(date_end).getTime())) {
+        return res.status(400).json({
+          status: 400,
+          message: "Invalid date_end format. Use YYYY-MM-DD"
+        });
+      }
+  
+      // Pastikan date_start <= date_end
+      if (new Date(date_start) > new Date(date_end)) {
+        return res.status(400).json({
+          status: 400,
+          message: "date_start must be less than or equal to date_end"
+        });
+      }
+  
+      const attendanceData = await studentAttendanceRepository.getAttendanceByClassAndDateRange(
+        parseInt(classId),
+        date_start,
+        date_end
+      );
+  
+      // Format response untuk mengisi tanggal yang tidak ada dengan data kosong
+      const startDate = new Date(date_start);
+      const endDate = new Date(date_end);
+      const allDates = [];
+      
+      // Generate semua tanggal dalam rentang
+      for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+        allDates.push(new Date(date).toISOString().split('T')[0]);
+      }
+  
+      // Format response
+      const formattedResponse = allDates.map(dateStr => {
+        const foundAttendance = attendanceData.find(att => 
+          att.date.toISOString().split('T')[0] === dateStr
+        );
+        
+        if (foundAttendance) {
+          return {
+            date: dateStr,
+            attendance: foundAttendance
+          };
+        } else {
+          return {
+            date: dateStr,
+            attendance: null
+          };
+        }
+      });
+  
+      res.status(200).json({
+        status: 200,
+        message: "Weekly attendance retrieved successfully",
+        data: formattedResponse
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: 500,
+        message: "Internal server error",
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = new StudentAttendanceController();
