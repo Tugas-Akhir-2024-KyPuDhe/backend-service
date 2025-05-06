@@ -138,7 +138,7 @@ class StudentAttendanceRepository {
         }
       },
       orderBy: {
-        date: "asc"
+        date: "desc"
       }
     });
   }
