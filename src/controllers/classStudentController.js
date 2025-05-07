@@ -163,6 +163,34 @@ class ClassStudentController {
       });
     }
   }
+
+  async updateStatusClass(req, res) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const existClass = await classStudentRepository.findClassById(
+        parseInt(id)
+      );
+      if (!existClass) {
+        return res.status(404).json({
+          status: 400,
+          message: "Class not found. Unable to update non-existing class.",
+        });
+      }
+      await classStudentRepository.updateStatusClass(id, { status: parseInt(status) });
+
+      return res.status(200).json({
+        status: 200,
+        message: "Class successfully updated",
+      });
+    } catch (error) {
+      res.status(400).json({
+        status: 400,
+        message: `Failed to update class due to error: ${error.message}`,
+      });
+    }
+  }
 }
 
 module.exports = new ClassStudentController();

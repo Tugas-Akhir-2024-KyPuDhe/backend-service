@@ -106,6 +106,25 @@ class ClassStudentRepository {
     });
   }
 
+  async updateStatusClass(id, data) {
+    const { status } = data;
+
+    const classStudent = await prisma.class.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!classStudent) {
+      throw new Error("Class not found");
+    }
+
+    return await prisma.class.update({
+      where: { id: parseInt(id) },
+      data: {
+        status,
+      },
+    });
+  }
+
   // async insertStudentInClass(capacity, majorCode) {
   //   const students = await prisma.student.findMany({
   //     where: { classId: null, majorCode },
