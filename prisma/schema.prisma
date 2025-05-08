@@ -340,18 +340,17 @@ model Galeri {
 }
 
 model Course {
-  id          Int      @id @default(autoincrement())
-  uuid        String   @default(uuid())
-  name        String
-  code        String   @unique
-  grade       String
-  description String?
-  imageId     Int?
-  status      String   @default("Active")
-  formulaId   Int?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
+  id             Int              @id @default(autoincrement())
+  uuid           String           @default(uuid())
+  name           String
+  code           String           @unique
+  grade          String
+  description    String?
+  imageId        Int?
+  status         String           @default("Active")
+  formulaId      Int?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
   formula        GradeFormula?    @relation(fields: [formulaId], references: [id])
   image          Media?           @relation(fields: [imageId], references: [id])
   CourseInClass  CourseInClass[]
