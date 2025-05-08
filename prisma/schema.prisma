@@ -348,9 +348,11 @@ model Course {
   description String?
   imageId     Int?
   status      String   @default("Active")
+  formulaId   Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  formula        GradeFormula?    @relation(fields: [formulaId], references: [id])
   image          Media?           @relation(fields: [imageId], references: [id])
   CourseInClass  CourseInClass[]
   StudentsGrades StudentsGrades[]
@@ -487,4 +489,42 @@ model ProblemReport {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   media              Media?   @relation(fields: [mediaId], references: [id])
+}
+
+model GradeFormula {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  name        String
+  description String?
+  status      Int      @default(1)
+  createdBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  components GradeComponent[]
+  Course     Course[]
+}
+
+model GradeComponent {
+  id          Int     @id @default(autoincrement())
+  uuid        String  @unique @default(uuid())
+  name        String // Contoh: "Pengetahuan" atau "Keterampilan"
+  description String?
+  weight      Float // Bobot dalam desimal (0-1), contoh: 0.4 untuk 40%
+  type        String // Bisa "main" atau "sub" untuk membedakan komponen utama dan subkomponen
+
+  // Relasi ke formula induk
+  formulaId Int
+  formula   GradeFormula @relation(fields: [formulaId], references: [id])
+
+  // Relasi ke parent component (untuk subkomponen)
+  parentId Int?
+  parent   GradeComponent? @relation("ComponentRelation", fields: [parentId], references: [id])
+
+  // Relasi ke subkomponen
+  children GradeComponent[] @relation("ComponentRelation")
+
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

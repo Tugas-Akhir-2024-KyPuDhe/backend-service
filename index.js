@@ -21,6 +21,7 @@ const studentAttendanceRoutes = require("./src/routes/studentAttendanceRoutes");
 const studyTracerRoutes = require("./src/routes/studyTracerRoutes");
 const academicYearRoutes = require("./src/routes/academicYearRoutes");
 const problemReportRoutes = require("./src/routes/problemReportRoutes");
+const gradeFormulaController = require("./src/routes/gradeFormulaRoutes");
 
 const cors = require("cors");
 
@@ -52,6 +53,7 @@ app.use("/api/student-attendance", studentAttendanceRoutes);
 app.use("/api/study-tracer", studyTracerRoutes);
 app.use("/api/school-year", academicYearRoutes);
 app.use("/api/problem-report", problemReportRoutes);
+app.use("/api/grade-formula", gradeFormulaController);
 
 //error handler
 app.use((err, req, res, next) => {
