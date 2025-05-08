@@ -738,331 +738,276 @@ const dataCourse = [
     name: "Pendidikan Agama dan Budi Pekerti",
     code: "XAGAMA",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Pendidikan Agama dan Budi Pekerti",
     code: "XIAGAMA",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Pendidikan Agama dan Budi Pekerti",
     code: "XIIAGAMA",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Pendidikan Pancasila",
     code: "XPKN",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Pendidikan Pancasila",
     code: "XIPKN",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Pendidikan Pancasila",
     code: "XIIPKN",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Bahasa Indonesia",
     code: "XB.INDO",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Bahasa Indonesia",
     code: "XIB.INDO",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Bahasa Indonesia",
     code: "XIIB.INDO",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Pendidikan Jasmani, Olah Raga Dan Kesehatan",
     code: "XPJOK",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Pendidikan Jasmani, Olah Raga Dan Kesehatan",
     code: "XIPJOK",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Sejarah",
     code: "XSEJARAH",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Sejarah",
     code: "XISEJARAH",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Seni Budaya",
     code: "XSENI",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Mulok",
     code: "XMLK",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Mulok",
     code: "XIMLK",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Matematika",
     code: "XMAT",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Matematika",
     code: "XIMAT",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Matematika",
     code: "XIIMAT",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Bahasa Inggris",
     code: "XB.ING",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Bahasa Inggris",
     code: "XIB.ING",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Bahasa Inggris",
     code: "XIIB.ING",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Informatika",
     code: "XINFOR",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Projek Ilmu Pengetahuan Alam dan Sosial",
     code: "XPIPAS",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Dasar Dasar Teknik Ketenagalistrikan",
     code: "XDTL",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Dasar Pengembangan Perangkat Lunak dan GIM",
     code: "XDPPLG",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Dasar Dasar Teknik Jaringan dan Telekomunikasi",
     code: "XDTJT",
     grade: "X",
-    formulaId: null
   },
   {
     name: "Instalasi Penerangan Listrik",
     code: "XIIPL",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Instalasi Penerangan Listrik",
     code: "XIIIPL",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Instalasi Tenaga Listrik",
     code: "XIITL",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Instalasi Tenaga Listrik",
     code: "XIIITL",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Instalasi Motor Listrik",
     code: "XIIML",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Instalasi Motor Listrik",
     code: "XIIIML",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Perbaikan Peralatan Listrik",
     code: "XIIPPLis",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Mapel Pilihan TITL: Elektronika",
     code: "XIMTITL",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Produk Kreatif dan KWS",
     code: "XIKWS",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Produk Kreatif dan KWS",
     code: "XIIKWS",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Basis Data",
     code: "XIBD",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Basis Data",
     code: "XIIBD",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Pemrograman Berbasis Teks, Grafis, dan Multimedia",
     code: "XIPBTGM",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Pemrograman WEB",
     code: "XIPW",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Pemrograman Perangkat Bergerak",
     code: "XIPPB",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Mapel Pilihan RPL: Menginstal Software",
     code: "XIMRPL",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Pemrograman Berbasis Objek",
     code: "XIIPBO",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Pemrograman Perangkat Bergerak",
     code: "XIIPPB",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Pemrograman Web Perangkat Bergerak",
     code: "XIIPWPB",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Perencanaan dan Pengalamatan Jaringan",
     code: "XIPPJ",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Teknologi Jaringan Kabel dan Nirkabel",
     code: "XITJKN",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Keamanan Jaringan",
     code: "XIKJ",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Pemasangan dan Konfigurasi Perangkat Jaringan",
     code: "XIPKPJP",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Administrasi Sistem Jaringan",
     code: "XIASJ",
     grade: "XI",
-    formulaId: null
   },
   {
     name: "Administrasi Sistem Jaringan",
     code: "XIIASJ",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Administrasi Infrastruktur Jaringan",
     code: "XIIAIJ",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Teknologi Layanan Jaringan",
     code: "XIITLJ",
     grade: "XII",
-    formulaId: null
   },
   {
     name: "Mapel Pilihan TKJ: Teknik Dasar Perbaikan Komputer",
     code: "XIMTKJ",
     grade: "XI",
-    formulaId: null
   },
 ];
 
